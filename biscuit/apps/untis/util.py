@@ -72,8 +72,8 @@ def untis_import_xml(request, untis_xml):
             'name': name})
 
         try:
-            class_.owners = [Person.objects.get(
-                short_name=class_teacher_short_name)]
+            class_.owners.set([Person.objects.get(
+                short_name=class_teacher_short_name)])
             class_.save()
         except Person.DoesNotExist:
             messages.warning(request, _('Could not set class teacher of %s to %s.') % (
