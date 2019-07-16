@@ -1,6 +1,9 @@
 from datetime import date, time
 from xml.dom import minidom
 
+from django.contrib import messages
+from django.utils.translation import ugettext_lazy as _
+
 from biscuit.apps.cambro.models import Room
 from biscuit.apps.chronos.models import Subject, TimePeriod, Lesson
 from biscuit.core.models import Group, Person
@@ -63,7 +66,7 @@ def untis_import_xml(request, untis_xml):
         subject_abbrev = get_child_node_id(lesson_node, 'lesson_subject')[3:]
         teacher_short_name = get_child_node_id(
             lesson_node, 'lesson_teacher')[3:]
-        group_short_names = [v[:3] for v in get_child_node_id(
+        group_short_names = [v[3:] for v in get_child_node_id(
             lesson_node, 'lesson_classes').split(' ')]
         effectivebegindate = get_child_node_text(
             lesson_node, 'effectivebegindate')
@@ -77,7 +80,6 @@ def untis_import_xml(request, untis_xml):
             time_periods.append((day, period))
 
         subject = Subject.objects.get(abbrev=subject_abbrev)
-        teachers = [Person.objects.get(short_name=teacher_short_name)]
         groups = [Group.objects.get(short_name=v) for v in group_short_names]
         periods = [TimePeriod.objects.get(
             weekday=v[0], period=v[1]) for v in time_periods]
@@ -85,6 +87,12 @@ def untis_import_xml(request, untis_xml):
             effectivebegindate[6:])) if effectivebegindate else None
         date_end = date(int(effectiveenddate[:4]), int(effectiveenddate[4:6]), int(
             effectiveenddate[6:])) if effectiveenddate else None
+
+        try:
+            teachers = [Person.objects.get(short_name=teacher_short_name)]
+        except Person.DoesNotExist:
+            messages.error(request, _(
+                'Failed to import lesson: Teacher %s does not exist.') % teacher_short_name)
 
         lesson, created = Lesson.objects.get_or_create(groups=groups, periods=periods, defaults={
                                                        'subject': subject, 'teachers': teachers, 'date_start': date_start, 'date_end': date_end})
