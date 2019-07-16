@@ -111,6 +111,7 @@ def untis_import_xml(request, untis_xml):
         except Person.DoesNotExist:
             messages.error(request, _(
                 'Failed to import lesson: Teacher %s does not exist.') % teacher_short_name)
+            continue
 
         lesson, created = Lesson.objects.get_or_create(groups=groups, periods=periods, defaults={
                                                        'subject': subject, 'teachers': teachers, 'date_start': date_start, 'date_end': date_end})
