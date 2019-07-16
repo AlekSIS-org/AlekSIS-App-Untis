@@ -65,9 +65,19 @@ def untis_import_xml(request, untis_xml):
     for class_node in classes:
         short_name = class_node.attributes['id'].value[3:]
         name = _('Class %s') % short_name
+        class_teacher_short_name = get_child_node_id(
+            class_node, 'class_teacher')[3:]
 
         class_, created = Group.objects.get_or_create(short_name=short_name, defaults={
             'name': name})
+
+        try:
+            class_.owners = [Person.objects.get(
+                short_name=class_teacher_short_name)]
+            class_.save()
+        except Person.DoesNotExist:
+            messages.warning(request, _('Could not set class teacher of %s to %s.') % (
+                short_name, class_teacher_short_name))
 
     lessons = dom.getElementsByTagName('lesson')
     for lesson_node in lessons:
