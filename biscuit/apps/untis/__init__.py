@@ -1,1 +1,1 @@
-default_app_config = 'biscuit.apps.schild_nrw.apps.UntisConfig'
+default_app_config = 'biscuit.apps.untis.apps.UntisConfig'
