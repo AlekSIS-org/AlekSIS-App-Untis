@@ -61,6 +61,14 @@ def untis_import_xml(request, untis_xml):
         room, created = Room.objects.get_or_create(short_name=short_name, defaults={
             'name': name})
 
+    classes = dom.getElementsByTagName('class')
+    for class_node in classes:
+        short_name = class_node.attributes['id'].value[3:]
+        name = _('Class %s') % short_name
+
+        class_, created = Group.objects.get_or_create(short_name=short_name, defaults={
+            'name': name})
+
     lessons = dom.getElementsByTagName('lesson')
     for lesson_node in lessons:
         subject_abbrev = get_child_node_id(lesson_node, 'lesson_subject')[3:]
