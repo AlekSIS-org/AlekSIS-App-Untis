@@ -79,6 +79,8 @@ def untis_import_xml(request, untis_xml):
             messages.warning(request, _('Could not set class teacher of %s to %s.') % (
                 short_name, class_teacher_short_name))
 
+    Lesson.objects.all().delete()
+
     lessons = dom.getElementsByTagName('lesson')
     for lesson_node in lessons:
         subject_abbrev = get_child_node_id(lesson_node, 'lesson_subject')[3:]
@@ -93,12 +95,11 @@ def untis_import_xml(request, untis_xml):
         times = lesson_node.getElementsByTagName('time')
         time_periods = []
         for time_node in times:
-            day = get_child_node_text(time_node, 'assigned_day')
-            period = get_child_node_text(time_node, 'assigned_period')
+            day = int(get_child_node_text(time_node, 'assigned_day'))
+            period = int(get_child_node_text(time_node, 'assigned_period'))
             time_periods.append((day, period))
 
         subject = Subject.objects.get(abbrev=subject_abbrev)
-        groups = [Group.objects.get(short_name=v) for v in group_short_names]
         periods = [TimePeriod.objects.get(
             weekday=v[0], period=v[1]) for v in time_periods]
         date_start = date(int(effectivebegindate[:4]), int(effectivebegindate[4:6]), int(
@@ -107,11 +108,24 @@ def untis_import_xml(request, untis_xml):
             effectiveenddate[6:])) if effectiveenddate else None
 
         try:
+            groups = [Group.objects.get(short_name=v)
+                      for v in group_short_names]
+        except Group.DoesNotExist:
+            messages.error(request, _('Invalid list of classes: %s') %
+                           ', '.join(group_short_names))
+            continue
+
+        try:
             teachers = [Person.objects.get(short_name=teacher_short_name)]
         except Person.DoesNotExist:
             messages.error(request, _(
                 'Failed to import lesson: Teacher %s does not exist.') % teacher_short_name)
             continue
 
-        lesson, created = Lesson.objects.get_or_create(groups=groups, periods=periods, defaults={
-                                                       'subject': subject, 'teachers': teachers, 'date_start': date_start, 'date_end': date_end})
+        lesson = Lesson.objects.create(
+            subject=subject, date_start=date_start, date_end=date_end)
+
+        lesson.groups.set(groups)
+        lesson.periods.set(periods)
+        lesson.teachers.set(teachers)
+        lesson.save()
