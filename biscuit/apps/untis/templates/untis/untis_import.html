@@ -1,6 +1,6 @@
 {# -*- engine:django -*- #}
 {% extends "core/base.html" %}
-{% load bootstrap4 i18n static %}
+{% load bootstrap4 font_awesome i18n static %}
 
 {% block page_title %}Import Untis data{% endblock %}
 
@@ -11,6 +11,13 @@
     Untis provides a function for exporting all data as an XML file.
    {% endblocktrans %}
   </p>
+  <div class="alert alert-danger" role="alert">
+   {% fa 'exclamation-triangle' %}
+   {% blocktrans %}
+    All lesson data will be overwritten by the import. Teachers, rooms,
+    classes and periods will be updated in place.
+   {% endblocktrans %}
+  </div>
  </div>
 
  <form method="post" enctype="multipart/form-data">
