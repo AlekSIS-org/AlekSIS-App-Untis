@@ -7,7 +7,7 @@ from biscuit.core.models import Group
 
 
 def get_child_node_text(node, tag):
-    tag_nodes = node.getElementsByTagName('longname')
+    tag_nodes = node.getElementsByTagName(tag)
 
     if len(tag_nodes) == 1:
         return tag_nodes[0].firstChild.nodeValue
@@ -31,9 +31,9 @@ def untis_import_xml(request, untis_xml):
     periods = dom.getElementsByTagName('timeperiod')
     for period_node in periods:
         weekday = int(get_child_node_text(period_node, 'day'))
-        period = int(get_child_node_text(subject_node, 'period'))
-        starttime = get_child_node_text(subject_node, 'starttime')
-        endtime = get_child_node_text(subject_node, 'endtime')
+        period = int(get_child_node_text(period_node, 'period'))
+        starttime = get_child_node_text(period_node, 'starttime')
+        endtime = get_child_node_text(period_node, 'endtime')
 
         time_start = time(int(starttime[:2]), int(starttime[2:]))
         time_end = time(int(endtime[:2]), int(endtime[2:]))
@@ -43,8 +43,8 @@ def untis_import_xml(request, untis_xml):
 
     rooms = dom.getElementsByTagName('room')
     for room_node in rooms:
-        short_name = subject_node.attributes['id'].value[3:]
-        name = get_child_node_text(subject_node, 'longname')
+        short_name = room_node.attributes['id'].value[3:]
+        name = get_child_node_text(room_node, 'longname')
 
         room, created = Room.objects.get_or_create(short_name=short_name, defaults={
             'name': name})
