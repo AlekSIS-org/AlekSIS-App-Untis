@@ -1,0 +1,22 @@
+{# -*- engine:django -*- #}
+{% extends "core/base.html" %}
+{% load bootstrap4 i18n static %}
+
+{% block page_title %}Import Untis data{% endblock %}
+
+{% block content %}
+ <div class="jumbotron">
+  <p class="lead">
+   {% blocktrans %}
+    Untis provides a function for exporting all data as an XML file.
+   {% endblocktrans %}
+  </p>
+ </div>
+
+ <form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {% bootstrap_form upload_form %}
+
+  <input type="submit" value="Process" />
+ </form>
+{% endblock %}
