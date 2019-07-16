@@ -97,11 +97,15 @@ def untis_import_xml(request, untis_xml):
         for time_node in times:
             day = int(get_child_node_text(time_node, 'assigned_day'))
             period = int(get_child_node_text(time_node, 'assigned_period'))
-            time_periods.append((day, period))
+
+            room_id = get_child_node_id(time_node, 'assigned_room')
+            room = room_id[3:] if room_id else None
+
+            time_periods.append((day, period, room))
 
         subject = Subject.objects.get(abbrev=subject_abbrev)
-        periods = [TimePeriod.objects.get(
-            weekday=v[0], period=v[1]) for v in time_periods]
+        periods = [(TimePeriod.objects.get(
+            weekday=v[0], period=v[1]), Room.objects.get(short_name=v[2]) if v[2] else None) for v in time_periods]
         date_start = date(int(effectivebegindate[:4]), int(effectivebegindate[4:6]), int(
             effectivebegindate[6:])) if effectivebegindate else None
         date_end = date(int(effectiveenddate[:4]), int(effectiveenddate[4:6]), int(
@@ -126,6 +130,9 @@ def untis_import_xml(request, untis_xml):
             subject=subject, date_start=date_start, date_end=date_end)
 
         lesson.groups.set(groups)
-        lesson.periods.set(periods)
         lesson.teachers.set(teachers)
+
+        for period in periods:
+            lesson.periods.add(period[0], through_defaults={'room': period[1]})
+
         lesson.save()
