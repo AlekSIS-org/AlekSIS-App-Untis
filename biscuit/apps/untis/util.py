@@ -1,12 +1,12 @@
 from datetime import date, time
 from xml.dom import minidom
 
-from django.contrib import messages
 from django.utils.translation import ugettext_lazy as _
 
 from biscuit.apps.cambro.models import Room
 from biscuit.apps.chronos.models import Subject, TimePeriod, Lesson
 from biscuit.core.models import Group, Person
+from biscuit.core.util import messages
 
 
 def get_child_node_text(node, tag):

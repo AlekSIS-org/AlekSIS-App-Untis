@@ -9,7 +9,8 @@ setup(
     author="Teckids e.V.",
     author_email="verein@teckids.org",
     packages=[
-        'biscuit.apps.untis'
+        'biscuit.apps.untis',
+        'biscuit.apps.untis.management.commands'
     ],
     namespace_packages=[
         'biscuit',
