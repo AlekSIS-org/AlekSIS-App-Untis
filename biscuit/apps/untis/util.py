@@ -3,8 +3,7 @@ from xml.dom import minidom
 
 from django.utils.translation import ugettext_lazy as _
 
-from biscuit.apps.cambro.models import Room
-from biscuit.apps.chronos.models import Subject, TimePeriod, Lesson
+from biscuit.apps.chronos.models import Subject, TimePeriod, Room, Lesson
 from biscuit.core.models import Group, Person
 from biscuit.core.util import messages
 

@@ -20,7 +20,6 @@ setup(
     install_requires=[
         'BiscuIT-ng',
         'BiscuIT-App-Chronos',
-        'BiscuIT-App-Cambro'
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",
