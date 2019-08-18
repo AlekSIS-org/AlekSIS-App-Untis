@@ -1,17 +1,16 @@
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-
-from menu import Menu, MenuItem
-
-
-menu_items = [
-    MenuItem(_('Import of data'),
-             reverse('untis_import'),
-             check=lambda request: request.user.is_authenticated and request.user.is_superuser),
-]
-
-app_menu = MenuItem('Untis',
-                    '#',
-                    children=menu_items)
-
-Menu.add_item(_('Interfaces'), app_menu)
+MENUS = {
+    'NAV_MENU_CORE': [
+        {
+            'name': 'Interfaces',
+            'url': '#',
+            'root': True,
+            'submenu': [
+                {
+                    'name': 'Untis import',
+                    'url': 'untis_import',
+                    'validators': ['menu_generator.validators.is_authenticated', 'menu_generator.validators.is_superuser']
+                }
+            ]
+        }
+    ]
+}
