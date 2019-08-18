@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-03 22:57+0200\n"
-"PO-Revision-Date: 2019-08-04 01:21+0200\n"
+"POT-Creation-Date: 2019-08-18 21:33+0200\n"
+"PO-Revision-Date: 2019-08-18 21:33+0200\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -29,13 +29,13 @@ msgstr "Untis-XML-Export"
 msgid "Path to Untis XML export file"
 msgstr "Pfad zur Untis-XML-Exportdatei"
 
-#: menus.py:8
-msgid "Import of data"
-msgstr "Datenimport"
-
-#: menus.py:17
+#: menus.py:6
 msgid "Interfaces"
 msgstr "Schnittstellen"
+
+#: menus.py:12
+msgid "Untis import"
+msgstr "Untis-Import"
 
 #: templates/untis/untis_import.html:10
 msgid ""
@@ -78,3 +78,6 @@ msgstr "Ungültige Liste von Klassen: %s"
 #, python-format
 msgid "Failed to import lesson: Teacher %s does not exist."
 msgstr "Fehler beim Importieren der Stunde: Lehrer %s existiert nicht."
+
+#~ msgid "Import of data"
+#~ msgstr "Datenimport"
