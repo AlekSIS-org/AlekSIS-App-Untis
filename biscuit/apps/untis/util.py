@@ -3,7 +3,7 @@ from typing import ByteIO, Optional
 from xml.dom import minidom, Node
 
 from django.http import HttpRequest
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from biscuit.apps.chronos.models import Subject, TimePeriod, Room, Lesson
 from biscuit.core.models import Group, Person
