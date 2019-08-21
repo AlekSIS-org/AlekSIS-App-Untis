@@ -1,6 +1,8 @@
 from datetime import date, time
-from xml.dom import minidom
+from typing import ByteIO, Optional
+from xml.dom import minidom, Node
 
+from django.http import HttpRequest
 from django.utils.translation import ugettext_lazy as _
 
 from biscuit.apps.chronos.models import Subject, TimePeriod, Room, Lesson
@@ -8,7 +10,7 @@ from biscuit.core.models import Group, Person
 from biscuit.core.util import messages
 
 
-def get_child_node_text(node, tag):
+def get_child_node_text(node: Node, tag: str) -> Optional[str]:
     tag_nodes = node.getElementsByTagName(tag)
 
     if len(tag_nodes) == 1:
@@ -17,7 +19,7 @@ def get_child_node_text(node, tag):
         return None
 
 
-def get_child_node_id(node, tag):
+def get_child_node_id(node: Node, tag: str) -> Optional[str]:
     tag_nodes = node.getElementsByTagName(tag)
 
     if len(tag_nodes) == 1:
@@ -26,7 +28,7 @@ def get_child_node_id(node, tag):
         return None
 
 
-def untis_import_xml(request, untis_xml):
+def untis_import_xml(request: HttpRequest, untis_xml: Union{ByteIO, str]) -> None:
     dom = minidom.parse(untis_xml)
 
     subjects = dom.getElementsByTagName('subject')
