@@ -1,5 +1,5 @@
 from datetime import date, time
-from typing import ByteIO, Optional
+from typing import BinaryIO, Optional
 from xml.dom import minidom, Node
 
 from django.http import HttpRequest
@@ -28,7 +28,7 @@ def get_child_node_id(node: Node, tag: str) -> Optional[str]:
         return None
 
 
-def untis_import_xml(request: HttpRequest, untis_xml: Union{ByteIO, str]) -> None:
+def untis_import_xml(request: HttpRequest, untis_xml: Union{BinaryIO, str]) -> None:
     dom = minidom.parse(untis_xml)
 
     subjects = dom.getElementsByTagName('subject')
