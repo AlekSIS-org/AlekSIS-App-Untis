@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-18 21:33+0200\n"
+"POT-Creation-Date: 2019-08-26 00:30+0200\n"
 "PO-Revision-Date: 2019-08-18 21:33+0200\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: \n"
@@ -59,22 +59,22 @@ msgstr ""
 "    Klassen und Stunden werden aktualisiert.\n"
 "  "
 
-#: util.py:66
+#: util.py:68
 #, python-format
 msgid "Class %s"
 msgstr "Klasse %s"
 
-#: util.py:78
+#: util.py:80
 #, python-format
 msgid "Could not set class teacher of %s to %s."
 msgstr "Der Klassenlehrer konnte nicht von %s auf %s gesetzt werden."
 
-#: util.py:117
+#: util.py:119
 #, python-format
 msgid "Invalid list of classes: %s"
 msgstr "Ungültige Liste von Klassen: %s"
 
-#: util.py:125
+#: util.py:127
 #, python-format
 msgid "Failed to import lesson: Teacher %s does not exist."
 msgstr "Fehler beim Importieren der Stunde: Lehrer %s existiert nicht."
