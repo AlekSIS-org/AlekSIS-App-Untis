@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-08-27 15:22+0200\n"
+"POT-Creation-Date: 2019-09-02 13:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,11 +30,7 @@ msgid "Path to Untis XML export file"
 msgstr ""
 
 #: menus.py:6
-msgid "Interfaces"
-msgstr ""
-
-#: menus.py:12
-msgid "Untis import"
+msgid "Units import"
 msgstr ""
 
 #: templates/untis/untis_import.html:10
@@ -59,7 +55,7 @@ msgstr ""
 
 #: util.py:80
 #, python-format
-msgid "Could not set class teacher of %s to %s."
+msgid "Could not set class teacher of %(class)s to %(teacher)s."
 msgstr ""
 
 #: util.py:119

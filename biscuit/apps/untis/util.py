@@ -77,8 +77,8 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
                 short_name=class_teacher_short_name)])
             class_.save()
         except Person.DoesNotExist:
-            messages.warning(request, _('Could not set class teacher of %s to %s.') % (
-                short_name, class_teacher_short_name))
+            messages.warning(request, _('Could not set class teacher of %(class)s to %(teacher)s.') % {
+                'class': short_name, 'teacher': class_teacher_short_name})
 
     Lesson.objects.all().delete()
 
