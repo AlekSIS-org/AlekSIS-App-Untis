@@ -2,9 +2,7 @@
 {% extends "core/base.html" %}
 {% load bootstrap4 font_awesome i18n static %}
 
-{% block bootstrap4_extra_head %}
-  <title>{% block bootstrap4_title %}{% blocktrans %}BiscuIT SIS - Import Untis data{% endblocktrans %}{% endblock%}
-{% endblock %}
+{% block bootstrap4_title %}{% blocktrans %}Import Untis data{% endblocktrans %} - {{ block.super }}{% endblock%}
 
 {% block page_title %}Import Untis data{% endblock %}
 
