@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-02 13:14+0000\n"
+"POT-Creation-Date: 2019-09-05 20:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,10 +16,6 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: apps.py:7
-msgid "BiscuIT - Untis interface"
-msgstr ""
 
 #: forms.py:6
 msgid "Untis XML export"
@@ -33,19 +29,23 @@ msgstr ""
 msgid "Units import"
 msgstr ""
 
-#: templates/untis/untis_import.html:10
-msgid ""
-"\n"
-"    Untis provides a function for exporting all data as an XML file.\n"
-"   "
+#: templates/untis/untis_import.html:6
+msgid "Import Untis data"
 msgstr ""
 
-#: templates/untis/untis_import.html:16
+#: templates/untis/untis_import.html:13
 msgid ""
 "\n"
-"    All lesson data will be overwritten by the import. Teachers, rooms,\n"
-"    classes and periods will be updated in place.\n"
-"   "
+"        Untis provides a function for exporting all data as an XML file.\n"
+"      "
+msgstr ""
+
+#: templates/untis/untis_import.html:19
+msgid ""
+"\n"
+"        All lesson data will be overwritten by the import. Teachers, rooms,\n"
+"        classes and periods will be updated in place.\n"
+"      "
 msgstr ""
 
 #: util.py:68
