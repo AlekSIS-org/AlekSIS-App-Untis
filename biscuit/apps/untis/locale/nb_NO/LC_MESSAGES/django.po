@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-05 20:34+0000\n"
+"POT-Creation-Date: 2019-09-07 23:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,6 +46,10 @@ msgid ""
 "        All lesson data will be overwritten by the import. Teachers, rooms,\n"
 "        classes and periods will be updated in place.\n"
 "      "
+msgstr ""
+
+#: templates/untis/untis_import.html:31
+msgid "Process"
 msgstr ""
 
 #: util.py:68
