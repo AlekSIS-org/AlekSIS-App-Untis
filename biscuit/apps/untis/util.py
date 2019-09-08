@@ -38,7 +38,7 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         colour_fg = get_child_node_text(subject_node, 'forecolor')
         colour_bg = get_child_node_text(subject_node, 'backcolor')
 
-        subject, created = Subject.objects.get_or_create(abbrev=abbrev, defaults={
+        Subject.objects.update_or_create(abbrev=abbrev, defaults={
             'name': name, 'colour_fg': colour_fg, 'colour_bg': colour_bg})
 
     periods = dom.getElementsByTagName('timeperiod')
@@ -51,7 +51,7 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         time_start = time(int(starttime[:2]), int(starttime[2:]))
         time_end = time(int(endtime[:2]), int(endtime[2:]))
 
-        period, created = TimePeriod.objects.get_or_create(weekday=weekday, period=period, defaults={
+        TimePeriod.objects.update_or_create(weekday=weekday, period=period, defaults={
             'time_start': time_start, 'time_end': time_end})
 
     rooms = dom.getElementsByTagName('room')
@@ -59,7 +59,7 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         short_name = room_node.attributes['id'].value[3:]
         name = get_child_node_text(room_node, 'longname')
 
-        room, created = Room.objects.get_or_create(short_name=short_name, defaults={
+        Room.objects.update_or_create(short_name=short_name, defaults={
             'name': name})
 
     classes = dom.getElementsByTagName('class')
@@ -69,10 +69,11 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         class_teacher_short_name = get_child_node_id(
             class_node, 'class_teacher')[3:]
 
-        class_, created = Group.objects.get_or_create(short_name=short_name, defaults={
+        class_, _ = Group.objects.update_or_create(short_name=short_name, defaults={
             'name': name})
 
         try:
+            # Teachers need to come from another source, e.g. SchILD-NRW
             class_.owners.set([Person.objects.get(
                 short_name=class_teacher_short_name)])
             class_.save()
