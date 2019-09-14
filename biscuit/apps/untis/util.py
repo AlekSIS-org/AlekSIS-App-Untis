@@ -1,4 +1,4 @@
-from datetime import date, time
+from datetime import date, time, timedelta
 from typing import BinaryIO, Optional, Union
 from xml.dom import minidom, Node
 
@@ -81,7 +81,13 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
             messages.warning(request, _('Could not set class teacher of %(class)s to %(teacher)s.') % {
                 'class': short_name, 'teacher': class_teacher_short_name})
 
-    Lesson.objects.all().delete()
+    # Set all existing lessons that overlap to end today
+    today = date.today()
+    Lesson.objects.filter(
+        date_end__gt=today
+    ).update(
+        date_end=today
+    )
 
     lessons = dom.getElementsByTagName('lesson')
     for lesson_node in lessons:
@@ -112,6 +118,10 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
             effectivebegindate[6:])) if effectivebegindate else None
         date_end = date(int(effectiveenddate[:4]), int(effectiveenddate[4:6]), int(
             effectiveenddate[6:])) if effectiveenddate else None
+
+        # Coerce effective start date to not be before tomorrow
+        if date_start and date_start <= today:
+            date_start = today + timedelta(days=1)
 
         try:
             groups = [Group.objects.get(short_name=v)
