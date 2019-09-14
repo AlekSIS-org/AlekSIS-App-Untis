@@ -94,8 +94,8 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         subject_abbrev = get_child_node_id(lesson_node, 'lesson_subject')[3:]
         teacher_short_name = get_child_node_id(
             lesson_node, 'lesson_teacher')[3:]
-        group_short_names = [v[3:] for v in get_child_node_id(
-            lesson_node, 'lesson_classes').split(' ')]
+        group_short_names = [v for v in get_child_node_id(
+            lesson_node, 'lesson_classes').split('CL_') if v]
         effectivebegindate = get_child_node_text(
             lesson_node, 'effectivebegindate')
         effectiveenddate = get_child_node_text(lesson_node, 'effectiveenddate')
