@@ -17,8 +17,18 @@
     <div class="alert alert-danger" role="alert">
       {% fa 'exclamation-triangle' %}
       {% blocktrans %}
-        All lesson data will be overwritten by the import. Teachers, rooms,
-        classes and periods will be updated in place.
+        Newly imported data will be valid as of tomorrow.
+      {% endblocktrans %}
+      {% blocktrans %}
+        The effective dates of all existing lessons will be set to end
+        today.
+      {% endblocktrans %}
+      {% blocktrans %}
+        The effective dates of all newly imported lessons will be set to
+        start tomorrow.
+      {% endblocktrans %}
+      {% blocktrans %}
+        Teachers, rooms, subjects and classes and periods will be updated in place.
       {% endblocktrans %}
     </div>
   </div>
