@@ -69,7 +69,7 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         class_teacher_short_name = get_child_node_id(
             class_node, 'class_teacher')[3:]
 
-        class_, _ = Group.objects.update_or_create(short_name=short_name, defaults={
+        class_, created = Group.objects.update_or_create(short_name=short_name, defaults={
             'name': name})
 
         try:
