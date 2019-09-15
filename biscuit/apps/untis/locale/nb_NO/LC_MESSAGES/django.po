@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-07 23:33+0200\n"
+"POT-Creation-Date: 2019-09-15 14:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,12 +43,35 @@ msgstr ""
 #: templates/untis/untis_import.html:19
 msgid ""
 "\n"
-"        All lesson data will be overwritten by the import. Teachers, rooms,\n"
-"        classes and periods will be updated in place.\n"
+"        Newly imported data will be valid as of tomorrow.\n"
 "      "
 msgstr ""
 
-#: templates/untis/untis_import.html:31
+#: templates/untis/untis_import.html:22
+msgid ""
+"\n"
+"        The effective dates of all existing lessons will be set to end\n"
+"        today.\n"
+"      "
+msgstr ""
+
+#: templates/untis/untis_import.html:26
+msgid ""
+"\n"
+"        The effective dates of all newly imported lessons will be set to\n"
+"        start tomorrow.\n"
+"      "
+msgstr ""
+
+#: templates/untis/untis_import.html:30
+msgid ""
+"\n"
+"        Teachers, rooms, subjects and classes and periods will be updated in "
+"place.\n"
+"      "
+msgstr ""
+
+#: templates/untis/untis_import.html:41
 msgid "Process"
 msgstr ""
 
@@ -57,17 +80,17 @@ msgstr ""
 msgid "Class %s"
 msgstr ""
 
-#: util.py:80
+#: util.py:81
 #, python-format
 msgid "Could not set class teacher of %(class)s to %(teacher)s."
 msgstr ""
 
-#: util.py:119
+#: util.py:130
 #, python-format
 msgid "Invalid list of classes: %s"
 msgstr ""
 
-#: util.py:127
+#: util.py:138
 #, python-format
 msgid "Failed to import lesson: Teacher %s does not exist."
 msgstr ""

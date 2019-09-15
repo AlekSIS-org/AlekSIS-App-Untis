@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-07 23:33+0200\n"
+"POT-Creation-Date: 2019-09-15 14:10+0200\n"
 "PO-Revision-Date: 2019-09-07 22:04+0000\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: German <https://translate.edugit.org/projects/biscuit-sis/"
@@ -49,8 +49,38 @@ msgstr ""
 #: templates/untis/untis_import.html:19
 msgid ""
 "\n"
-"        All lesson data will be overwritten by the import. Teachers, rooms,\n"
-"        classes and periods will be updated in place.\n"
+"        Newly imported data will be valid as of tomorrow.\n"
+"      "
+msgstr ""
+
+#: templates/untis/untis_import.html:22
+msgid ""
+"\n"
+"        The effective dates of all existing lessons will be set to end\n"
+"        today.\n"
+"      "
+msgstr ""
+
+#: templates/untis/untis_import.html:26
+msgid ""
+"\n"
+"        The effective dates of all newly imported lessons will be set to\n"
+"        start tomorrow.\n"
+"      "
+msgstr ""
+
+#: templates/untis/untis_import.html:30
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "        All lesson data will be overwritten by the import. Teachers, "
+#| "rooms,\n"
+#| "        classes and periods will be updated in place.\n"
+#| "      "
+msgid ""
+"\n"
+"        Teachers, rooms, subjects and classes and periods will be updated in "
+"place.\n"
 "      "
 msgstr ""
 "\n"
@@ -58,7 +88,7 @@ msgstr ""
 "    Klassen und Stunden werden aktualisiert.\n"
 "      "
 
-#: templates/untis/untis_import.html:31
+#: templates/untis/untis_import.html:41
 msgid "Process"
 msgstr "Importieren"
 
@@ -67,18 +97,18 @@ msgstr "Importieren"
 msgid "Class %s"
 msgstr "Klasse %s"
 
-#: util.py:80
+#: util.py:81
 #, python-format
 msgid "Could not set class teacher of %(class)s to %(teacher)s."
 msgstr ""
 "Der Klassenlehrer von %(class)s konnte nicht auf %(teacher)s  gesetzt werden."
 
-#: util.py:119
+#: util.py:130
 #, python-format
 msgid "Invalid list of classes: %s"
 msgstr "Ungültige Liste von Klassen: %s"
 
-#: util.py:127
+#: util.py:138
 #, python-format
 msgid "Failed to import lesson: Teacher %s does not exist."
 msgstr "Fehler beim Importieren der Stunde: Lehrer %s existiert nicht."
