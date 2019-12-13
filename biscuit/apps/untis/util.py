@@ -39,8 +39,7 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         colour_bg = get_child_node_text(subject_node, "backcolor")
 
         Subject.objects.update_or_create(
-            abbrev=abbrev,
-            defaults={"name": name, "colour_fg": colour_fg, "colour_bg": colour_bg},
+            abbrev=abbrev, defaults={"name": name, "colour_fg": colour_fg, "colour_bg": colour_bg},
         )
 
     periods = dom.getElementsByTagName("timeperiod")
@@ -132,11 +131,7 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
             else None
         )
         date_end = (
-            date(
-                int(effectiveenddate[:4]),
-                int(effectiveenddate[4:6]),
-                int(effectiveenddate[6:]),
-            )
+            date(int(effectiveenddate[:4]), int(effectiveenddate[4:6]), int(effectiveenddate[6:]),)
             if effectiveenddate
             else None
         )
@@ -148,9 +143,7 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         try:
             groups = [Group.objects.get(short_name=v) for v in group_short_names]
         except Group.DoesNotExist:
-            messages.error(
-                request, _("Invalid list of classes: %s") % ", ".join(group_short_names)
-            )
+            messages.error(request, _("Invalid list of classes: %s") % ", ".join(group_short_names))
             continue
 
         try:
@@ -158,14 +151,11 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         except Person.DoesNotExist:
             messages.error(
                 request,
-                _("Failed to import lesson: Teacher %s does not exist.")
-                % teacher_short_name,
+                _("Failed to import lesson: Teacher %s does not exist.") % teacher_short_name,
             )
             continue
 
-        lesson = Lesson.objects.create(
-            subject=subject, date_start=date_start, date_end=date_end
-        )
+        lesson = Lesson.objects.create(subject=subject, date_start=date_start, date_end=date_end)
 
         lesson.groups.set(groups)
         lesson.teachers.set(teachers)
