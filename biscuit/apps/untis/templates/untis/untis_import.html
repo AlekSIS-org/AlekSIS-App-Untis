@@ -1,7 +1,7 @@
 {# -*- engine:django -*- #}
 
 {% extends "core/base.html" %}
-{% load bootstrap4 font_awesome i18n static %}
+{% load bootstrap4 i18n static %}
 
 {% block bootstrap4_title %}{% blocktrans %}Import Untis data{% endblocktrans %} - {{ block.super }}{% endblock%}
 
@@ -15,7 +15,7 @@
       {% endblocktrans %}
     </p>
     <div class="alert alert-danger" role="alert">
-      {% fa 'exclamation-triangle' %}
+      <span class="mdi mdi-alert"></span>
       {% blocktrans %}
         Newly imported data will be valid as of tomorrow.
       {% endblocktrans %}
