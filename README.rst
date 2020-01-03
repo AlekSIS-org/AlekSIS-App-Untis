@@ -1,5 +1,5 @@
-AlekSIS (School Information System) - App for Untis import
-======================================================================
+AlekSIS (School Information System) — App for Untis import
+==========================================================
 
 AlekSIS
 -------
