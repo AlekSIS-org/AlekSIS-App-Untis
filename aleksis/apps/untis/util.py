@@ -5,9 +5,9 @@ from xml.dom import Node, minidom
 from django.http import HttpRequest
 from django.utils.translation import ugettext as _
 
-from biscuit.apps.chronos.models import Lesson, Room, Subject, TimePeriod
-from biscuit.core.models import Group, Person
-from biscuit.core.util import messages
+from aleksis.apps.chronos.models import Lesson, Room, Subject, TimePeriod
+from aleksis.core.models import Group, Person
+from aleksis.core.util import messages
 
 
 from untisconnect.api import TYPE_TEACHER, get_teacher_by_shortcode, TYPE_CLASS, get_class_by_name, get_all_teachers, \

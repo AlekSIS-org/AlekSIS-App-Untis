@@ -1,4 +1,4 @@
 include LICENCE
-recursive-include biscuit/apps/untis/static *
-recursive-include biscuit/apps/untis/templates *
-recursive-include biscuit/apps/untis/migrations *
+recursive-include aleksis/apps/untis/static *
+recursive-include aleksis/apps/untis/templates *
+recursive-include aleksis/apps/untis/migrations *

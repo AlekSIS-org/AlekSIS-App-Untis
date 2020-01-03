@@ -21,4 +21,4 @@ Minor changes
 
 * Use bootstrap buttons everywhere
 
-_`1.0a1`: https://edugit.org/Teckids/BiscuIT/BiscuIT-App-Untis/-/tags/1.0a1
+_`1.0a1`: https://edugit.org/Teckids/AlekSIS/AlekSIS-App-Untis/-/tags/1.0a1
