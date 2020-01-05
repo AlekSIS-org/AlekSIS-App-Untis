@@ -17,9 +17,11 @@ Licence
 
 ::
 
-  Copyright © 2019 Dominik George <dominik.george@teckids.org>
+  Copyright © 2019, 2020 Dominik George <dominik.george@teckids.org>
   Copyright © 2019 Julian Leucker <leuckeju@katharineum.de>
+  Copyright © 2019, 2020 mirabilos <thorsten.glaser@teckids.org>
   Copyright © 2018, 2019 Frank Poetzsch-Heffter <p-h@katharineum.de>
+  Copyright © 2019, 2020 Tom Teichler <tom.teichler@teckids.org>
   Copyright © 2018, 2019 Jonathan Weth <wethjo@katharineum.de>
 
   Licenced under the EUPL, version 1.2 or later
