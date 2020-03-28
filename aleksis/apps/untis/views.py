@@ -3,6 +3,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from aleksis.core.decorators import admin_required
+from .util.mysql.main import untis_import_mysql
 
 from .forms import UntisUploadForm
 from aleksis.apps.untis.util.xml.xml import untis_import_xml
@@ -24,3 +25,14 @@ def xml_import(request: HttpRequest) -> HttpResponse:
     context["upload_form"] = upload_form
 
     return render(request, "untis/untis_import.html", context)
+
+
+@login_required
+@admin_required
+def mysql_import(request: HttpRequest) -> HttpResponse:
+    context = {}
+
+    untis_import_mysql()
+
+    return HttpResponse("Import")
+

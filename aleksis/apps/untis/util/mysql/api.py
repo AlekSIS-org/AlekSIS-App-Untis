@@ -2,7 +2,7 @@ from django.conf import settings
 
 from untisconnect.api_helper import get_term_by_ids, run_using, untis_date_to_date, date_to_untis_date, \
     untis_split_first
-from . import models
+from aleksis.apps.untis import models
 from timetable.settings import untis_settings
 
 TYPE_TEACHER = 0
@@ -54,57 +54,6 @@ def one_by_id(db_ref, obj):
         return o
     else:
         return None
-
-
-###########
-# TEACHER #
-###########
-class Teacher(object):
-    def __init__(self):
-        self.filled = False
-        self.id = None
-        self.shortcode = None
-        self.first_name = None
-        self.name = None
-        self.full_name = None
-
-    def __str__(self):
-        if self.filled:
-            return (self.first_name or "") + " " + (self.name or "")
-        else:
-            return "Unbekannt"
-
-    def __eq__(self, other):
-        if not isinstance(other, Teacher):
-            # don't attempt to compare against unrelated types
-            return NotImplemented
-
-        return self.id == other.id
-
-    def create(self, db_obj):
-        self.filled = True
-        self.id = db_obj.teacher_id
-        self.shortcode = db_obj.name
-        self.name = db_obj.longname
-        self.first_name = db_obj.firstname
-
-
-def get_all_teachers():
-    teachers = row_by_row(models.Teacher, Teacher)
-    teachers.sort(key=lambda a: a.shortcode)
-    return teachers
-
-
-def get_teacher_by_id(id):
-    teacher = run_one(models.Teacher.objects).get(teacher_id=id)
-    return one_by_id(teacher, Teacher)
-
-
-def get_teacher_by_shortcode(shortcode):
-    shortcode = shortcode.upper()
-    teacher = run_one(models.Teacher.objects).get(name__icontains=shortcode)
-    return one_by_id(teacher, Teacher)
-
 
 #########
 # CLASS #
@@ -272,62 +221,6 @@ def get_corridor_by_id(id):
     return one_by_id(corridor, Corridor)
 
 
-###########
-# SUBJECT #
-###########
-class Subject(object):
-    def __init__(self):
-        self.filled = False
-        self.id = None
-        self.shortcode = None
-        self.name = None
-        self.color = None
-        self.hex_color = None
-
-    def __str__(self):
-        if self.filled:
-            return self.shortcode or "Unbekannt"
-        else:
-            return "Unbekannt"
-
-    def __eq__(self, other):
-        if not isinstance(other, Teacher):
-            # don't attempt to compare against unrelated types
-            return NotImplemented
-
-        return self.id == other.id
-
-    def create(self, db_obj):
-        self.filled = True
-        self.id = db_obj.subject_id
-        self.shortcode = db_obj.name
-        self.name = db_obj.longname
-        self.color = db_obj.backcolor
-
-        # Convert UNTIS number to HEX
-        hex_bgr = str(hex(db_obj.backcolor)).replace("0x", "")
-
-        # Add beginning zeros if len < 6
-        if len(hex_bgr) < 6:
-            hex_bgr = "0" * (6 - len(hex_bgr)) + hex_bgr
-
-        # Change BGR to RGB
-        hex_rgb = hex_bgr[4:6] + hex_bgr[2:4] + hex_bgr[0:2]
-
-        # Add html #
-        self.hex_color = "#" + hex_rgb
-
-
-def get_all_subjects():
-    subjects = row_by_row(models.Subjects, Subject, filter_term=False)
-    subjects.sort(key=lambda a: a.shortcode)
-
-    return subjects
-
-
-def get_subject_by_id(id):
-    subject = run_one(models.Subjects.objects, filter_term=False).get(subject_id=id)
-    return one_by_id(subject, Subject)
 
 
 class Absence(object):
