@@ -1,4 +1,4 @@
-from django.utils import timezone
+from datetime import date, datetime
 
 
 def clean_array(a, conv=None):
@@ -23,15 +23,17 @@ def untis_split_third(s, conv=None):
     return clean_array(s.split(";"), conv=conv)
 
 
-DATE_FORMAT = "%Y%m%d"
+UNTIS_DATE_FORMAT = "%Y%m%d"
 
 
-def untis_date_to_date(untis):
-    return timezone.datetime.strptime(str(untis), DATE_FORMAT)
+def untis_date_to_date(untis: int) -> date:
+    """ Converts a UNTIS date to a python date """
+    return datetime.strptime(str(untis), UNTIS_DATE_FORMAT).date()
 
 
-def date_to_untis_date(date):
-    return date.strftime(DATE_FORMAT)
+def date_to_untis_date(date: date) -> int:
+    """ Converts a python date to a UNTIS date """
+    return int(date.strftime(UNTIS_DATE_FORMAT))
 
 
 def untis_colour_to_hex(colour: int) -> str:
