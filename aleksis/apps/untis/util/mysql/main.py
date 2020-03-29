@@ -114,9 +114,9 @@ def untis_import_mysql():
 
     # Classes
     classes_ref = {}
-    classes = run_default_filter(mysql_models.Class.objects, filter_term=True)
+    course_classes = run_default_filter(mysql_models.Class.objects, filter_term=True)
 
-    for class_ in classes:
+    for class_ in course_classes:
         if not class_.name:
             raise Exception("Short name needed.")
 
@@ -185,11 +185,11 @@ def untis_import_mysql():
 
     # Time Periods
     time_periods_ref = []
-    periods = run_default_filter(
-        mysql_models.Commondata.objects, filter_term=False
-    ).filter(
-        id=40 # Fixed UNTIS constant
-    ).order_by("number", "number1")
+    periods = (
+        run_default_filter(mysql_models.Commondata.objects, filter_term=False)
+        .filter(id=40)  # Fixed UNTIS constant
+        .order_by("number", "number1")
+    )
 
     for time_period in periods:
         weekday = time_period.number - 1
@@ -198,8 +198,9 @@ def untis_import_mysql():
         end_time = time(time_period.fieldbyte3, time_period.fieldbyte4)
 
         new_time_period, created = chronos_models.TimePeriod.objects.get_or_create(
-            weekday=weekday, period=period,
-            defaults={"time_start": start_time, "time_end": end_time}
+            weekday=weekday,
+            period=period,
+            defaults={"time_start": start_time, "time_end": end_time},
         )
 
         new_time_period.time_start = start_time
@@ -224,15 +225,16 @@ def untis_import_mysql():
             after_period = time_period
             before_period = time_periods[i + 1]
 
-            short_name = "{}: {}./{}.".format(weekday, after_period.period if after_period else "-", before_period.period if before_period else "-")
+            short_name = "{}: {}./{}.".format(
+                weekday,
+                after_period.period if after_period else "-",
+                before_period.period if before_period else "-",
+            )
 
             new_break, created = chronos_models.Break.objects.get_or_create(
                 after_period=after_period,
                 before_period=before_period,
-                defaults={
-                    "short_name": short_name,
-                    "name": short_name
-                }
+                defaults={"short_name": short_name, "name": short_name},
             )
 
     # Lessons

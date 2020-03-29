@@ -4,7 +4,7 @@ from datetime import date, datetime
 def clean_array(a, conv=None):
     b = []
     for el in a:
-        if el != '' and el != "0":
+        if el != "" and el != "0":
             if conv is not None:
                 el = conv(el)
             b.append(el)
