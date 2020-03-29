@@ -2,7 +2,7 @@ from django.conf import settings
 
 from schoolapps.settings import TIMETABLE_HEIGHT
 from .drive import drive
-from .api_helper import untis_date_to_date, date_to_untis_date
+from .util import untis_date_to_date, date_to_untis_date
 from .api import row_by_row_helper, run_all, get_absence_by_id
 from aleksis.apps.untis import models
 

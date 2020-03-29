@@ -3,7 +3,7 @@ from datetime import datetime, date, time
 from django.db.models import Model, QuerySet
 from django.utils.translation import gettext as _
 from aleksis.apps.untis import models as mysql_models
-from aleksis.apps.untis.util.mysql.api_helper import (
+from aleksis.apps.untis.util.mysql.util import (
     date_to_untis_date,
     untis_colour_to_hex,
     untis_split_first,
