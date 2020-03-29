@@ -1,7 +1,60 @@
 from datetime import date, datetime
+from typing import Optional
+
+from django.db.models import QuerySet
+
+from aleksis.apps.untis import models as mysql_models
+
+DB_NAME = "untis"
 
 
-def clean_array(a, conv=None):
+def run_using(obj: QuerySet) -> QuerySet:
+    return obj.using(DB_NAME)
+
+
+def get_term(date: Optional[date]) -> mysql_models.Terms:
+    """ Get term valid for the provided date """
+
+    if not date:
+        date = datetime.now()
+
+    terms = run_using(mysql_models.Terms.objects).filter(
+        datefrom__lte=date_to_untis_date(date), dateto__gte=date_to_untis_date(date)
+    )
+
+    if not terms.exists():
+        raise Exception("Term needed")
+
+    return terms[0]
+
+
+def run_default_filter(
+    qs: QuerySet, date: Optional[date] = None, filter_term: bool = True
+) -> QuerySet:
+    """ Add a default filter in order to select the correct term """
+
+    term = get_term(date)
+    term_id, schoolyear_id, school_id, version_id = (
+        term.term_id,
+        term.schoolyear_id,
+        term.school_id,
+        term.version_id,
+    )
+
+    if filter_term:
+        return run_using(qs).filter(
+            school_id=school_id,
+            schoolyear_id=schoolyear_id,
+            version_id=version_id,
+            term_id=term_id,
+        )
+    else:
+        return run_using(qs).filter(
+            school_id=school_id, schoolyear_id=schoolyear_id, version_id=version_id
+        )
+
+
+def clean_array(a: list, conv=None) -> list:
     b = []
     for el in a:
         if el != "" and el != "0":
@@ -11,15 +64,15 @@ def clean_array(a, conv=None):
     return b
 
 
-def untis_split_first(s, conv=None):
+def untis_split_first(s: str, conv=None) -> list:
     return clean_array(s.split(","), conv=conv)
 
 
-def untis_split_second(s, conv=None):
+def untis_split_second(s: str, conv=None) -> list:
     return clean_array(s.split("~"), conv=conv)
 
 
-def untis_split_third(s, conv=None):
+def untis_split_third(s: str, conv=None) -> list:
     return clean_array(s.split(";"), conv=conv)
 
 
