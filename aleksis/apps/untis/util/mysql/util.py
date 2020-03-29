@@ -12,7 +12,7 @@ def run_using(obj: QuerySet) -> QuerySet:
     return obj.using(DB_NAME)
 
 
-def get_term(date: Optional[date]) -> mysql_models.Terms:
+def get_term(date: Optional[date] = None) -> mysql_models.Terms:
     """ Get term valid for the provided date """
 
     if not date:
