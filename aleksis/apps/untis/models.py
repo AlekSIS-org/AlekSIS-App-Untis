@@ -7,8 +7,10 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+from aleksis.core.mixins import PureDjangoModel
 
-class Absence(models.Model):
+
+class Absence(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -43,7 +45,7 @@ class Absence(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'absence_id'),)
 
 
-class Absencereason(models.Model):
+class Absencereason(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -68,7 +70,7 @@ class Absencereason(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'absence_reason_id'),)
 
 
-class Adminlesson(models.Model):
+class Adminlesson(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -93,7 +95,7 @@ class Adminlesson(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'ls_id'),)
 
 
-class Alias(models.Model):
+class Alias(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -115,7 +117,7 @@ class Alias(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'type', 'alias_id', 'term_id'),)
 
 
-class CvReason(models.Model):
+class CvReason(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -140,7 +142,7 @@ class CvReason(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'cv_reason_id'),)
 
 
-class Calendar(models.Model):
+class Calendar(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -170,7 +172,7 @@ class Calendar(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'date'),)
 
 
-class Class(models.Model):
+class Class(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -295,7 +297,7 @@ class Class(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'class_id', 'term_id'),)
 
 
-class Commondata(models.Model):
+class Commondata(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -375,7 +377,7 @@ class Commondata(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'id', 'owner', 'number', 'number1'),)
 
 
-class Corridor(models.Model):
+class Corridor(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -432,7 +434,7 @@ class Corridor(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'corridor_id'),)
 
 
-class Countvalue(models.Model):
+class Countvalue(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -470,7 +472,7 @@ class Countvalue(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'count_value_id'),)
 
 
-class Couplcond(models.Model):
+class Couplcond(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -494,7 +496,7 @@ class Couplcond(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'coupl_cond_id'),)
 
 
-class Department(models.Model):
+class Department(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -514,7 +516,7 @@ class Department(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'department_id'),)
 
 
-class Description(models.Model):
+class Description(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -536,7 +538,7 @@ class Description(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'description_id'),)
 
 
-class Event(models.Model):
+class Event(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -590,7 +592,7 @@ class Event(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'event_id'),)
 
 
-class Exam(models.Model):
+class Exam(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -643,7 +645,7 @@ class Exam(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'exam_id'),)
 
 
-class Externelement(models.Model):
+class Externelement(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -670,7 +672,7 @@ class Externelement(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'exel_id'),)
 
 
-class Externindex(models.Model):
+class Externindex(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -688,7 +690,7 @@ class Externindex(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'exel_id', 'number', 'year', 'school_id1'),)
 
 
-class Externtime(models.Model):
+class Externtime(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -714,7 +716,7 @@ class Externtime(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'number', 'exel_id', 'school_id1', 'year'),)
 
 
-class Glaettung(models.Model):
+class Glaettung(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -733,7 +735,7 @@ class Glaettung(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'teacher_id', 'number'),)
 
 
-class Holiday(models.Model):
+class Holiday(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -757,7 +759,7 @@ class Holiday(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'holiday_id'),)
 
 
-class Inputformat(models.Model):
+class Inputformat(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -820,7 +822,7 @@ class Inputformat(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'input_format_id', 'owner'),)
 
 
-class Lesson(models.Model):
+class Lesson(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -930,7 +932,7 @@ class Lesson(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'lesson_id', 'term_id'),)
 
 
-class Lessongroup(models.Model):
+class Lessongroup(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -977,7 +979,7 @@ class Lessongroup(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'lesson_group_id'),)
 
 
-class Lessonsequence(models.Model):
+class Lessonsequence(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1001,7 +1003,7 @@ class Lessonsequence(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'type', 'lesson_sequence_id', 'term_id'),)
 
 
-class Lessonstack(models.Model):
+class Lessonstack(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1022,7 +1024,7 @@ class Lessonstack(models.Model):
             ('school_id', 'schoolyear_id', 'version_id', 'user_id', 'stack_id', 'term_id', 'typestack', 'typeelement'),)
 
 
-class Periodstable(models.Model):
+class Periodstable(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1060,7 +1062,7 @@ class Periodstable(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'periods_table_id'),)
 
 
-class Prebooking(models.Model):
+class Prebooking(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1092,7 +1094,7 @@ class Prebooking(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'prebooking_id'),)
 
 
-class Room(models.Model):
+class Room(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1152,7 +1154,7 @@ class Room(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'room_id', 'term_id'),)
 
 
-class Roomgroup(models.Model):
+class Roomgroup(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1175,7 +1177,7 @@ class Roomgroup(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'roomgroup_id'),)
 
 
-class School(models.Model):
+class School(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolno = models.CharField(db_column='SchoolNo', max_length=20, blank=True,
                                 null=True)  # Field name made lowercase.
@@ -1205,7 +1207,7 @@ class School(models.Model):
         db_table = 'School'
 
 
-class Schoolyear(models.Model):
+class Schoolyear(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     counterlast = models.IntegerField(db_column='CounterLast', blank=True, null=True)  # Field name made lowercase.
@@ -1222,7 +1224,7 @@ class Schoolyear(models.Model):
         unique_together = (('school_id', 'schoolyear_id'),)
 
 
-class Screenset(models.Model):
+class Screenset(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1257,7 +1259,7 @@ class Screenset(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'screenset_id', 'owner'),)
 
 
-class Student(models.Model):
+class Student(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1306,7 +1308,7 @@ class Student(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'student_id'),)
 
 
-class Studentchoice(models.Model):
+class Studentchoice(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1333,7 +1335,7 @@ class Studentchoice(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'student_id', 'term_id', 'number'),)
 
 
-class Studentgroup(models.Model):
+class Studentgroup(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1357,7 +1359,7 @@ class Studentgroup(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'studentgroup_id'),)
 
 
-class Subjectgroup(models.Model):
+class Subjectgroup(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1383,7 +1385,7 @@ class Subjectgroup(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'subjectgroup_id'),)
 
 
-class Subjects(models.Model):
+class Subjects(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1449,7 +1451,7 @@ class Subjects(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'subject_id'),)
 
 
-class Substitution(models.Model):
+class Substitution(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1508,7 +1510,7 @@ class Substitution(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'substitution_id'),)
 
 
-class Ttelementfilter(models.Model):
+class Ttelementfilter(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1528,7 +1530,7 @@ class Ttelementfilter(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'tt_element_filter_id', 'owner'),)
 
 
-class TtFormat(models.Model):
+class TtFormat(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1704,7 +1706,7 @@ class TtFormat(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'tt_format_id', 'owner'),)
 
 
-class Tableinfo(models.Model):
+class Tableinfo(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1725,7 +1727,7 @@ class Tableinfo(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'type', 'id'),)
 
 
-class Teacher(models.Model):
+class Teacher(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1887,7 +1889,7 @@ class Teacher(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'teacher_id', 'term_id'),)
 
 
-class Teachergroup(models.Model):
+class Teachergroup(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1913,7 +1915,7 @@ class Teachergroup(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'teachergroup_id'),)
 
 
-class Terms(models.Model):
+class Terms(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1936,7 +1938,7 @@ class Terms(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'term_id'),)
 
 
-class Transfer(models.Model):
+class Transfer(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1958,7 +1960,7 @@ class Transfer(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'transfer_id'),)
 
 
-class Untissettings(models.Model):
+class Untissettings(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -1979,7 +1981,7 @@ class Untissettings(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'option_id'),)
 
 
-class User(models.Model):
+class User(models.Model, PureDjangoModel):
     user_id = models.SmallIntegerField(db_column='USER_ID', primary_key=True)  # Field name made lowercase.
     user_group_id = models.SmallIntegerField(db_column='USER_GROUP_ID', blank=True,
                                              null=True)  # Field name made lowercase.
@@ -2020,7 +2022,7 @@ class User(models.Model):
         db_table = 'User'
 
 
-class Usergroup(models.Model):
+class Usergroup(models.Model, PureDjangoModel):
     user_group_id = models.SmallIntegerField(db_column='USER_GROUP_ID', primary_key=True)  # Field name made lowercase.
     name = models.CharField(db_column='Name', max_length=32, blank=True, null=True)  # Field name made lowercase.
     schools = models.CharField(db_column='Schools', max_length=255, blank=True, null=True)  # Field name made lowercase.
@@ -2067,7 +2069,7 @@ class Usergroup(models.Model):
         db_table = 'UserGroup'
 
 
-class Usermessage(models.Model):
+class Usermessage(models.Model, PureDjangoModel):
     message_id = models.IntegerField(db_column='MESSAGE_ID', primary_key=True)  # Field name made lowercase.
     user_id = models.IntegerField(db_column='USER_ID')  # Field name made lowercase.
     sender_id = models.SmallIntegerField(db_column='Sender_ID', blank=True, null=True)  # Field name made lowercase.
@@ -2085,7 +2087,7 @@ class Usermessage(models.Model):
         unique_together = (('message_id', 'user_id'),)
 
 
-class Valuecorrection(models.Model):
+class Valuecorrection(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -2111,7 +2113,7 @@ class Valuecorrection(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id', 'teacher_id', 'number'),)
 
 
-class Version(models.Model):
+class Version(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
@@ -2138,7 +2140,7 @@ class Version(models.Model):
         unique_together = (('school_id', 'schoolyear_id', 'version_id'),)
 
 
-class Views(models.Model):
+class Views(models.Model, PureDjangoModel):
     school_id = models.IntegerField(db_column='SCHOOL_ID', primary_key=True)  # Field name made lowercase.
     schoolyear_id = models.IntegerField(db_column='SCHOOLYEAR_ID')  # Field name made lowercase.
     version_id = models.SmallIntegerField(db_column='VERSION_ID')  # Field name made lowercase.
