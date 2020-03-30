@@ -24,7 +24,7 @@ def xml_import(request: HttpRequest) -> HttpResponse:
 
     context["upload_form"] = upload_form
 
-    return render(request, "untis/untis_import.html", context)
+    return render(request, "untis/xml_import.html", context)
 
 
 @login_required
