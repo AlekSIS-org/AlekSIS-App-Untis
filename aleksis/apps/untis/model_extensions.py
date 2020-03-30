@@ -1,0 +1,13 @@
+from jsonstore import IntegerField
+
+from aleksis.apps.chronos import models as chronos_models
+from aleksis.core import models as core_models
+
+# Core models
+core_models.Person.field(import_ref_untis=IntegerField())
+core_models.Group.field(import_ref_untis=IntegerField())
+
+# Chronos models
+chronos_models.Subject.field(import_ref_untis=IntegerField())
+chronos_models.Room.field(import_ref_untis=IntegerField())
+chronos_models.SupervisionArea.field(import_ref_untis=IntegerField())
