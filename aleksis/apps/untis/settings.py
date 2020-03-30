@@ -1,4 +1,5 @@
 from aleksis.core.util.core_helpers import lazy_config
+from django.utils.translation import gettext_lazy as _
 
 DATABASES = {
     'untis': {
@@ -12,13 +13,25 @@ DATABASES = {
 }
 
 CONSTANCE_CONFIG = {
-    "UNTIS_NAME": ("untis", _("Name of database"), "char_field"),
-    "UNTIS_USER": ("aleksis", _("Database user"), "char_field"),
-    "UNTIS_PASSWORD": ("aleksis", _("Database password"), "char_field"),
-    "UNTIS_HOST": ("127.0.0.1", _("Database host"), "char_field"),
-    "UNTIS_PORT": ("3306", _("Database port"), "char_field"),
+    "UNTIS_DB_NAME": ("untis", _("Name of database"), "char_field"),
+    "UNTIS_DB_USER": ("aleksis", _("Database user"), "char_field"),
+    "UNTIS_DB_PASSWORD": ("aleksis", _("Database password"), "char_field"),
+    "UNTIS_DB_HOST": ("127.0.0.1", _("Database host"), "char_field"),
+    "UNTIS_DB_PORT": ("3306", _("Database port"), "char_field"),
+    "UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS": (
+        True,
+        _("Update values of existing subjects?"),
+        bool,
+    ),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    "Untis Database Settings": ("UNTIS_NAME", "UNTIS_USER", "UNTIS_PASSWORD", "UNTIS_HOST", "UNTIS_PORT"),
+    "UNTIS import via MySQL:  Database Settings": (
+        "UNTIS_DB_NAME",
+        "UNTIS_DB_USER",
+        "UNTIS_DB_PASSWORD",
+        "UNTIS_DB_HOST",
+        "UNTIS_DB_PORT",
+    ),
+    "UNTIS import via MySQL: Common Settings": ("UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS",),
 }

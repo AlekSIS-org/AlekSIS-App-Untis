@@ -1,5 +1,8 @@
+import logging
 from datetime import time
 from typing import List, Dict
+
+from constance import config
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
@@ -7,29 +10,61 @@ from aleksis.core import models as core_models
 from .... import models as mysql_models
 from ..util import run_default_filter, untis_colour_to_hex, untis_split_first
 
+logger = logging.getLogger(__name__)
+
 
 def import_subjects() -> Dict[int, chronos_models.Subject]:
     """ Import subjects """
 
     subjects_ref = {}
+
+    # Get subjects
     subjects = run_default_filter(mysql_models.Subjects.objects, filter_term=False)
+
     for subject in subjects:
+        # Check if needed data are provided
         if not subject.name:
-            raise Exception("Short name needed.")
+            logger.error(
+                "Subject ID {}: Cannot import subject without short name.".format(
+                    subject.subject_id
+                )
+            )
+            continue
 
+        # Build values
         short_name = subject.name[:10]
-        name = subject.longname if subject.longname else short_name
+        name = subject.longname[:30] if subject.longname else short_name
+        colour_fg = untis_colour_to_hex(subject.forecolor)
+        colour_bg = untis_colour_to_hex(subject.backcolor)
+        import_ref = subject.subject_id
 
+        # Get or create subject object by short name
         new_subject, created = chronos_models.Subject.objects.get_or_create(
-            abbrev=short_name, defaults={"name": name}
+            abbrev=short_name,
+            defaults={
+                "name": name,
+                "colour_fg": colour_fg,
+                "colour_bg": colour_bg,
+                "import_ref_untis": import_ref,
+            },
         )
 
-        new_subject.name = name
-        new_subject.colour_fg = untis_colour_to_hex(subject.forecolor)
-        new_subject.colour_bg = untis_colour_to_hex(subject.backcolor)
-        new_subject.save()
+        # Force sync
+        if config.UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS and (
+            new_subject.name != name
+            or new_subject.colour_fg != colour_fg
+            or new_subject.colour_bg != colour_bg
+            or new_subject.import_ref_untis != import_ref
+        ):
+            new_subject.name = name
+            new_subject.colour_fg = untis_colour_to_hex(subject.forecolor)
+            new_subject.colour_bg = untis_colour_to_hex(subject.backcolor)
+            new_subject.import_ref_untis = import_ref
+            new_subject.save()
 
-        subjects_ref[subject.subject_id] = new_subject
+        logger.info("Successfully imported subject {} ({})".format(short_name, "created" if created else "updated"))
+
+        subjects_ref[import_ref] = new_subject
 
     return subjects_ref
 
