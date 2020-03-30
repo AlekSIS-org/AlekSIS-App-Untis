@@ -47,10 +47,11 @@ def run_default_filter(
             schoolyear_id=schoolyear_id,
             version_id=version_id,
             term_id=term_id,
+            deleted=0
         )
     else:
         return run_using(qs).filter(
-            school_id=school_id, schoolyear_id=schoolyear_id, version_id=version_id
+            school_id=school_id, schoolyear_id=schoolyear_id, version_id=version_id, deleted=0
         )
 
 
