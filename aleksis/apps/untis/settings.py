@@ -23,6 +23,16 @@ CONSTANCE_CONFIG = {
         _("Update values of existing subjects?"),
         bool,
     ),
+    "UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_SHORT_NAME": (
+        False,
+        _("Update short name of existing persons?"),
+        bool,
+    ),
+    "UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_NAME": (
+        False,
+        _("Update first and last name of existing persons?"),
+        bool,
+    ),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -33,5 +43,9 @@ CONSTANCE_CONFIG_FIELDSETS = {
         "UNTIS_DB_HOST",
         "UNTIS_DB_PORT",
     ),
-    "UNTIS import via MySQL: Common Settings": ("UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS",),
+    "UNTIS import via MySQL: Common Settings": (
+        "UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS",
+        "UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_SHORT_NAME",
+        "UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_NAME",
+    ),
 }

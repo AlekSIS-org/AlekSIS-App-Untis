@@ -33,10 +33,12 @@ def import_subjects() -> Dict[int, chronos_models.Subject]:
 
         # Build values
         short_name = subject.name[:10]
-        name = subject.longname[:30] if subject.longname else short_name
+        name = subject.longname if subject.longname else short_name
         colour_fg = untis_colour_to_hex(subject.forecolor)
         colour_bg = untis_colour_to_hex(subject.backcolor)
         import_ref = subject.subject_id
+
+        logger.info("Import subject {} …".format(short_name))
 
         # Get or create subject object by short name
         new_subject, created = chronos_models.Subject.objects.get_or_create(
@@ -49,20 +51,31 @@ def import_subjects() -> Dict[int, chronos_models.Subject]:
             },
         )
 
+        if created:
+            logger.info("  New subject created")
+
         # Force sync
+        changed = False
         if config.UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS and (
             new_subject.name != name
             or new_subject.colour_fg != colour_fg
             or new_subject.colour_bg != colour_bg
-            or new_subject.import_ref_untis != import_ref
         ):
             new_subject.name = name
             new_subject.colour_fg = untis_colour_to_hex(subject.forecolor)
             new_subject.colour_bg = untis_colour_to_hex(subject.backcolor)
-            new_subject.import_ref_untis = import_ref
-            new_subject.save()
+            changed = True
 
-        logger.info("Successfully imported subject {} ({})".format(short_name, "created" if created else "updated"))
+            logger.info("  Name, foreground and background colour updated")
+
+        if new_subject.import_ref_untis != import_ref:
+            new_subject.import_ref_untis = import_ref
+            changed = True
+
+            logger.info("  Import reference updated")
+
+        if changed:
+            new_subject.save()
 
         subjects_ref[import_ref] = new_subject
 
@@ -73,26 +86,62 @@ def import_teachers() -> Dict[int, core_models.Person]:
     """ Import teachers """
 
     teachers_ref = {}
-    teachers = run_default_filter(mysql_models.Teacher.objects)
-    for teacher in teachers:
-        if not teacher.name:
-            raise Exception("Short name needed.")
 
-        short_name = teacher.name[:5]
+    # Get teachers
+    teachers = run_default_filter(mysql_models.Teacher.objects)
+
+    for teacher in teachers:
+        # Check if needed data are provided
+        if not teacher.name:
+            logger.error(
+                "Teacher ID {}: Cannot import teacher without short name.".format(
+                    teacher.teacher_id
+                )
+            )
+            continue
+
+        # Build values
+        short_name = teacher.name
         first_name = teacher.firstname if teacher.firstname else "?"
         last_name = teacher.longname if teacher.longname else teacher.name
+        import_ref = teacher.teacher_id
+
+        logger.info("Import teacher {} (as person) …".format(short_name))
 
         new_teacher, created = core_models.Person.objects.get_or_create(
             short_name__iexact=short_name,
             defaults={
                 "first_name": first_name,
                 "last_name": last_name,
-                "import_ref": teacher.teacher_id,
+                "import_ref_untis": import_ref,
             },
         )
 
-        new_teacher.short_name = short_name
-        new_teacher.save()
+        if created:
+            logger.info("  New person created")
+
+        changed = False
+        if config.UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_NAME and (
+            new_teacher.first_name != first_name or
+            new_teacher.last_name != last_name
+        ):
+            new_teacher.first_name = first_name
+            new_teacher.last_name = last_name
+            changed = True
+            logger.info("  First and last name updated")
+
+        if config.UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_SHORT_NAME and new_teacher.short_name != short_name:
+            new_teacher.short_name = short_name
+            changed = True
+            logger.info("  Short name updated")
+
+        if new_teacher.import_ref_untis != import_ref:
+            new_teacher.import_ref_untis = import_ref
+            changed = True
+            logger.info("  Import reference updated")
+
+        if changed:
+            new_teacher.save()
 
         teachers_ref[teacher.teacher_id] = new_teacher
 
