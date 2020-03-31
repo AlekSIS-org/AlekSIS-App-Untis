@@ -274,32 +274,63 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
 def import_supervision_areas() -> Dict[int, chronos_models.SupervisionArea]:
     """ Import supervision areas """
 
-    supervision_areas_ref = {}
+    ref = {}
+
+    # Get supervision areas
     areas = run_default_filter(mysql_models.Corridor.objects, filter_term=False)
+
     for area in areas:
         if not area.name:
-            raise Exception("Short name needed.")
+            logger.error(
+                "Supervision area ID {}: Cannot import supervision area without short name.".format(
+                    area.corridor_id
+                )
+            )
+            continue
 
         short_name = area.name[:10]
         name = area.longname[:50] if area.longname else short_name
         colour_fg = untis_colour_to_hex(area.forecolor)
         colour_bg = untis_colour_to_hex(area.backcolor)
+        import_ref = area.corridor_id
+
+        logger.info("Import supervision area {} …".format(short_name))
 
         new_area, created = chronos_models.SupervisionArea.objects.get_or_create(
             short_name=short_name,
-            defaults={"name": name, "colour_fg": colour_fg, "colour_bg": colour_bg},
+            defaults={"name": name, "colour_fg": colour_fg, "colour_bg": colour_bg, "import_ref_untis": import_ref},
         )
 
-        new_area.name = name
-        new_area.colour_fg = colour_fg
-        new_area.colour_bg = colour_bg
-        new_area.save()
+        if created:
+            logger.info("  New supervision area created")
+
+        changed = False
+
+        if config.UNTIS_IMPORT_MYSQL_UPDATE_SUPERVISION_AREAS and (
+            new_area.name != new_area.name or
+            new_area.colour_fg != colour_fg or
+            new_area.colour_bg != colour_bg
+        ):
+            new_area.name = name
+            new_area.colour_fg = colour_fg
+            new_area.colour_bg = colour_bg
+            changed = True
+
+            logger.info("  Name, foreground and background colour updated")
+
+        if new_area.import_ref_untis != import_ref:
+            new_area.import_ref_untis = import_ref
+            changed = True
+            logger.info("  Import reference updated")
+
+        if changed:
+            new_area.save()
 
         # TODO: Supervisions
 
-        supervision_areas_ref[area.corridor_id] = new_area
+        ref[import_ref] = new_area
 
-    return supervision_areas_ref
+    return ref
 
 
 def import_time_periods_and_breaks() -> List[List[chronos_models.TimePeriod]]:
