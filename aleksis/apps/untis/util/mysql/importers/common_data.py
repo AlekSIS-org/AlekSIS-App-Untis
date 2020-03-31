@@ -154,27 +154,66 @@ def import_classes(
     """ Import classes """
 
     classes_ref = {}
+
+    # Get classes
     course_classes = run_default_filter(mysql_models.Class.objects, filter_term=True)
 
     for class_ in course_classes:
+        # Check if needed data are provided
         if not class_.name:
-            raise Exception("Short name needed.")
+            logger.error(
+                "Class ID {}: Cannot import class without short name.".format(
+                    class_.teacher_id
+                )
+            )
+            continue
 
+        # Build values
         short_name = class_.name[:16]
         name = class_.longname if class_.longname else short_name
         teacher_ids = untis_split_first(class_.teacherids, int)
         owners = [teachers_ref[t_id] for t_id in teacher_ids]
+        import_ref = class_.class_id
+
+        logger.info("Import class {} (as group) …".format(short_name))
 
         new_group, created = core_models.Group.objects.get_or_create(
             short_name__iexact=short_name,
-            defaults={"name": name, "import_ref": class_.class_id},
+            defaults={"name": name, "import_ref_untis": import_ref},
         )
 
-        new_group.name = name
-        new_group.save()
+        if created:
+            logger.info("  New person created")
 
-        new_group.owners.clear()  # configurable
+        changed = False
+
+        if (
+            config.UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_SHORT_NAME
+            and new_group.short_name != short_name
+        ):
+            new_group.short_name = short_name
+            changed = True
+            logger.info("  Short name updated")
+
+        if config.UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_NAME and new_group.name != name:
+            new_group.name = name
+            changed = True
+            logger.info("  Name updated")
+
+        if new_group.import_ref_untis != import_ref:
+            new_group.import_ref_untis = import_ref
+            changed = True
+            logger.info("  Import reference updated")
+
+        if changed:
+            new_group.save()
+
+        if config.UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_OVERWRITE_OWNERS:
+            new_group.owners.clear()
+            logger.info("  Group owners cleared")
+
         new_group.owners.add(*owners)
+        logger.info("  Group owners updated")
 
         classes_ref[class_.class_id] = new_group
 

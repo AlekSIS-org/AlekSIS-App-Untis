@@ -33,6 +33,21 @@ CONSTANCE_CONFIG = {
         _("Update first and last name of existing persons?"),
         bool,
     ),
+    "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_SHORT_NAME": (
+        False,
+        _("Update short name of existing groups?"),
+        bool,
+    ),
+    "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_NAME": (
+        False,
+        _("Update name of existing groups?"),
+        bool,
+    ),
+    "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_OVERWRITE_OWNERS": (
+        False,
+        _("Overwrite existing owners?"),
+        bool,
+    ),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -47,5 +62,8 @@ CONSTANCE_CONFIG_FIELDSETS = {
         "UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS",
         "UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_SHORT_NAME",
         "UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_NAME",
+        "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_SHORT_NAME",
+        "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_NAME",
+        "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_OVERWRITE_OWNERS",
     ),
 }
