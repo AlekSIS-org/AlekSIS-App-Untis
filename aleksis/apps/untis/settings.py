@@ -48,6 +48,11 @@ CONSTANCE_CONFIG = {
         _("Overwrite existing owners?"),
         bool,
     ),
+    "UNTIS_IMPORT_MYSQL_UPDATE_ROOMS_NAME": (
+        True,
+        _("Update name of existing rooms?"),
+        bool,
+    ),
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
@@ -65,5 +70,6 @@ CONSTANCE_CONFIG_FIELDSETS = {
         "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_SHORT_NAME",
         "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_NAME",
         "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_OVERWRITE_OWNERS",
+        "UNTIS_IMPORT_MYSQL_UPDATE_ROOMS_NAME",
     ),
 }

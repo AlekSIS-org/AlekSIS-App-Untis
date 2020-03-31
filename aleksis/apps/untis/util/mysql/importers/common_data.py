@@ -223,25 +223,52 @@ def import_classes(
 def import_rooms() -> Dict[int, chronos_models.Room]:
     """ Import rooms """
 
-    rooms_ref = {}
+    ref = {}
+
+    # Get rooms
     rooms = run_default_filter(mysql_models.Room.objects)
+
     for room in rooms:
         if not room.name:
-            raise Exception("Short name needed.")
+            logger.error(
+                "Room ID {}: Cannot import room without short name.".format(
+                    room.room_id
+                )
+            )
+            continue
 
+        # Build values
         short_name = room.name[:10]
         name = room.longname[:30] if room.longname else short_name
+        import_ref = room.room_id
+
+        logger.info("Import room {} …".format(short_name))
 
         new_room, created = chronos_models.Room.objects.get_or_create(
-            short_name=short_name, defaults={"name": name}
+            short_name=short_name, defaults={"name": name, "import_ref_untis": import_ref}
         )
 
-        new_room.name = name
-        new_room.save()
+        if created:
+            logger.info("  New room created")
 
-        rooms_ref[room.room_id] = new_room
+        changed = False
 
-    return rooms_ref
+        if config.UNTIS_IMPORT_MYSQL_UPDATE_ROOMS_NAME and new_room.name != name:
+            new_room.name = name
+            changed = True
+            logger.info("  Name updated")
+
+        if new_room.import_ref_untis != import_ref:
+            new_room.import_ref_untis = import_ref
+            changed = True
+            logger.info("  Import reference updated")
+
+        if changed:
+            new_room.save()
+
+        ref[import_ref] = new_room
+
+    return ref
 
 
 def import_supervision_areas() -> Dict[int, chronos_models.SupervisionArea]:
