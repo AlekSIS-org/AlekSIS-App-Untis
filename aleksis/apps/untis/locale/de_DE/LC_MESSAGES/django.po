@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-15 14:10+0200\n"
+"POT-Creation-Date: 2020-04-01 13:25+0200\n"
 "PO-Revision-Date: 2019-09-15 13:40+0000\n"
 "Last-Translator: Tom Teichler <tom.teichler@teckids.org>\n"
 "Language-Team: German <https://translate.edugit.org/projects/aleksis-sis/"
@@ -23,7 +23,7 @@ msgstr ""
 msgid "Untis XML export"
 msgstr "Untis-XML-Export"
 
-#: management/commands/untis_import.py:10
+#: management/commands/untis_import.py:9
 msgid "Path to Untis XML export file"
 msgstr "Pfad zur Untis-XML-Exportdatei"
 
@@ -31,22 +31,27 @@ msgstr "Pfad zur Untis-XML-Exportdatei"
 msgid "Units import"
 msgstr "Untis-Import"
 
-#: templates/untis/untis_import.html:6
+#: templates/untis/untis_import.html:8 templates/untis/untis_import.html:9
 msgid "Import Untis data"
 msgstr "Untis-Daten importieren"
 
-#: templates/untis/untis_import.html:13
+#: templates/untis/untis_import.html:14
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "        Untis provides a function for exporting all data as an XML file.\n"
+#| "      "
 msgid ""
 "\n"
-"        Untis provides a function for exporting all data as an XML file.\n"
-"      "
+"      Untis provides a function for exporting all data as an XML file.\n"
+"    "
 msgstr ""
 "\n"
 "        Untis bietet eine Funktion zum Exportieren aller Daten als XML-"
 "Datei.\n"
 "      "
 
-#: templates/untis/untis_import.html:19
+#: templates/untis/untis_import.html:21
 msgid ""
 "\n"
 "        Newly imported data will be valid as of tomorrow.\n"
@@ -56,7 +61,7 @@ msgstr ""
 "        Neu importierte Daten sind ab morgen gültig.\n"
 "      "
 
-#: templates/untis/untis_import.html:22
+#: templates/untis/untis_import.html:24
 msgid ""
 "\n"
 "        The effective dates of all existing lessons will be set to end\n"
@@ -68,7 +73,7 @@ msgstr ""
 "        heute.\n"
 "      "
 
-#: templates/untis/untis_import.html:26
+#: templates/untis/untis_import.html:28
 msgid ""
 "\n"
 "        The effective dates of all newly imported lessons will be set to\n"
@@ -80,7 +85,7 @@ msgstr ""
 "        startet morgen.\n"
 "      "
 
-#: templates/untis/untis_import.html:30
+#: templates/untis/untis_import.html:32
 msgid ""
 "\n"
 "        Teachers, rooms, subjects and classes and periods will be updated in "
@@ -92,30 +97,29 @@ msgstr ""
 "aktualisiert.\n"
 "      "
 
-#: templates/untis/untis_import.html:41
-msgid "Process"
-msgstr "Importieren"
-
-#: util.py:68
+#: util.py:78
 #, python-format
 msgid "Class %s"
 msgstr "Klasse %s"
 
-#: util.py:81
+#: util.py:92
 #, python-format
 msgid "Could not set class teacher of %(class)s to %(teacher)s."
 msgstr ""
 "Der Klassenlehrer von %(class)s konnte nicht auf %(teacher)s  gesetzt werden."
 
-#: util.py:130
+#: util.py:153
 #, python-format
 msgid "Invalid list of classes: %s"
 msgstr "Ungültige Liste von Klassen: %s"
 
-#: util.py:138
+#: util.py:161
 #, python-format
 msgid "Failed to import lesson: Teacher %s does not exist."
 msgstr "Fehler beim Importieren der Stunde: Lehrer %s existiert nicht."
+
+#~ msgid "Process"
+#~ msgstr "Importieren"
 
 #~ msgid "AlekSIS - Untis interface"
 #~ msgstr "AlekSIS - Untis-Schnittstelle"
