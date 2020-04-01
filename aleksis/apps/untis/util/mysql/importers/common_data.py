@@ -122,15 +122,17 @@ def import_teachers() -> Dict[int, core_models.Person]:
 
         changed = False
         if config.UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_NAME and (
-            new_teacher.first_name != first_name or
-            new_teacher.last_name != last_name
+            new_teacher.first_name != first_name or new_teacher.last_name != last_name
         ):
             new_teacher.first_name = first_name
             new_teacher.last_name = last_name
             changed = True
             logger.info("  First and last name updated")
 
-        if config.UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_SHORT_NAME and new_teacher.short_name != short_name:
+        if (
+            config.UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_SHORT_NAME
+            and new_teacher.short_name != short_name
+        ):
             new_teacher.short_name = short_name
             changed = True
             logger.info("  Short name updated")
@@ -245,7 +247,8 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
         logger.info("Import room {} …".format(short_name))
 
         new_room, created = chronos_models.Room.objects.get_or_create(
-            short_name=short_name, defaults={"name": name, "import_ref_untis": import_ref}
+            short_name=short_name,
+            defaults={"name": name, "import_ref_untis": import_ref},
         )
 
         if created:
@@ -298,7 +301,12 @@ def import_supervision_areas() -> Dict[int, chronos_models.SupervisionArea]:
 
         new_area, created = chronos_models.SupervisionArea.objects.get_or_create(
             short_name=short_name,
-            defaults={"name": name, "colour_fg": colour_fg, "colour_bg": colour_bg, "import_ref_untis": import_ref},
+            defaults={
+                "name": name,
+                "colour_fg": colour_fg,
+                "colour_bg": colour_bg,
+                "import_ref_untis": import_ref,
+            },
         )
 
         if created:
@@ -307,9 +315,9 @@ def import_supervision_areas() -> Dict[int, chronos_models.SupervisionArea]:
         changed = False
 
         if config.UNTIS_IMPORT_MYSQL_UPDATE_SUPERVISION_AREAS and (
-            new_area.name != new_area.name or
-            new_area.colour_fg != colour_fg or
-            new_area.colour_bg != colour_bg
+            new_area.name != new_area.name
+            or new_area.colour_fg != colour_fg
+            or new_area.colour_bg != colour_bg
         ):
             new_area.name = name
             new_area.colour_fg = colour_fg
@@ -349,7 +357,9 @@ def import_time_periods_and_breaks() -> List[List[chronos_models.TimePeriod]]:
         start_time = time(time_period.fieldbyte1, time_period.fieldbyte2)
         end_time = time(time_period.fieldbyte3, time_period.fieldbyte4)
 
-        logger.info("Import time period on weekday {} in the {}. period".format(weekday, period))
+        logger.info(
+            "Import time period on weekday {} in the {}. period".format(weekday, period)
+        )
 
         new_time_period, created = chronos_models.TimePeriod.objects.get_or_create(
             weekday=weekday,
@@ -360,7 +370,10 @@ def import_time_periods_and_breaks() -> List[List[chronos_models.TimePeriod]]:
         if created:
             logger.info("  New time period created")
 
-        if new_time_period.time_start != start_time or new_time_period.time_end != end_time:
+        if (
+            new_time_period.time_start != start_time
+            or new_time_period.time_end != end_time
+        ):
             new_time_period.time_start = start_time
             new_time_period.time_end = end_time
             new_time_period.save()
