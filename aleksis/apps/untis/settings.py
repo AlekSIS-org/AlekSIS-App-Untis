@@ -56,6 +56,10 @@ CONSTANCE_CONFIG = {
     "UNTIS_IMPORT_MYSQL_UPDATE_SUPERVISION_AREAS": (
         True,
         _("Update values of existing supervision areas?")
+    ),
+    "UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS": (
+        True,
+        _("Build or search course groups for every course instead of setting classes as groups.")
     )
 }
 
@@ -76,5 +80,6 @@ CONSTANCE_CONFIG_FIELDSETS = {
         "UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_OVERWRITE_OWNERS",
         "UNTIS_IMPORT_MYSQL_UPDATE_ROOMS_NAME",
         "UNTIS_IMPORT_MYSQL_UPDATE_SUPERVISION_AREAS",
+        "UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS",
     ),
 }

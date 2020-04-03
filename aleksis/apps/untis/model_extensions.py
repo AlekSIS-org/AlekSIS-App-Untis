@@ -1,4 +1,6 @@
-from jsonstore import IntegerField
+from constance import config
+from django.utils.translation import gettext as _
+from jsonstore import IntegerField, CharField
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
@@ -6,6 +8,17 @@ from aleksis.core import models as core_models
 # Core models
 core_models.Person.field(import_ref_untis=IntegerField())
 core_models.Group.field(import_ref_untis=IntegerField())
+if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
+    core_models.Group.field(
+        untis_subject=CharField(
+            verbose_name=_("UNTIS subject"),
+            help_text=_(
+                "The UNTIS import will use this for matching course groups (along with parent groups)."
+            ),
+            blank=True, null=True,
+            max_length=255
+        )
+    )
 
 # Chronos models
 chronos_models.Subject.field(import_ref_untis=IntegerField())

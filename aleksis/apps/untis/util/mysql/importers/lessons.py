@@ -1,5 +1,8 @@
 import logging
+from typing import Union, List
 
+from constance import config
+from django.db.models import Model, QuerySet
 from django.utils.translation import gettext as _
 
 from aleksis.apps.chronos import models as chronos_models
@@ -21,6 +24,14 @@ def sync_m2m(new_items, m2m_qs):
         if item not in new_items:
             m2m_qs.remove(item)
             logger.info("  Many-to-many sync: item removed")
+
+
+def compare_m2m(
+    a: Union[List[Model], QuerySet], b: Union[List[Model], QuerySet]
+) -> bool:
+    ids_a = sorted([i.id for i in a])
+    ids_b = sorted([i.id for i in b])
+    return ids_a == ids_b
 
 
 def import_lessons(
@@ -107,26 +118,73 @@ def import_lessons(
                 c = classes_ref[class_id]
                 course_classes.append(c)
 
-            # Build names and refs for course groups
-            group_short_name = "{}-{}".format(
-                "".join([c.short_name for c in course_classes]), subject.abbrev
-            )
-            group_name = "{}: {}".format(
-                ", ".join([c.short_name for c in course_classes]), subject.abbrev
-            )
-            group_import_ref = -int("{}{}".format(lesson_id, i))
+            if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
+                group_import_ref = -int("{}{}".format(lesson_id, i))
+                subject_ref = subject.abbrev
 
-            # Get or create course group
-            course_group, created = core_models.Group.objects.get_or_create(
-                short_name=group_short_name, defaults={"name": group_name}
-            )
-            course_group.import_ref_untis = group_import_ref
-            course_group.name = group_name
-            course_group.save()
-            course_group.parent_groups.set(course_classes)
+                # Search by parent groups and subject
+                qs = core_models.Group.objects.filter(
+                    parent_groups__in=[c.id for c in course_classes],
+                    untis_subject__iexact=subject_ref,
+                )
 
-            if created:
-                logger.info("    Course group created")
+                # Check if found groups match
+                match = False
+                if qs.exists():
+                    if compare_m2m(course_classes, qs[0].parent_groups.all()):
+                        match = True
+                        course_group = qs[0]
+                        logger.info(
+                            "    Course group found by searching by parent groups and subject"
+                        )
+
+                changed = False
+                if not match:
+                    # No matching group found
+
+                    # Build names and refs for course groups
+                    group_short_name = "{}-{}".format(
+                        "".join([c.short_name for c in course_classes]), subject.abbrev
+                    )
+                    group_name = "{}: {}".format(
+                        ", ".join([c.short_name for c in course_classes]),
+                        subject.abbrev,
+                    )
+
+                    # Get or create course group
+                    course_group, created = core_models.Group.objects.get_or_create(
+                        short_name=group_short_name, defaults={"name": group_name}
+                    )
+
+                    # Log
+                    if created:
+                        logger.info("    Course group created")
+
+                    # Update parent groups
+                    sync_m2m(course_classes, course_group.parent_groups)
+
+                    # Update name
+                    if course_group.name != group_name:
+                        course_group.name = group_name
+                        logger.info("    Name of course group updated")
+
+                        changed = True
+
+                # Update import ref
+                if (
+                    course_group.import_ref_untis != group_import_ref
+                ):  # or course_group.untis_subject != subject_ref:
+                    course_group.import_ref_untis = group_import_ref
+                    # course_group.subject_ref = subject_ref
+                    logger.info("    Import reference of course group updated")
+                    changed = True
+
+                if changed:
+                    course_group.save()
+
+                groups = [course_group]
+            else:
+                groups = course_classes
 
             # Create new lesson
             date_start = untis_date_to_date(term.datefrom)
@@ -168,7 +226,6 @@ def import_lessons(
                 logger.info("    New lesson created")
 
             # Sync groups
-            groups = [course_group]
             sync_m2m(groups, lesson.groups)
 
             # Sync teachers
