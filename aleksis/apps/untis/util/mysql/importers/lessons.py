@@ -103,6 +103,8 @@ def import_lessons(
             else:
                 teacher = None
 
+            teachers = [teacher] if teacher else []
+
             # Get subject
             if subject_id != 0:
                 subject = subjects_ref[subject_id]
@@ -170,6 +172,9 @@ def import_lessons(
 
                         changed = True
 
+                # Update owners
+                sync_m2m(teachers, course_group.owners)
+
                 # Update import ref
                 if (
                     course_group.import_ref_untis != group_import_ref
@@ -229,7 +234,6 @@ def import_lessons(
             sync_m2m(groups, lesson.groups)
 
             # Sync teachers
-            teachers = [teacher] if teacher else []
             sync_m2m(teachers, lesson.teachers)
 
             # All times for this course
