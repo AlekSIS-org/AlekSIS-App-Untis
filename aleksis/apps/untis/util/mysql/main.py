@@ -23,8 +23,7 @@ def untis_import_mysql():
     breaks_ref = import_breaks(time_periods_ref)
 
     # Supervisions
-    supervision_areas_ref = import_supervision_areas()
-
+    supervision_areas_ref = import_supervision_areas(breaks_ref, teachers_ref)
 
     # Lessons
     import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref)

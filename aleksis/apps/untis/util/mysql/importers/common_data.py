@@ -274,7 +274,9 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
     return ref
 
 
-def import_supervision_areas() -> Dict[int, chronos_models.SupervisionArea]:
+def import_supervision_areas(
+    breaks_ref, teachers_ref
+) -> Dict[int, chronos_models.SupervisionArea]:
     """ Import supervision areas """
 
     ref = {}
@@ -334,7 +336,63 @@ def import_supervision_areas() -> Dict[int, chronos_models.SupervisionArea]:
         if changed:
             new_area.save()
 
-        # TODO: Supervisions
+        logger.info("  Import supervisions for this area")
+
+        # Parse raw data
+        raw_untis_data = area.breaksupervision1
+        raw_supervisions = untis_split_first(raw_untis_data)
+
+        supervisions_ref = {}
+        for raw_supervision in raw_supervisions:
+            # Split more and get teacher id
+            raw_supervision_2 = raw_supervision.split("~")
+            teacher_id = int(raw_supervision_2[1])
+
+            if teacher_id in teachers_ref:
+                # Get weekday, period after break and teacher
+                weekday = int(raw_supervision_2[2]) - 1
+                period_after_break = int(raw_supervision_2[3])
+                teacher = teachers_ref[teacher_id]
+
+                logger.info(
+                    "    Import supervision on weekday {} before the {}. period (teacher {})".format(
+                        weekday, period_after_break, teacher
+                    )
+                )
+
+                # Get or create
+                new_supervision, created = new_area.supervisions.get_or_create(
+                    break_item=breaks_ref[weekday][period_after_break],
+                    defaults={"teacher": teacher},
+                )
+
+                # Log
+                if created:
+                    logger.info("      New supervision created")
+
+                # Save supervisions in reference dict
+                if weekday not in supervisions_ref:
+                    supervisions_ref[weekday] = {}
+                if period_after_break not in supervisions_ref[weekday]:
+                    supervisions_ref[weekday][period_after_break] = []
+                supervisions_ref[weekday][period_after_break].append(new_supervision)
+
+        for supervision in new_area.supervisions.all():
+            delete = True
+
+            # Get weekday and period after break
+            weekday = supervision.break_item.weekday
+            period_after_break = supervision.break_item.before_period_number
+
+            # Delete supervision if no longer existing
+            if weekday in supervisions_ref:
+                if period_after_break in supervisions_ref[weekday]:
+                    if supervision in supervisions_ref[weekday][period_after_break]:
+                        delete = False
+
+            if delete:
+                supervision.delete()
+                logger.info("    Supervision {} deleted".format(supervision))
 
         ref[import_ref] = new_area
 
@@ -423,7 +481,7 @@ def import_breaks(
                 logger.info("  New break created")
 
             # Save index with lesson after break
-            next_period = after_period.period if after_period else before_period.period + 1
+            next_period = new_break.before_period_number
             breaks_ref[weekday][next_period] = new_break
 
     return breaks_ref
