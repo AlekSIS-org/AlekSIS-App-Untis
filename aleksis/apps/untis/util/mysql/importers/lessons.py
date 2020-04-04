@@ -68,7 +68,7 @@ def import_lessons(
         time_periods = []
         rooms_per_periods = []
         for el in raw_time_data_2:
-            day = int(el[1])
+            weekday = int(el[1]) - 1
             hour = int(el[2])
             room_ids = untis_split_third(el[3], conv=int)
 
@@ -79,7 +79,7 @@ def import_lessons(
                 rooms.append(r)
 
             # Get time period
-            time_period = time_periods_ref[day - 1][hour - 1]
+            time_period = time_periods_ref[weekday][hour]
             time_periods.append(time_period)
             rooms_per_periods.append(rooms)
 

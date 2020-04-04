@@ -341,10 +341,10 @@ def import_supervision_areas() -> Dict[int, chronos_models.SupervisionArea]:
     return ref
 
 
-def import_time_periods_and_breaks() -> List[List[chronos_models.TimePeriod]]:
+def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
     """ Import time periods an breaks """
 
-    ref = []
+    time_periods_ref = {}
     periods = (
         run_default_filter(mysql_models.Commondata.objects, filter_term=False)
         .filter(id=40)  # Fixed UNTIS constant
@@ -380,22 +380,30 @@ def import_time_periods_and_breaks() -> List[List[chronos_models.TimePeriod]]:
             logger.info("  Time period updated")
 
         # Build index with time periods
-        if len(ref) < weekday + 1:
-            ref.append([])
-        ref[weekday].append(new_time_period)
+        if weekday not in time_periods_ref:
+            time_periods_ref[weekday] = {}
+        time_periods_ref[weekday][period] = new_time_period
 
+    return time_periods_ref
+
+
+def import_breaks(
+    time_periods_ref: Dict[int, Dict[int, chronos_models.TimePeriod]],
+) -> Dict[int, Dict[int, chronos_models.Break]]:
     # Build breaks for all weekdays
-    for weekday, time_periods in enumerate(ref):
+    breaks_ref = {}
+    for weekday, time_periods in time_periods_ref.items():
+        breaks_ref[weekday] = {}
 
         # Add None two times in order to create breaks before first lesson and after last lesson
-        time_periods = [None] + time_periods + [None]
-        for i, time_period in enumerate(time_periods):
+        time_periods_for_breaks = [None] + list(time_periods.values()) + [None]
+        for i, time_period in enumerate(time_periods_for_breaks):
             # If last item (None) is reached, no further break must be created
-            if i + 1 == len(time_periods):
+            if i + 1 == len(time_periods_for_breaks):
                 break
 
             after_period = time_period
-            before_period = time_periods[i + 1]
+            before_period = time_periods_for_breaks[i + 1]
 
             short_name = "{}: {}./{}.".format(
                 weekday,
@@ -414,4 +422,8 @@ def import_time_periods_and_breaks() -> List[List[chronos_models.TimePeriod]]:
             if created:
                 logger.info("  New break created")
 
-    return ref
+            # Save index with lesson after break
+            next_period = after_period.period if after_period else before_period.period + 1
+            breaks_ref[weekday][next_period] = new_break
+
+    return breaks_ref
