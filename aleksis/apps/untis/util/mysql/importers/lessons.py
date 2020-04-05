@@ -1,8 +1,6 @@
 import logging
-from typing import Union, List
 
 from constance import config
-from django.db.models import Model, QuerySet
 from django.utils.translation import gettext as _
 
 from aleksis.apps.chronos import models as chronos_models
@@ -10,28 +8,9 @@ from aleksis.core import models as core_models
 from aleksis.core.util import messages
 
 from .... import models as mysql_models
-from ..util import run_default_filter, untis_split_third, untis_date_to_date, get_term
+from ..util import run_default_filter, untis_split_third, untis_date_to_date, get_term, sync_m2m, compare_m2m
 
 logger = logging.getLogger(__name__)
-
-
-def sync_m2m(new_items, m2m_qs):
-    for item in new_items:
-        if item not in m2m_qs.all():
-            m2m_qs.add(item)
-            logger.info("  Many-to-many sync: item added")
-    for item in m2m_qs.all():
-        if item not in new_items:
-            m2m_qs.remove(item)
-            logger.info("  Many-to-many sync: item removed")
-
-
-def compare_m2m(
-    a: Union[List[Model], QuerySet], b: Union[List[Model], QuerySet]
-) -> bool:
-    ids_a = sorted([i.id for i in a])
-    ids_b = sorted([i.id for i in b])
-    return ids_a == ids_b
 
 
 def import_lessons(

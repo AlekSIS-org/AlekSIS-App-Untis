@@ -1,11 +1,14 @@
+import logging
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, Union, List
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Model
 
 from aleksis.apps.untis import models as mysql_models
 
 DB_NAME = "untis"
+
+logger = logging.getLogger(__name__)
 
 
 def run_using(obj: QuerySet) -> QuerySet:
@@ -103,3 +106,29 @@ def untis_colour_to_hex(colour: int) -> str:
 
     # Add html #
     return "#" + hex_rgb
+
+
+def sync_m2m(new_items: Union[List[Model], QuerySet], m2m_qs: QuerySet):
+    """ Sync m2m field """
+
+    # Add items
+    for item in new_items:
+        if item not in m2m_qs.all():
+            m2m_qs.add(item)
+            logger.info("  Many-to-many sync: item added")
+
+    # Delete items
+    for item in m2m_qs.all():
+        if item not in new_items:
+            m2m_qs.remove(item)
+            logger.info("  Many-to-many sync: item removed")
+
+
+def compare_m2m(
+    a: Union[List[Model], QuerySet], b: Union[List[Model], QuerySet]
+) -> bool:
+    """ Compare if content of two m2m fields is equal """
+
+    ids_a = sorted([i.id for i in a])
+    ids_b = sorted([i.id for i in b])
+    return ids_a == ids_b
