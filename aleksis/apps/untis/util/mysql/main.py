@@ -7,6 +7,7 @@ from .importers.common_data import (
     import_time_periods,
     import_breaks)
 from .importers.lessons import import_lessons
+from .importers.substitutions import import_substitutions
 
 
 def untis_import_mysql():
@@ -27,3 +28,6 @@ def untis_import_mysql():
 
     # Lessons
     import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref)
+
+    # Substitutions
+    import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref)

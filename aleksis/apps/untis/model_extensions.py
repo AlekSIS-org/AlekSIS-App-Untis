@@ -62,3 +62,9 @@ chronos_models.LessonPeriod.field(
         verbose_name=_("Number of lesson element in UNTIS"), null=True, blank=True
     )
 )
+chronos_models.LessonSubstitution.field(
+    import_ref_untis=IntegerField(
+        verbose_name=_("UNTIS import reference"), null=True, blank=True
+    )
+)
+

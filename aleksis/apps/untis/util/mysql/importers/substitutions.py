@@ -1,0 +1,158 @@
+import logging
+
+from calendarweek import CalendarWeek
+from django.db.models import Q
+
+from aleksis.apps.chronos import models as chronos_models
+from ..util import run_default_filter, untis_split_first, untis_date_to_date, sync_m2m
+from .... import models as mysql_models
+
+logger = logging.getLogger(__name__)
+
+
+def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref):
+    """ Import substitutions """
+
+    subs = (
+        run_default_filter(mysql_models.Substitution.objects, filter_term=False)
+        .exclude(
+            Q(flags__contains="N")
+            | Q(flags__contains="b")
+            | Q(flags__contains="F")
+            | Q(flags__exact="g")
+        )
+        .order_by("classids", "lesson")
+    )
+
+    existing_subs = []
+    for sub in subs:
+        # IDs
+        sub_id = sub.lesson_idsubst
+        existing_subs.append(sub_id)
+
+        lesson_id = sub.lesson_idsubst
+
+        logger.info("Import substitution {}".format(sub_id))
+
+        # Time
+        date = untis_date_to_date(sub.date)
+        weekday = date.weekday()
+        week = CalendarWeek.from_date(date)
+        period = sub.lesson
+
+        # Supervision substitution?
+        is_supervision_substitution = sub.corridor_id != 0
+
+        # Cancellation?
+        cancelled, cancelled_for_teachers = False, False
+        if "E" in sub.flags:
+            cancelled = True
+        elif "F" in sub.flags:
+            cancelled_for_teachers = True
+
+        # Comment
+        comment = sub.text
+
+        # Teacher
+        if sub.teacher_idlessn != 0:
+            teacher_old = teachers_ref[sub.teacher_idlessn]
+        else:
+            teacher_old = None
+
+        teachers = []
+        if sub.teacher_idsubst != 0:
+            teacher_new = teachers_ref[sub.teacher_idsubst]
+            teachers = [teacher_new]
+
+            if teacher_old is not None and teacher_new.id == teacher_old.id:
+                teachers = []
+
+        if not is_supervision_substitution:
+            lesson_periods = chronos_models.LessonPeriod.objects.filter(
+                lesson__lesson_id_untis=lesson_id,
+                lesson__teachers=teacher_old,
+                period__period=period,
+                period__weekday=weekday,
+            ).on_day(date)
+            if lesson_periods.exists():
+                lesson_period = lesson_periods[0]
+                logger.info("  Matching lesson period found ({})".format(lesson_period))
+            else:
+                lesson_period = None
+
+            # Subject
+            subject_old = lesson_period.lesson.subject if lesson_period else None
+            subject_new = None
+            if sub.subject_idsubst != 0:
+                subject_new = subjects_ref[sub.subject_idsubst]
+
+                if subject_old and subject_old.id == subject_new.id:
+                    subject_new = None
+
+            # # Room
+            room_old = lesson_period.room if lesson_period else None
+            room_new = None
+            if sub.room_idsubst != 0:
+                room_new = rooms_ref[sub.room_idsubst]
+
+                if room_old is not None and room_old.id == room_new.id:
+                    room_new = None
+
+            # # Classes
+            classes = []
+            class_ids = untis_split_first(sub.classids, conv=int)
+
+            for id in class_ids:
+                classes.append(classes_ref[id])
+
+            if lesson_period:
+                (
+                    substitution,
+                    created,
+                ) = chronos_models.LessonSubstitution.objects.get_or_create(
+                    lesson_period=lesson_period, week=week.week
+                )
+
+                if created:
+                    logger.info("  Substitution created")
+
+                # Sync teachers
+                sync_m2m(teachers, substitution.teachers)
+
+                # Update values
+                if (
+                    substitution.subject != subject_new
+                    or substitution.room != room_new
+                    or substitution.cancelled != cancelled
+                    or substitution.cancelled_for_teachers != cancelled_for_teachers
+                    or substitution.comment != comment
+                    or substitution.import_ref_untis != sub_id
+                ):
+                    substitution.subject = subject_new
+                    substitution.room = room_new
+                    substitution.cancelled = cancelled
+                    substitution.cancelled_for_teachers = cancelled_for_teachers
+                    substitution.comment = comment
+                    substitution.import_ref_untis = sub_id
+                    substitution.save()
+                    logger.info("  Substitution updated")
+
+            else:
+                pass
+                # TODO: Special assignment, no existing lesson period for that substitution
+        else:
+            pass
+            # TODO: Supervision substitution
+            # # Supervisement
+            # if sub.corridor_id != 0:
+            #     corridor = drive["corridors"][sub.corridor_id]
+            #     type = TYPE_CORRIDOR
+            #
+
+    # Delete all no longer existing substitutions
+    for s in chronos_models.LessonSubstitution.objects.all():
+        if s.import_ref_untis and s.import_ref_untis not in existing_subs:
+            logger.info("Substitution {} deleted".format(s.id))
+            s.delete()
+
+    # TODO: Do that for supervision substitutions, too
