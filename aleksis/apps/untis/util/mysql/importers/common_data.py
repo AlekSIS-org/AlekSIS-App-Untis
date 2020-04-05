@@ -393,7 +393,7 @@ def import_supervision_areas(
                 supervision.delete()
                 logger.info("    Supervision {} deleted".format(supervision))
 
-        ref[import_ref] = new_area
+        ref[import_ref] = {"area": new_area, "supervisions": supervisions_ref}
 
     return ref
 

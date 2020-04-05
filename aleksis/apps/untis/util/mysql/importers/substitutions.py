@@ -10,7 +10,9 @@ from .... import models as mysql_models
 logger = logging.getLogger(__name__)
 
 
-def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref):
+def import_substitutions(
+    teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref
+):
     """ Import substitutions """
 
     subs = (
@@ -21,13 +23,13 @@ def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref):
             | Q(flags__contains="F")
             | Q(flags__exact="g")
         )
-        .order_by("classids", "lesson")
+        .order_by("substitution_id")
     )
 
     existing_subs = []
     for sub in subs:
         # IDs
-        sub_id = sub.lesson_idsubst
+        sub_id = sub.substitution_id
         existing_subs.append(sub_id)
 
         lesson_id = sub.lesson_idsubst
@@ -60,6 +62,7 @@ def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref):
             teacher_old = None
 
         teachers = []
+        teacher_new = None
         if sub.teacher_idsubst != 0:
             teacher_new = teachers_ref[sub.teacher_idsubst]
             teachers = [teacher_new]
@@ -141,13 +144,33 @@ def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref):
                 pass
                 # TODO: Special assignment, no existing lesson period for that substitution
         else:
-            pass
-            # TODO: Supervision substitution
-            # # Supervisement
-            # if sub.corridor_id != 0:
-            #     corridor = drive["corridors"][sub.corridor_id]
-            #     type = TYPE_CORRIDOR
-            #
+            if teacher_new:
+                logger.info ("  Supervision substitution detected")
+
+                # Supervision
+                area_ref = supervision_areas_ref[sub.corridor_id]
+                possible_supervisions = area_ref["supervisions"][weekday][period]
+
+                supervision = None
+                for possible_supervision in possible_supervisions:
+                    if possible_supervision.teacher == teacher_old:
+                        supervision = possible_supervision
+
+                (
+                    substitution,
+                    created,
+                ) = chronos_models.SupervisionSubstitution.objects.get_or_create(
+                    supervision=supervision, date=date, defaults={"teacher": teacher_new}
+                )
+
+                if created:
+                    logger.info("  Supervision substitution created")
+
+                if substitution.teacher != teacher_new or substitution.import_ref_untis != sub_id:
+                    substitution.teacher = teacher_new
+                    substitution.import_ref_untis = sub_id
+                    substitution.save()
+                    logger.info("  Supervision substitution updated")
 
     # Delete all no longer existing substitutions
     for s in chronos_models.LessonSubstitution.objects.all():
@@ -155,4 +178,8 @@ def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref):
             logger.info("Substitution {} deleted".format(s.id))
             s.delete()
 
-    # TODO: Do that for supervision substitutions, too
+    # Delete all no longer existing supervision substitutions
+    for s in chronos_models.SupervisionSubstitution.objects.all():
+        if s.import_ref_untis and s.import_ref_untis not in existing_subs:
+            logger.info("Supervision substitution {} deleted".format(s.id))
+            s.delete()

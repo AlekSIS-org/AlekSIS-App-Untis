@@ -30,4 +30,4 @@ def untis_import_mysql():
     import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref)
 
     # Substitutions
-    import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref)
+    import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref)
