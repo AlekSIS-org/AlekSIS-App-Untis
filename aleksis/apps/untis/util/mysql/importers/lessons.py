@@ -8,7 +8,15 @@ from aleksis.core import models as core_models
 from aleksis.core.util import messages
 
 from .... import models as mysql_models
-from ..util import run_default_filter, untis_split_third, untis_date_to_date, get_term, sync_m2m, compare_m2m
+from ..util import (
+    run_default_filter,
+    untis_split_third,
+    untis_date_to_date,
+    get_term,
+    sync_m2m,
+    compare_m2m,
+    connect_untis_fields,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +43,7 @@ def import_lessons(
             continue
 
         # Split data (,)
-        raw_lesson_data = lesson.lessonelement1.split(",")
+        raw_lesson_data = connect_untis_fields(lesson, "lessonelement", 10)
         raw_time_data = lesson.lesson_tt.split(",")
 
         raw_time_data_2 = []

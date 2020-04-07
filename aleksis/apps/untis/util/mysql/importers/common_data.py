@@ -8,7 +8,7 @@ from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
 
 from .... import models as mysql_models
-from ..util import run_default_filter, untis_colour_to_hex, untis_split_first, sync_m2m
+from ..util import run_default_filter, untis_colour_to_hex, untis_split_first, sync_m2m, connect_untis_fields
 
 logger = logging.getLogger(__name__)
 
@@ -338,8 +338,7 @@ def import_supervision_areas(
         logger.info("  Import supervisions for this area")
 
         # Parse raw data
-        raw_untis_data = area.breaksupervision1
-        raw_supervisions = untis_split_first(raw_untis_data)
+        raw_supervisions = connect_untis_fields(area, "breaksupervision", 16)
 
         supervisions_ref = {}
         for raw_supervision in raw_supervisions:
