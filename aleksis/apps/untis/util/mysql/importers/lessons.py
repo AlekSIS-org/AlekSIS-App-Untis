@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 from constance import config
 from django.utils.translation import gettext as _
@@ -28,6 +29,18 @@ def import_lessons(
 
     # Get current term
     term = get_term()
+    date_start = untis_date_to_date(term.datefrom)
+    date_end = untis_date_to_date(term.dateto)
+
+    # Get all existing lessons for this term
+    lessons_in_term = chronos_models.Lesson.objects.filter(
+        term_untis=term.term_id
+    ).values_list("id", flat=True)
+
+    # Set the end date of all lessons from other terms ending in this term to the day before this term starts
+    chronos_models.Lesson.objects.filter(date_end__gte=date_start).exclude(
+        id__in=lessons_in_term
+    ).update(date_end=date_start - timedelta(days=1))
 
     # Lessons
     lessons = run_default_filter(mysql_models.Lesson.objects)
@@ -177,10 +190,6 @@ def import_lessons(
                 groups = [course_group]
             else:
                 groups = course_classes
-
-            # Create new lesson
-            date_start = untis_date_to_date(term.datefrom)
-            date_end = untis_date_to_date(term.dateto)
 
             # Get old lesson
             old_lesson_qs = chronos_models.Lesson.objects.filter(
