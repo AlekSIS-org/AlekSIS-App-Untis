@@ -400,18 +400,30 @@ def import_supervision_areas(
 def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
     """ Import time periods an breaks """
 
-    time_periods_ref = {}
+    times = run_default_filter(mysql_models.Commondata.objects, filter_term=False).filter(id=30).order_by("number")
+
+    times_ref = {}
+    for time_ in times:
+        period = time_.number
+
+        # Extract time
+        start_time = time(time_.fieldbyte1, time_.fieldbyte2)
+        end_time = time(time_.fieldbyte3, time_.fieldbyte4)
+
+        times_ref[period] = (start_time, end_time)
+
     periods = (
         run_default_filter(mysql_models.Commondata.objects, filter_term=False)
         .filter(id=40)  # Fixed UNTIS constant
         .order_by("number", "number1")
     )
 
+    time_periods_ref = {}
     for time_period in periods:
         weekday = time_period.number - 1
         period = time_period.number1
-        start_time = time(time_period.fieldbyte1, time_period.fieldbyte2)
-        end_time = time(time_period.fieldbyte3, time_period.fieldbyte4)
+        start_time = times_ref[period][0]
+        end_time = times_ref[period][1]
 
         logger.info(
             "Import time period on weekday {} in the {}. period".format(weekday, period)
