@@ -132,3 +132,18 @@ def compare_m2m(
     ids_a = sorted([i.id for i in a])
     ids_b = sorted([i.id for i in b])
     return ids_a == ids_b
+
+
+def connect_untis_fields(obj: Model, attr: str, limit: int) -> List[str]:
+    """ Connects data from multiple DB fields """
+
+    all_data = []
+
+    for i in range(1, limit + 1):
+        attr_name = "{}{}".format(attr, i)
+        raw_data = getattr(obj, attr_name, "")
+        if raw_data not in ("", None):
+            data = untis_split_first(raw_data)
+            all_data += data
+
+    return all_data
