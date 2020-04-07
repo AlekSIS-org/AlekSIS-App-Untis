@@ -4,7 +4,13 @@ from calendarweek import CalendarWeek
 from django.db.models import Q
 
 from aleksis.apps.chronos import models as chronos_models
-from ..util import run_default_filter, untis_split_first, untis_date_to_date, sync_m2m
+from ..util import (
+    run_default_filter,
+    untis_split_first,
+    untis_date_to_date,
+    sync_m2m,
+    get_term,
+)
 from .... import models as mysql_models
 
 logger = logging.getLogger(__name__)
@@ -15,8 +21,13 @@ def import_substitutions(
 ):
     """ Import substitutions """
 
+    term = get_term()
+    date_start = untis_date_to_date(term.datefrom)
+    date_end = untis_date_to_date(term.dateto)
+
     subs = (
         run_default_filter(mysql_models.Substitution.objects, filter_term=False)
+        .filter(date__gte=term.datefrom, date__lte=term.dateto)
         .exclude(
             Q(flags__contains="N")
             | Q(flags__contains="b")
@@ -92,6 +103,9 @@ def import_substitutions(
                 if subject_old and subject_old.id == subject_new.id:
                     subject_new = None
 
+            if cancelled:
+                subject_new = None
+
             # # Room
             room_old = lesson_period.room if lesson_period else None
             room_new = None
@@ -156,30 +170,36 @@ def import_substitutions(
                     if possible_supervision.teacher == teacher_old:
                         supervision = possible_supervision
 
-                (
-                    substitution,
-                    created,
-                ) = chronos_models.SupervisionSubstitution.objects.get_or_create(
-                    supervision=supervision, date=date, defaults={"teacher": teacher_new}
-                )
+                if supervision:
+                    (
+                        substitution,
+                        created,
+                    ) = chronos_models.SupervisionSubstitution.objects.get_or_create(
+                        supervision=supervision,
+                        date=date,
+                        defaults={"teacher": teacher_new},
+                    )
 
-                if created:
-                    logger.info("  Supervision substitution created")
+                    if created:
+                        logger.info("  Supervision substitution created")
 
-                if substitution.teacher != teacher_new or substitution.import_ref_untis != sub_id:
-                    substitution.teacher = teacher_new
-                    substitution.import_ref_untis = sub_id
-                    substitution.save()
-                    logger.info("  Supervision substitution updated")
+                    if (
+                        substitution.teacher != teacher_new
+                        or substitution.import_ref_untis != sub_id
+                    ):
+                        substitution.teacher = teacher_new
+                        substitution.import_ref_untis = sub_id
+                        substitution.save()
+                        logger.info("  Supervision substitution updated")
 
     # Delete all no longer existing substitutions
-    for s in chronos_models.LessonSubstitution.objects.all():
+    for s in chronos_models.LessonSubstitution.objects.within_dates(date_start, date_end):
         if s.import_ref_untis and s.import_ref_untis not in existing_subs:
             logger.info("Substitution {} deleted".format(s.id))
             s.delete()
 
     # Delete all no longer existing supervision substitutions
-    for s in chronos_models.SupervisionSubstitution.objects.all():
+    for s in chronos_models.SupervisionSubstitution.objects.filter(date__gte=date_start, date__lte=date_end):
         if s.import_ref_untis and s.import_ref_untis not in existing_subs:
             logger.info("Supervision substitution {} deleted".format(s.id))
             s.delete()
