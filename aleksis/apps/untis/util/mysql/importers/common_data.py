@@ -495,3 +495,51 @@ def import_breaks(
             breaks_ref[weekday][next_period] = new_break
 
     return breaks_ref
+
+
+def import_absence_reasons() -> Dict[int, chronos_models.AbsenceReason]:
+    """ Import absence reasons """
+
+    ref = {}
+
+    # Get reasons
+    reasons = run_default_filter(mysql_models.Absencereason.objects, filter_term=False)
+
+    for reason in reasons:
+        if not reason.name:
+            logger.error(
+                "Absence reason ID {}: Cannot import absence reason without short name.".format(
+                    reason.absence_reason_id
+                )
+            )
+            continue
+
+        # Build values
+        short_name = reason.name
+        name = reason.longname if reason.longname else short_name
+        import_ref = reason.absence_reason_id
+
+        logger.info("Import absence reason {} …".format(short_name))
+
+        new_reason, created = chronos_models.AbsenceReason.objects.get_or_create(
+            import_ref_untis=import_ref,
+            defaults={"short_name": short_name, "name": name}
+        )
+
+        if created:
+            logger.info("  New absence reason created")
+
+        changed = False
+
+        if new_reason.short_name != short_name or new_reason.name != name:
+            new_reason.short_name = short_name
+            new_reason.name = name
+            changed = True
+            logger.info("  Short name and name updated")
+
+        if changed:
+            new_reason.save()
+
+        ref[import_ref] = new_reason
+
+    return ref

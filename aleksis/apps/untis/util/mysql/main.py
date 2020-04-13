@@ -5,7 +5,9 @@ from .importers.common_data import (
     import_supervision_areas,
     import_teachers,
     import_time_periods,
-    import_breaks)
+    import_breaks,
+    import_absence_reasons,
+)
 from .importers.lessons import import_lessons
 from .importers.substitutions import import_substitutions
 
@@ -14,6 +16,7 @@ def untis_import_mysql():
     # Coomon data for Chronos
     subjects_ref = import_subjects()
     rooms_ref = import_rooms()
+    absence_reasons_ref = import_absence_reasons()
 
     # Common data for core
     teachers_ref = import_teachers()
