@@ -82,3 +82,8 @@ chronos_models.Absence.field(
         verbose_name=_("UNTIS import reference"), null=True, blank=True
     )
 )
+chronos_models.Event.field(
+    import_ref_untis=IntegerField(
+        verbose_name=_("UNTIS import reference"), null=True, blank=True
+    )
+)
