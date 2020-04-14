@@ -6,7 +6,7 @@ from .... import models as mysql_models
 from ..util import (
     run_default_filter,
     get_term,
-    untis_date_to_date,
+    untis_date_to_date, move_weekday_to_range, get_first_period, get_last_period,
 )
 
 logger = logging.getLogger(__name__)
@@ -52,21 +52,12 @@ def import_absences(
         weekday_to = date_to.weekday()
 
         # Check min/max weekdays
-        first_weekday = sorted(time_periods_ref.keys())[0]
-        last_weekday = sorted(time_periods_ref.keys())[-1]
-
-        if weekday_from < first_weekday:
-            weekday_from = first_weekday
-        if weekday_from > last_weekday:
-            weekday_from = last_weekday
-        if weekday_to < first_weekday:
-            weekday_to = first_weekday
-        if weekday_to > last_weekday:
-            weekday_to = last_weekday
+        weekday_from = move_weekday_to_range(time_periods_ref, weekday_from)
+        weekday_to = move_weekday_to_range(time_periods_ref, weekday_to)
 
         # Check min/max periods
-        first_period = sorted(time_periods_ref[first_weekday].keys())[0]
-        last_period = sorted(time_periods_ref[first_weekday].keys())[-1]
+        first_period = get_first_period(time_periods_ref, weekday_from)
+        last_period = get_last_period(time_periods_ref, weekday_from)
 
         if period_from == 0:
             period_from = first_period

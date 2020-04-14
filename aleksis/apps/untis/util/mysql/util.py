@@ -147,3 +147,36 @@ def connect_untis_fields(obj: Model, attr: str, limit: int) -> List[str]:
             all_data += data
 
     return all_data
+
+
+def get_first_weekday(time_periods_ref: dict) -> int:
+    """ Get first weekday from time periods reference """
+    return sorted(time_periods_ref.keys())[0]
+
+
+def get_last_weekday(time_periods_ref: dict) -> int:
+    """ Get last weekday from time periods reference """
+    return sorted(time_periods_ref.keys())[-1]
+
+
+def get_first_period(time_periods_ref: dict, weekday: int) -> int:
+    """ Get first period on a weekday from time periods reference """
+    return sorted(time_periods_ref[weekday].keys())[0]
+
+
+def get_last_period(time_periods_ref: dict, weekday: int) -> int:
+    """ Get last period an a weekday from time periods reference """
+    return sorted(time_periods_ref[weekday].keys())[-1]
+
+
+def move_weekday_to_range(time_periods_ref: dict, weekday: int) -> int:
+    """ Move weekday values into school week (e. g. saturday to friday) """
+    first_weekday = get_first_weekday(time_periods_ref)
+    last_weekday = get_last_weekday(time_periods_ref)
+
+    if weekday < first_weekday:
+        weekday = first_weekday
+    if weekday > last_weekday:
+        weekday = last_weekday
+
+    return weekday
