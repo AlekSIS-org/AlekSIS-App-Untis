@@ -32,7 +32,7 @@ def get_term(date: Optional[date] = None) -> mysql_models.Terms:
 
 
 def run_default_filter(
-    qs: QuerySet, date: Optional[date] = None, filter_term: bool = True
+    qs: QuerySet, date: Optional[date] = None, filter_term: bool = True, filter_deleted: bool = True
 ) -> QuerySet:
     """ Add a default filter in order to select the correct term """
 
@@ -44,18 +44,19 @@ def run_default_filter(
         term.version_id,
     )
 
-    if filter_term:
-        return run_using(qs).filter(
+    qs = run_using(qs).filter(
             school_id=school_id,
             schoolyear_id=schoolyear_id,
             version_id=version_id,
-            term_id=term_id,
-            deleted=0
-        )
-    else:
-        return run_using(qs).filter(
-            school_id=school_id, schoolyear_id=schoolyear_id, version_id=version_id, deleted=0
-        )
+    )
+
+    if filter_term:
+        qs = qs.filter(term_id=term_id)
+
+    if filter_deleted:
+        qs = qs.filter(deleted=0)
+
+    return qs
 
 
 def clean_array(a: list, conv=None) -> list:
