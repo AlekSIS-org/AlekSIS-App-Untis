@@ -10,6 +10,7 @@ from .importers.common_data import (
     import_absence_reasons,
 )
 from .importers.events import import_events
+from .importers.holidays import import_holidays
 from .importers.lessons import import_lessons
 from .importers.substitutions import import_substitutions
 
@@ -27,6 +28,9 @@ def untis_import_mysql():
     # Time periods
     time_periods_ref = import_time_periods()
     breaks_ref = import_breaks(time_periods_ref)
+
+    # Holidays
+    holidays_ref = import_holidays()
 
     # Supervisions
     supervision_areas_ref = import_supervision_areas(breaks_ref, teachers_ref)

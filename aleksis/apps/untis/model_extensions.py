@@ -87,3 +87,8 @@ chronos_models.Event.field(
         verbose_name=_("UNTIS import reference"), null=True, blank=True
     )
 )
+chronos_models.Holiday.field(
+    import_ref_untis=IntegerField(
+        verbose_name=_("UNTIS import reference"), null=True, blank=True
+    )
+)
