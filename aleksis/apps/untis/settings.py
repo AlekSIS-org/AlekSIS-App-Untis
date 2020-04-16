@@ -1,14 +1,14 @@
-from aleksis.core.util.core_helpers import lazy_config
+from aleksis.core.settings import _settings
 from django.utils.translation import gettext_lazy as _
 
 DATABASES = {
-    'untis': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': lazy_config("UNTIS_NAME"),
-        'USER': lazy_config("UNTIS_USER"),
-        'PASSWORD': lazy_config("UNTIS_PASSWORD"),
-        'HOST': lazy_config("UNTIS_HOST"),
-        'PORT': lazy_config("UNTIS_PORT"),
+    "untis": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": _settings.get("untis.database.name", "untis"),
+        "USER": _settings.get("untis.database.user", "untis"),
+        "PASSWORD": _settings.get("untis.database.password", None),
+        "HOST": _settings.get("untis.database.host", "127.0.0.1"),
+        "PORT": _settings.get("untis.database.port", 3306),
     }
 }
 
