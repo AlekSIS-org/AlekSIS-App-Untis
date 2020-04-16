@@ -1,5 +1,7 @@
 import logging
 
+from tqdm import tqdm
+
 from aleksis.apps.chronos import models as chronos_models
 
 from .... import models as mysql_models
@@ -10,7 +12,7 @@ from ..util import (
     move_weekday_to_range,
     get_first_period,
     get_last_period,
-    connect_untis_fields, sync_m2m,
+    connect_untis_fields, sync_m2m, TQDM_DEFAULTS,
 )
 
 logger = logging.getLogger(__name__)
@@ -32,7 +34,7 @@ def import_events(time_periods_ref, teachers_ref, classes_ref, rooms_ref):
     )
 
     existing_events = []
-    for event in events:
+    for event in tqdm(events, desc="Import events", **TQDM_DEFAULTS):
         import_ref = event.event_id
 
         logger.info("Import event {}".format(import_ref))

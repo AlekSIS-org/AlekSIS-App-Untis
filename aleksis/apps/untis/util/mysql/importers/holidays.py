@@ -1,11 +1,12 @@
 import logging
 from typing import Dict
 
+from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
 
 from .... import models as mysql_models
-from ..util import run_default_filter, untis_date_to_date
+from ..util import run_default_filter, untis_date_to_date, TQDM_DEFAULTS
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ def import_holidays() -> Dict[int, chronos_models.Holiday]:
     # Get holidays
     holidays = run_default_filter(mysql_models.Holiday.objects, filter_term=False)
 
-    for holiday in holidays:
+    for holiday in tqdm(holidays, desc="Import holidays", **TQDM_DEFAULTS):
         import_ref = holiday.holiday_id
 
         # Check if needed data are provided

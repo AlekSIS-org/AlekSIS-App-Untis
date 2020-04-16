@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from constance import config
 from django.utils.translation import gettext as _
+from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
@@ -16,7 +17,7 @@ from ..util import (
     get_term,
     sync_m2m,
     compare_m2m,
-    connect_untis_fields,
+    connect_untis_fields, TQDM_DEFAULTS,
 )
 
 logger = logging.getLogger(__name__)
@@ -44,7 +45,7 @@ def import_lessons(
 
     # Lessons
     lessons = run_default_filter(mysql_models.Lesson.objects)
-    for lesson in lessons:
+    for lesson in tqdm(lessons, desc="Import lessons", **TQDM_DEFAULTS):
         lesson_id = lesson.lesson_id
 
         messages.info(None, message=_("Import lesson {}").format(lesson_id))

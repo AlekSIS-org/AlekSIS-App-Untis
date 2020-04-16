@@ -10,6 +10,11 @@ DB_NAME = "untis"
 
 logger = logging.getLogger(__name__)
 
+TQDM_DEFAULTS = {
+ "disable": None,
+ "unit": "obj",
+ "dynamic_ncols": True,
+}
 
 def run_using(obj: QuerySet) -> QuerySet:
     return obj.using(DB_NAME)

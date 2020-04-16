@@ -3,12 +3,14 @@ from datetime import time
 from typing import List, Dict
 
 from constance import config
+from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
 
 from .... import models as mysql_models
-from ..util import run_default_filter, untis_colour_to_hex, untis_split_first, sync_m2m, connect_untis_fields
+from ..util import run_default_filter, untis_colour_to_hex, untis_split_first, sync_m2m, connect_untis_fields, \
+    TQDM_DEFAULTS
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +23,7 @@ def import_subjects() -> Dict[int, chronos_models.Subject]:
     # Get subjects
     subjects = run_default_filter(mysql_models.Subjects.objects, filter_term=False)
 
-    for subject in subjects:
+    for subject in tqdm(subjects, desc="Import subjects", **TQDM_DEFAULTS):
         # Check if needed data are provided
         if not subject.name:
             logger.error(
@@ -90,7 +92,7 @@ def import_teachers() -> Dict[int, core_models.Person]:
     # Get teachers
     teachers = run_default_filter(mysql_models.Teacher.objects)
 
-    for teacher in teachers:
+    for teacher in tqdm(teachers, desc="Import teachers", **TQDM_DEFAULTS):
         # Check if needed data are provided
         if not teacher.name:
             logger.error(
@@ -160,7 +162,7 @@ def import_classes(
     # Get classes
     course_classes = run_default_filter(mysql_models.Class.objects, filter_term=True)
 
-    for class_ in course_classes:
+    for class_ in tqdm(course_classes, desc="Import classes", **TQDM_DEFAULTS):
         # Check if needed data are provided
         if not class_.name:
             logger.error(
@@ -229,7 +231,7 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
     # Get rooms
     rooms = run_default_filter(mysql_models.Room.objects)
 
-    for room in rooms:
+    for room in tqdm(rooms, desc="Import rooms", **TQDM_DEFAULTS):
         if not room.name:
             logger.error(
                 "Room ID {}: Cannot import room without short name.".format(
@@ -283,7 +285,7 @@ def import_supervision_areas(
     # Get supervision areas
     areas = run_default_filter(mysql_models.Corridor.objects, filter_term=False)
 
-    for area in areas:
+    for area in tqdm(areas, desc="Import supervision areas", **TQDM_DEFAULTS):
         if not area.name:
             logger.error(
                 "Supervision area ID {}: Cannot import supervision area without short name.".format(
@@ -403,7 +405,7 @@ def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
     times = run_default_filter(mysql_models.Commondata.objects, filter_term=False).filter(id=30).order_by("number")
 
     times_ref = {}
-    for time_ in times:
+    for time_ in tqdm(times, desc="Import times", **TQDM_DEFAULTS):
         period = time_.number
 
         # Extract time
@@ -419,7 +421,7 @@ def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
     )
 
     time_periods_ref = {}
-    for time_period in periods:
+    for time_period in tqdm(periods, desc="Import time periods", **TQDM_DEFAULTS):
         weekday = time_period.number - 1
         period = time_period.number1
         start_time = times_ref[period][0]
@@ -460,12 +462,12 @@ def import_breaks(
 ) -> Dict[int, Dict[int, chronos_models.Break]]:
     # Build breaks for all weekdays
     breaks_ref = {}
-    for weekday, time_periods in time_periods_ref.items():
+    for weekday, time_periods in tqdm(time_periods_ref.items(), desc="Import breaks (weekday)", **TQDM_DEFAULTS):
         breaks_ref[weekday] = {}
 
         # Add None two times in order to create breaks before first lesson and after last lesson
         time_periods_for_breaks = [None] + list(time_periods.values()) + [None]
-        for i, time_period in enumerate(time_periods_for_breaks):
+        for i, time_period in tqdm(enumerate(time_periods_for_breaks), desc="Import breaks (period)", **TQDM_DEFAULTS):
             # If last item (None) is reached, no further break must be created
             if i + 1 == len(time_periods_for_breaks):
                 break
@@ -505,7 +507,7 @@ def import_absence_reasons() -> Dict[int, chronos_models.AbsenceReason]:
     # Get reasons
     reasons = run_default_filter(mysql_models.Absencereason.objects, filter_term=False)
 
-    for reason in reasons:
+    for reason in tqdm(reasons, desc="Import absence reasons", **TQDM_DEFAULTS):
         if not reason.name:
             logger.error(
                 "Absence reason ID {}: Cannot import absence reason without short name.".format(

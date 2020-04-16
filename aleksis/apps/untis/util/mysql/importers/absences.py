@@ -1,12 +1,14 @@
 import logging
 
+from tqdm import tqdm
+
 from aleksis.apps.chronos import models as chronos_models
 
 from .... import models as mysql_models
 from ..util import (
     run_default_filter,
     get_term,
-    untis_date_to_date, move_weekday_to_range, get_first_period, get_last_period,
+    untis_date_to_date, move_weekday_to_range, get_first_period, get_last_period, TQDM_DEFAULTS,
 )
 
 logger = logging.getLogger(__name__)
@@ -31,13 +33,12 @@ def import_absences(
     )
 
     existing_absences = []
-    for absence in absences:
+    for absence in tqdm(absences, desc="Import absences", **TQDM_DEFAULTS):
         import_ref = absence.absence_id
 
         logger.info("Import absence {}".format(import_ref))
 
         if absence.absence_reason_id == 0:
-            logger.warning("  Absence reason needed")
             reason = unknown_reason
         else:
             reason = absence_reasons_ref[absence.absence_reason_id]

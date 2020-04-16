@@ -2,6 +2,7 @@ import logging
 
 from calendarweek import CalendarWeek
 from django.db.models import Q
+from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
 from ..util import (
@@ -9,7 +10,7 @@ from ..util import (
     untis_split_first,
     untis_date_to_date,
     sync_m2m,
-    get_term,
+    get_term, TQDM_DEFAULTS,
 )
 from .... import models as mysql_models
 
@@ -38,7 +39,7 @@ def import_substitutions(
     )
 
     existing_subs = []
-    for sub in subs:
+    for sub in tqdm(subs, desc="Import substitutions", **TQDM_DEFAULTS):
         # IDs
         sub_id = sub.substitution_id
         existing_subs.append(sub_id)
