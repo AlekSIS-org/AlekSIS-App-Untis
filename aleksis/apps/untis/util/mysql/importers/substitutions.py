@@ -9,7 +9,6 @@ from ..util import (
     run_default_filter,
     untis_split_first,
     untis_date_to_date,
-    sync_m2m,
     get_term, TQDM_DEFAULTS,
 )
 from .... import models as mysql_models
@@ -135,7 +134,8 @@ def import_substitutions(
                     logger.info("  Substitution created")
 
                 # Sync teachers
-                sync_m2m(teachers, substitution.teachers)
+                substitution.teachers.set(teachers)
+                logger.info("   Substitution teachers set")
 
                 # Update values
                 if (

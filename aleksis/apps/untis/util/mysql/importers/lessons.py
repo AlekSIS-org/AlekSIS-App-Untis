@@ -14,7 +14,6 @@ from ..util import (
     untis_split_third,
     untis_date_to_date,
     get_term,
-    sync_m2m,
     compare_m2m,
     connect_untis_fields, TQDM_DEFAULTS,
 )
@@ -159,7 +158,8 @@ def import_lessons(
                         logger.info("    Course group created")
 
                     # Update parent groups
-                    sync_m2m(course_classes, course_group.parent_groups)
+                    course_group.parent_groups.set(course_classes)
+                    logger.info("    Course groups set")
 
                     # Update name
                     if course_group.name != group_name:
@@ -169,7 +169,7 @@ def import_lessons(
                         changed = True
 
                 # Update owners
-                sync_m2m(teachers, course_group.owners)
+                course_group.owners.set(teachers)
 
                 # Update import ref
                 if (
@@ -223,10 +223,10 @@ def import_lessons(
                 logger.info("    New lesson created")
 
             # Sync groups
-            sync_m2m(groups, lesson.groups)
+            lesson.groupsset(groups)
 
             # Sync teachers
-            sync_m2m(teachers, lesson.teachers)
+            lesson.teachers.set(teachers)
 
             # All times for this course
             old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(

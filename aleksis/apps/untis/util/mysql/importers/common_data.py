@@ -9,7 +9,7 @@ from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
 
 from .... import models as mysql_models
-from ..util import run_default_filter, untis_colour_to_hex, untis_split_first, sync_m2m, connect_untis_fields, \
+from ..util import run_default_filter, untis_colour_to_hex, untis_split_first, connect_untis_fields, \
     TQDM_DEFAULTS
 
 logger = logging.getLogger(__name__)
@@ -213,7 +213,8 @@ def import_classes(
             new_group.save()
 
         if config.UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_OVERWRITE_OWNERS:
-            sync_m2m(owners, new_group.owners)
+            new_group.owners.set(owners)
+            logger.info("  Group owners set")
         else:
             new_group.owners.add(*owners)
             logger.info("  Group owners added")

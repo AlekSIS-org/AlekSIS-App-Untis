@@ -1,14 +1,14 @@
 import logging
-from datetime import date, datetime
-from typing import Optional, Union, List
+from datetime import date
+from typing import Optional, Union, Sequence, Callable, Any
 
 from django.db.models import QuerySet, Model
+from django.utils import timezone
 
-from aleksis.apps.untis import models as mysql_models
+from ... import models as mysql_models
 
 DB_NAME = "untis"
-
-logger = logging.getLogger(__name__)
+UNTIS_DATE_FORMAT = "%Y%m%d"
 
 TQDM_DEFAULTS = {
  "disable": None,
@@ -16,32 +16,33 @@ TQDM_DEFAULTS = {
  "dynamic_ncols": True,
 }
 
+logger = logging.getLogger(__name__)
+
+
 def run_using(obj: QuerySet) -> QuerySet:
+    """ Seed QuerySet with using() database from global DB_NAME """
     return obj.using(DB_NAME)
 
 
-def get_term(date: Optional[date] = None) -> mysql_models.Terms:
+def get_term(for_date: Optional[date] = None) -> mysql_models.Terms:
     """ Get term valid for the provided date """
 
-    if not date:
-        date = datetime.now()
+    if not for_date:
+        for_date = timezone.now().date()
 
-    terms = run_using(mysql_models.Terms.objects).filter(
-        datefrom__lte=date_to_untis_date(date), dateto__gte=date_to_untis_date(date)
+    term = run_using(mysql_models.Terms.objects).get(
+        datefrom__lte=date_to_untis_date(for_date), dateto__gte=date_to_untis_date(for_date)
     )
 
-    if not terms.exists():
-        raise Exception("Term needed")
-
-    return terms[0]
+    return term
 
 
 def run_default_filter(
-    qs: QuerySet, date: Optional[date] = None, filter_term: bool = True, filter_deleted: bool = True
+    qs: QuerySet, for_date: Optional[date] = None, filter_term: bool = True, filter_deleted: bool = True
 ) -> QuerySet:
     """ Add a default filter in order to select the correct term """
 
-    term = get_term(date)
+    term = get_term(for_date)
     term_id, schoolyear_id, school_id, version_id = (
         term.term_id,
         term.schoolyear_id,
@@ -64,29 +65,31 @@ def run_default_filter(
     return qs
 
 
-def clean_array(a: list, conv=None) -> list:
-    b = []
-    for el in a:
-        if el != "" and el != "0":
-            if conv is not None:
-                el = conv(el)
-            b.append(el)
-    return b
+def clean_array(seq: Sequence, conv: Callable[[Any], Any] = lambda el: el) -> Sequence:
+    """ Convert a sequence using a converter function, stripping all
+    elements that are boolean False after conversion.
+
+    >>> clean_array(["a", "", "b"])
+    ['a', 'b']
+
+    >>> clean_array(["8", "", "12", "0"], int)
+    [8, 12]
+    """
+
+    filtered = filter(lambda el: bool(el), map(lambda el: conv(el) if el, seq))
+    return type(a)(filtered)
 
 
-def untis_split_first(s: str, conv=None) -> list:
+def untis_split_first(s: str, conv: Callable[[Any], Any] = lambda el: el) -> Sequence:
     return clean_array(s.split(","), conv=conv)
 
 
-def untis_split_second(s: str, conv=None) -> list:
+def untis_split_second(s: str, conv: Callable[[Any], Any] = lambda el: el) -> Sequence:
     return clean_array(s.split("~"), conv=conv)
 
 
-def untis_split_third(s: str, conv=None) -> list:
+def untis_split_third(s: str, conv: Callable[[Any], Any] = lambda el: el) -> Sequence:
     return clean_array(s.split(";"), conv=conv)
-
-
-UNTIS_DATE_FORMAT = "%Y%m%d"
 
 
 def untis_date_to_date(untis: int) -> date:
@@ -94,18 +97,16 @@ def untis_date_to_date(untis: int) -> date:
     return datetime.strptime(str(untis), UNTIS_DATE_FORMAT).date()
 
 
-def date_to_untis_date(date: date) -> int:
+def date_to_untis_date(from_date: date) -> int:
     """ Converts a python date to a UNTIS date """
-    return int(date.strftime(UNTIS_DATE_FORMAT))
+    return int(from_date.strftime(UNTIS_DATE_FORMAT))
 
 
 def untis_colour_to_hex(colour: int) -> str:
-    # Convert UNTIS number to HEX
-    hex_bgr = str(hex(colour)).replace("0x", "")
+    """ Convert a numerical colour in BGR order to a standard hex RGB string """
 
-    # Add beginning zeros if len < 6
-    if len(hex_bgr) < 6:
-        hex_bgr = "0" * (6 - len(hex_bgr)) + hex_bgr
+    # Convert UNTIS number to HEX
+    hex_bgr = str(hex(colour))[2:].zfill(6)
 
     # Change BGR to RGB
     hex_rgb = hex_bgr[4:6] + hex_bgr[2:4] + hex_bgr[0:2]
@@ -114,41 +115,32 @@ def untis_colour_to_hex(colour: int) -> str:
     return "#" + hex_rgb
 
 
-def sync_m2m(new_items: Union[List[Model], QuerySet], m2m_qs: QuerySet):
-    """ Sync m2m field """
-
-    # Add items
-    for item in new_items:
-        if item not in m2m_qs.all():
-            m2m_qs.add(item)
-            logger.info("  Many-to-many sync: item added")
-
-    # Delete items
-    for item in m2m_qs.all():
-        if item not in new_items:
-            m2m_qs.remove(item)
-            logger.info("  Many-to-many sync: item removed")
-
-
 def compare_m2m(
     a: Union[List[Model], QuerySet], b: Union[List[Model], QuerySet]
 ) -> bool:
     """ Compare if content of two m2m fields is equal """
 
-    ids_a = sorted([i.id for i in a])
-    ids_b = sorted([i.id for i in b])
-    return ids_a == ids_b
+    return set(a) == set(b)
 
 
 def connect_untis_fields(obj: Model, attr: str, limit: int) -> List[str]:
-    """ Connects data from multiple DB fields """
+    """ Connects data from multiple DB fields
+
+    Untis splits structured data, like lists, as comma-separated string into
+    multiple, numbered database fields, like:
+
+      field1 = "This,is,a,nice"
+      field2 = "list,of,words"
+
+    This function joins these fields, then splits them into the original list.
+    """
 
     all_data = []
 
     for i in range(1, limit + 1):
         attr_name = "{}{}".format(attr, i)
         raw_data = getattr(obj, attr_name, "")
-        if raw_data not in ("", None):
+        if raw_data:
             data = untis_split_first(raw_data)
             all_data += data
 

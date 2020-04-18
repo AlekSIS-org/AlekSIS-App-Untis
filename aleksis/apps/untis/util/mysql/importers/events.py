@@ -12,7 +12,7 @@ from ..util import (
     move_weekday_to_range,
     get_first_period,
     get_last_period,
-    connect_untis_fields, sync_m2m, TQDM_DEFAULTS,
+    connect_untis_fields, TQDM_DEFAULTS,
 )
 
 logger = logging.getLogger(__name__)
@@ -120,9 +120,9 @@ def import_events(time_periods_ref, teachers_ref, classes_ref, rooms_ref):
             logger.info("  Time range and title updated")
 
         # Sync m2m-fields
-        sync_m2m(groups, new_event.groups)
-        sync_m2m(teachers, new_event.teachers)
-        sync_m2m(rooms, new_event.rooms)
+        new_event.groups.set(groups)
+        new_event.teachers.set(teachers)
+        new_event.rooms.set(rooms)
 
         existing_events.append(import_ref)
         ref[import_ref] = new_event
