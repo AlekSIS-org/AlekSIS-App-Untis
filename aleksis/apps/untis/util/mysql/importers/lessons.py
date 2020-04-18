@@ -7,7 +7,6 @@ from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
-from aleksis.core.util import messages
 
 from .... import models as mysql_models
 from ..util import (
@@ -48,12 +47,10 @@ def import_lessons(
     for lesson in tqdm(lessons, desc="Import lessons", **TQDM_DEFAULTS):
         lesson_id = lesson.lesson_id
 
-        messages.info(None, message=_("Import lesson {}").format(lesson_id))
+        logger.info(_("Import lesson {}").format(lesson_id))
 
         if not lesson.lesson_tt:
-            messages.warning(
-                None, message=_("  Skip because missing times").format(lesson_id),
-            )
+            logger.warning(_("  Skip because missing times").format(lesson_id))
             continue
 
         # Split data (,)
@@ -110,9 +107,7 @@ def import_lessons(
             if subject_id != 0:
                 subject = subjects_ref[subject_id]
             else:
-                messages.warning(
-                    None, message=_("    Skip because missing subject".format(i)),
-                )
+                logger.warning(_("    Skip because missing subject".format(i)))
                 continue
 
             # Get classes
