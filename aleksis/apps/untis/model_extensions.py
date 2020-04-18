@@ -7,14 +7,10 @@ from aleksis.core import models as core_models
 
 # Core models
 core_models.Person.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 core_models.Group.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
     core_models.Group.field(
@@ -23,31 +19,24 @@ if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
             help_text=_(
                 "The UNTIS import will use this for matching course groups (along with parent groups)."
             ),
-            blank=True, null=True,
-            max_length=255
+            blank=True,
+            null=True,
+            max_length=255,
         )
     )
 
 # Chronos models
 chronos_models.Subject.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 chronos_models.Room.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 chronos_models.SupervisionArea.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 chronos_models.Lesson.field(
-    lesson_id_untis=IntegerField(
-        verbose_name=_("Lesson id in UNTIS"), null=True, blank=True
-    )
+    lesson_id_untis=IntegerField(verbose_name=_("Lesson id in UNTIS"), null=True, blank=True)
 )
 chronos_models.Lesson.field(
     element_id_untis=IntegerField(
@@ -63,32 +52,20 @@ chronos_models.LessonPeriod.field(
     )
 )
 chronos_models.LessonSubstitution.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 chronos_models.SupervisionSubstitution.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 chronos_models.AbsenceReason.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 chronos_models.Absence.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 chronos_models.Event.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 chronos_models.Holiday.field(
-    import_ref_untis=IntegerField(
-        verbose_name=_("UNTIS import reference"), null=True, blank=True
-    )
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )

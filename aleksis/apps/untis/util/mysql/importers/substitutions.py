@@ -10,19 +10,20 @@ from ..util import (
     run_default_filter,
     untis_split_first,
     untis_date_to_date,
-    get_term, TQDM_DEFAULTS,
+    get_term,
+    TQDM_DEFAULTS,
 )
 from .... import models as mysql_models
 
 logger = logging.getLogger(__name__)
 
+
 class SubstitutionFlag(Enum):
     CANCELLED = "E"
     CANCELLED_FOR_TEACHERS = "F"
 
-def import_substitutions(
-    teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref
-):
+
+def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref):
     """ Import substitutions """
 
     term = get_term()
@@ -128,10 +129,7 @@ def import_substitutions(
                 classes.append(classes_ref[id])
 
             if lesson_period:
-                (
-                    substitution,
-                    created,
-                ) = chronos_models.LessonSubstitution.objects.get_or_create(
+                (substitution, created,) = chronos_models.LessonSubstitution.objects.get_or_create(
                     lesson_period=lesson_period, week=week.week
                 )
 
@@ -165,7 +163,7 @@ def import_substitutions(
                 # TODO: Special assignment, no existing lesson period for that substitution
         else:
             if teacher_new:
-                logger.info ("  Supervision substitution detected")
+                logger.info("  Supervision substitution detected")
 
                 # Supervision
                 area_ref = supervision_areas_ref[sub.corridor_id]
@@ -181,9 +179,7 @@ def import_substitutions(
                         substitution,
                         created,
                     ) = chronos_models.SupervisionSubstitution.objects.get_or_create(
-                        supervision=supervision,
-                        date=date,
-                        defaults={"teacher": teacher_new},
+                        supervision=supervision, date=date, defaults={"teacher": teacher_new},
                     )
 
                     if created:
@@ -199,6 +195,10 @@ def import_substitutions(
                         logger.info("  Supervision substitution updated")
 
     # Delete all no longer existing substitutions
-    chronos_models.LessonSubstitution.objects.within_dates(date_start, date_end).exclude(import_ref_untis__in=existing_subs).delete()
-    chronos_models.SupervisionSubstitution.objects.filter(date__gte=date_start, date__lte=date_end).exclude(existing_subs__in=existing_subs).delete()
+    chronos_models.LessonSubstitution.objects.within_dates(date_start, date_end).exclude(
+        import_ref_untis__in=existing_subs
+    ).delete()
+    chronos_models.SupervisionSubstitution.objects.filter(
+        date__gte=date_start, date__lte=date_end
+    ).exclude(existing_subs__in=existing_subs).delete()
     logger.info("Left-over substitutions deleted")

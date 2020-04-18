@@ -11,9 +11,9 @@ DB_NAME = "untis"
 UNTIS_DATE_FORMAT = "%Y%m%d"
 
 TQDM_DEFAULTS = {
- "disable": None,
- "unit": "obj",
- "dynamic_ncols": True,
+    "disable": None,
+    "unit": "obj",
+    "dynamic_ncols": True,
 }
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,10 @@ def get_term(for_date: Optional[date] = None) -> mysql_models.Terms:
 
 
 def run_default_filter(
-    qs: QuerySet, for_date: Optional[date] = None, filter_term: bool = True, filter_deleted: bool = True
+    qs: QuerySet,
+    for_date: Optional[date] = None,
+    filter_term: bool = True,
+    filter_deleted: bool = True,
 ) -> QuerySet:
     """ Add a default filter in order to select the correct term """
 
@@ -51,9 +54,7 @@ def run_default_filter(
     )
 
     qs = run_using(qs).filter(
-            school_id=school_id,
-            schoolyear_id=schoolyear_id,
-            version_id=version_id,
+        school_id=school_id, schoolyear_id=schoolyear_id, version_id=version_id,
     )
 
     if filter_term:
@@ -76,7 +77,7 @@ def clean_array(seq: Sequence, conv: Callable[[Any], Any] = lambda el: el) -> Se
     [8, 12]
     """
 
-    filtered = filter(lambda el: bool(el), map(lambda el: conv(el) if el, seq))
+    filtered = filter(lambda el: bool(el), map(lambda el: conv(el) if el else None, seq))
     return type(a)(filtered)
 
 
@@ -115,9 +116,7 @@ def untis_colour_to_hex(colour: int) -> str:
     return "#" + hex_rgb
 
 
-def compare_m2m(
-    a: Union[List[Model], QuerySet], b: Union[List[Model], QuerySet]
-) -> bool:
+def compare_m2m(a: Union[List[Model], QuerySet], b: Union[List[Model], QuerySet]) -> bool:
     """ Compare if content of two m2m fields is equal """
 
     return set(a) == set(b)

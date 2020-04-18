@@ -164,4 +164,3 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
             lesson.periods.add(period[0], through_defaults={"room": period[1]})
 
         lesson.save()
-

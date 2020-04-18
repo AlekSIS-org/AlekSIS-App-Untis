@@ -15,15 +15,14 @@ from ..util import (
     untis_date_to_date,
     get_term,
     compare_m2m,
-    connect_untis_fields, TQDM_DEFAULTS,
+    connect_untis_fields,
+    TQDM_DEFAULTS,
 )
 
 logger = logging.getLogger(__name__)
 
 
-def import_lessons(
-    time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref
-):
+def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref):
     """ Import lessons """
 
     # Get current term
@@ -32,9 +31,9 @@ def import_lessons(
     date_end = untis_date_to_date(term.dateto)
 
     # Get all existing lessons for this term
-    lessons_in_term = chronos_models.Lesson.objects.filter(
-        term_untis=term.term_id
-    ).values_list("id", flat=True)
+    lessons_in_term = chronos_models.Lesson.objects.filter(term_untis=term.term_id).values_list(
+        "id", flat=True
+    )
 
     # Set the end date of all lessons from other terms ending in this term to the day before this term starts
     chronos_models.Lesson.objects.filter(date_end__gte=date_start).exclude(
@@ -145,8 +144,7 @@ def import_lessons(
                         "".join([c.short_name for c in course_classes]), subject.abbrev
                     )
                     group_name = "{}: {}".format(
-                        ", ".join([c.short_name for c in course_classes]),
-                        subject.abbrev,
+                        ", ".join([c.short_name for c in course_classes]), subject.abbrev,
                     )
 
                     # Get or create course group
@@ -230,9 +228,7 @@ def import_lessons(
             lesson.teachers.set(teachers)
 
             # All times for this course
-            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(
-                lesson=lesson
-            )
+            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(lesson=lesson)
 
             # If length has changed, delete all lesson periods
             if old_lesson_periods_qs.count() != len(time_periods):
@@ -256,10 +252,7 @@ def import_lessons(
                     # Update old lesson period
 
                     old_lesson_period = old_lesson_period_qs[0]
-                    if (
-                        old_lesson_period.period != time_period
-                        or old_lesson_period.room != room
-                    ):
+                    if old_lesson_period.period != time_period or old_lesson_period.room != room:
                         old_lesson_period.period = time_period
                         old_lesson_period.room = room
                         old_lesson_period.save()
@@ -268,7 +261,6 @@ def import_lessons(
                     # Create new lesson period
 
                     lesson.periods.add(
-                        time_period,
-                        through_defaults={"room": room, "element_id_untis": j},
+                        time_period, through_defaults={"room": room, "element_id_untis": j},
                     )
                     logger.info("      New time period added")

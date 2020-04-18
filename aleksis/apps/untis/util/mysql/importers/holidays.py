@@ -24,9 +24,7 @@ def import_holidays() -> Dict[int, chronos_models.Holiday]:
         # Check if needed data are provided
         if not holiday.name:
             raise RuntimeException(
-                "Holiday ID {}: Cannot import holiday without short name.".format(
-                    import_ref
-                )
+                "Holiday ID {}: Cannot import holiday without short name.".format(import_ref)
             )
 
         title = holiday.name[:50]
@@ -44,8 +42,8 @@ def import_holidays() -> Dict[int, chronos_models.Holiday]:
                 "title": title,
                 "comments": comments,
                 "date_start": date_start,
-                "date_end": date_end
-            }
+                "date_end": date_end,
+            },
         )
 
         if created:

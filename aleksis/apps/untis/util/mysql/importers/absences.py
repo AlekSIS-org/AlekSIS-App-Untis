@@ -9,20 +9,24 @@ from .... import models as mysql_models
 from ..util import (
     run_default_filter,
     get_term,
-    untis_date_to_date, move_weekday_to_range, get_first_period, get_last_period, TQDM_DEFAULTS,
+    untis_date_to_date,
+    move_weekday_to_range,
+    get_first_period,
+    get_last_period,
+    TQDM_DEFAULTS,
 )
 
 logger = logging.getLogger(__name__)
 unknown_reason, _ = chronos_models.AbsenceReason.objects.get_or_create(short_name="?")
+
 
 class AbsenceType(Enum):
     GROUP = 100
     TEACHER = 101
     ROOM = 102
 
-def import_absences(
-    absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref
-):
+
+def import_absences(absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref):
     ref = {}
 
     # Get term

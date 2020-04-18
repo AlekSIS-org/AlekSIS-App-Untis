@@ -12,7 +12,8 @@ from ..util import (
     move_weekday_to_range,
     get_first_period,
     get_last_period,
-    connect_untis_fields, TQDM_DEFAULTS,
+    connect_untis_fields,
+    TQDM_DEFAULTS,
 )
 
 logger = logging.getLogger(__name__)
