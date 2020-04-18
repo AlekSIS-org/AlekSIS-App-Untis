@@ -6,7 +6,7 @@ from tqdm import tqdm
 from aleksis.apps.chronos import models as chronos_models
 
 from .... import models as mysql_models
-from ..util import run_default_filter, untis_date_to_date, TQDM_DEFAULTS
+from ..util import TQDM_DEFAULTS, run_default_filter, untis_date_to_date
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
-from enum import Enum
 import logging
 from datetime import time
-from typing import List, Dict
+from enum import Enum
+from typing import Dict, List
 
 from constance import config
 from tqdm import tqdm
@@ -11,11 +11,11 @@ from aleksis.core import models as core_models
 
 from .... import models as mysql_models
 from ..util import (
+    TQDM_DEFAULTS,
+    connect_untis_fields,
     run_default_filter,
     untis_colour_to_hex,
     untis_split_first,
-    connect_untis_fields,
-    TQDM_DEFAULTS,
 )
 
 logger = logging.getLogger(__name__)

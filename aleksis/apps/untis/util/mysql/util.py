@@ -1,8 +1,8 @@
 import logging
 from datetime import date
-from typing import Optional, Union, Sequence, Callable, Any
+from typing import Any, Callable, Optional, Sequence, Union
 
-from django.db.models import QuerySet, Model
+from django.db.models import Model, QuerySet
 from django.utils import timezone
 
 from ... import models as mysql_models
@@ -116,13 +116,13 @@ def untis_colour_to_hex(colour: int) -> str:
     return "#" + hex_rgb
 
 
-def compare_m2m(a: Union[List[Model], QuerySet], b: Union[List[Model], QuerySet]) -> bool:
+def compare_m2m(a: Union[Sequence[Model], QuerySet], b: Union[Sequence[Model], QuerySet]) -> bool:
     """ Compare if content of two m2m fields is equal """
 
     return set(a) == set(b)
 
 
-def connect_untis_fields(obj: Model, attr: str, limit: int) -> List[str]:
+def connect_untis_fields(obj: Model, attr: str, limit: int) -> Sequence[str]:
     """ Connects data from multiple DB fields
 
     Untis splits structured data, like lists, as comma-separated string into

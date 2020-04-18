@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils.translation import ugettext as _
 
-from aleksis.apps.untis.util.xml.xml import untis_import_xml
+from ...util.xml.xml import untis_import_xml
 
 
 class Command(BaseCommand):

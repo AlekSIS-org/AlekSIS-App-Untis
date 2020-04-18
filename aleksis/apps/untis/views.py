@@ -5,7 +5,7 @@ from django.shortcuts import render
 from aleksis.core.decorators import admin_required
 
 from .forms import UntisUploadForm
-from aleksis.apps.untis.util.xml.xml import untis_import_xml
+from .util.xml.xml import untis_import_xml
 
 
 @login_required

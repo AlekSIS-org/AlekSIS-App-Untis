@@ -1,6 +1,7 @@
-from constance import config
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
+from constance import config
 from material import Fieldset
 
 from aleksis.core.forms import EditGroupForm

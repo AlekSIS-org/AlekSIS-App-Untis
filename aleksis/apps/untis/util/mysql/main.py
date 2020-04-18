@@ -2,14 +2,14 @@ from django.db import transaction
 
 from .importers.absences import import_absences
 from .importers.common_data import (
-    import_subjects,
+    import_absence_reasons,
+    import_breaks,
     import_classes,
     import_rooms,
+    import_subjects,
     import_supervision_areas,
     import_teachers,
     import_time_periods,
-    import_breaks,
-    import_absence_reasons,
 )
 from .importers.events import import_events
 from .importers.holidays import import_holidays

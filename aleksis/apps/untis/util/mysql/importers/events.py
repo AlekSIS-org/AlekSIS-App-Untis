@@ -6,14 +6,14 @@ from aleksis.apps.chronos import models as chronos_models
 
 from .... import models as mysql_models
 from ..util import (
-    run_default_filter,
-    get_term,
-    untis_date_to_date,
-    move_weekday_to_range,
+    TQDM_DEFAULTS,
+    connect_untis_fields,
     get_first_period,
     get_last_period,
-    connect_untis_fields,
-    TQDM_DEFAULTS,
+    get_term,
+    move_weekday_to_range,
+    run_default_filter,
+    untis_date_to_date,
 )
 
 logger = logging.getLogger(__name__)

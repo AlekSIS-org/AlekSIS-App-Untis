@@ -1,5 +1,6 @@
-from aleksis.core.settings import _settings
 from django.utils.translation import gettext_lazy as _
+
+from aleksis.core.settings import _settings
 
 DATABASES = {
     "untis": {

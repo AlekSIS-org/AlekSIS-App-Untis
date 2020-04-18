@@ -1,19 +1,21 @@
-from enum import Enum
 import logging
+from enum import Enum
+
+from django.db.models import Q
 
 from calendarweek import CalendarWeek
-from django.db.models import Q
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
-from ..util import (
-    run_default_filter,
-    untis_split_first,
-    untis_date_to_date,
-    get_term,
-    TQDM_DEFAULTS,
-)
+
 from .... import models as mysql_models
+from ..util import (
+    TQDM_DEFAULTS,
+    get_term,
+    run_default_filter,
+    untis_date_to_date,
+    untis_split_first,
+)
 
 logger = logging.getLogger(__name__)
 

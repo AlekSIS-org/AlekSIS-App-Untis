@@ -1,8 +1,9 @@
 import logging
 from datetime import timedelta
 
-from constance import config
 from django.utils.translation import gettext as _
+
+from constance import config
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
@@ -10,13 +11,13 @@ from aleksis.core import models as core_models
 
 from .... import models as mysql_models
 from ..util import (
-    run_default_filter,
-    untis_split_third,
-    untis_date_to_date,
-    get_term,
+    TQDM_DEFAULTS,
     compare_m2m,
     connect_untis_fields,
-    TQDM_DEFAULTS,
+    get_term,
+    run_default_filter,
+    untis_date_to_date,
+    untis_split_third,
 )
 
 logger = logging.getLogger(__name__)
