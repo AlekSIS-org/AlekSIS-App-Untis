@@ -13,11 +13,6 @@ DATABASES = {
 }
 
 CONSTANCE_CONFIG = {
-    "UNTIS_DB_NAME": ("untis", _("Name of database"), "char_field"),
-    "UNTIS_DB_USER": ("aleksis", _("Database user"), "char_field"),
-    "UNTIS_DB_PASSWORD": ("aleksis", _("Database password"), "char_field"),
-    "UNTIS_DB_HOST": ("127.0.0.1", _("Database host"), "char_field"),
-    "UNTIS_DB_PORT": ("3306", _("Database port"), "char_field"),
     "UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS": (
         True,
         _("Update values of existing subjects?"),
@@ -64,13 +59,6 @@ CONSTANCE_CONFIG = {
 }
 
 CONSTANCE_CONFIG_FIELDSETS = {
-    "UNTIS import via MySQL:  Database Settings": (
-        "UNTIS_DB_NAME",
-        "UNTIS_DB_USER",
-        "UNTIS_DB_PASSWORD",
-        "UNTIS_DB_HOST",
-        "UNTIS_DB_PORT",
-    ),
     "UNTIS import via MySQL: Common Settings": (
         "UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS",
         "UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_SHORT_NAME",
