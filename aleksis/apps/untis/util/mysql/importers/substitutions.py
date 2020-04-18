@@ -1,3 +1,4 @@
+from enum import Enum
 import logging
 
 from calendarweek import CalendarWeek
@@ -15,6 +16,9 @@ from .... import models as mysql_models
 
 logger = logging.getLogger(__name__)
 
+class SubstitutionFlag(Enum):
+    CANCELLED = "E"
+    CANCELLED_FOR_TEACHERS = "F"
 
 def import_substitutions(
     teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref
@@ -58,9 +62,9 @@ def import_substitutions(
 
         # Cancellation?
         cancelled, cancelled_for_teachers = False, False
-        if "E" in sub.flags:
+        if SubstitutionFlag.CANCELLED in sub.flags:
             cancelled = True
-        elif "F" in sub.flags:
+        elif SubstitutionFlag.CANCELLED_FOR_TEACHERS in sub.flags:
             cancelled_for_teachers = True
 
         # Comment
@@ -88,6 +92,7 @@ def import_substitutions(
                 period__period=period,
                 period__weekday=weekday,
             ).on_day(date)
+
             if lesson_periods.exists():
                 lesson_period = lesson_periods[0]
                 logger.info("  Matching lesson period found ({})".format(lesson_period))
@@ -106,7 +111,7 @@ def import_substitutions(
             if cancelled:
                 subject_new = None
 
-            # # Room
+            # Room
             room_old = lesson_period.room if lesson_period else None
             room_new = None
             if sub.room_idsubst != 0:
@@ -115,7 +120,7 @@ def import_substitutions(
                 if room_old is not None and room_old.id == room_new.id:
                     room_new = None
 
-            # # Classes
+            # Classes
             classes = []
             class_ids = untis_split_first(sub.classids, conv=int)
 
@@ -194,13 +199,6 @@ def import_substitutions(
                         logger.info("  Supervision substitution updated")
 
     # Delete all no longer existing substitutions
-    for s in chronos_models.LessonSubstitution.objects.within_dates(date_start, date_end):
-        if s.import_ref_untis and s.import_ref_untis not in existing_subs:
-            logger.info("Substitution {} deleted".format(s.id))
-            s.delete()
-
-    # Delete all no longer existing supervision substitutions
-    for s in chronos_models.SupervisionSubstitution.objects.filter(date__gte=date_start, date__lte=date_end):
-        if s.import_ref_untis and s.import_ref_untis not in existing_subs:
-            logger.info("Supervision substitution {} deleted".format(s.id))
-            s.delete()
+    chronos_models.LessonSubstitution.objects.within_dates(date_start, date_end).exclude(import_ref_untis__in=existing_subs).delete()
+    chronos_models.SupervisionSubstitution.objects.filter(date__gte=date_start, date__lte=date_end).exclude(existing_subs__in=existing_subs).delete()
+    logger.info("Left-over substitutions deleted")

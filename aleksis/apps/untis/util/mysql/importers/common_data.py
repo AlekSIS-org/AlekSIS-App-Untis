@@ -1,3 +1,4 @@
+from enum import Enum
 import logging
 from datetime import time
 from typing import List, Dict
@@ -15,6 +16,10 @@ from ..util import run_default_filter, untis_colour_to_hex, untis_split_first, c
 logger = logging.getLogger(__name__)
 
 
+class CommonDataId(Enum):
+    PERIOD = 40
+
+
 def import_subjects() -> Dict[int, chronos_models.Subject]:
     """ Import subjects """
 
@@ -26,12 +31,11 @@ def import_subjects() -> Dict[int, chronos_models.Subject]:
     for subject in tqdm(subjects, desc="Import subjects", **TQDM_DEFAULTS):
         # Check if needed data are provided
         if not subject.name:
-            logger.error(
+            raise RuntimeException(
                 "Subject ID {}: Cannot import subject without short name.".format(
                     subject.subject_id
                 )
             )
-            continue
 
         # Build values
         short_name = subject.name[:10]
@@ -95,12 +99,11 @@ def import_teachers() -> Dict[int, core_models.Person]:
     for teacher in tqdm(teachers, desc="Import teachers", **TQDM_DEFAULTS):
         # Check if needed data are provided
         if not teacher.name:
-            logger.error(
+            raise RuntimeException(
                 "Teacher ID {}: Cannot import teacher without short name.".format(
                     teacher.teacher_id
                 )
             )
-            continue
 
         # Build values
         short_name = teacher.name
@@ -165,12 +168,11 @@ def import_classes(
     for class_ in tqdm(course_classes, desc="Import classes", **TQDM_DEFAULTS):
         # Check if needed data are provided
         if not class_.name:
-            logger.error(
+            raise RuntimeException(
                 "Class ID {}: Cannot import class without short name.".format(
                     class_.teacher_id
                 )
             )
-            continue
 
         # Build values
         short_name = class_.name[:16]
@@ -234,12 +236,11 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
 
     for room in tqdm(rooms, desc="Import rooms", **TQDM_DEFAULTS):
         if not room.name:
-            logger.error(
+            raise RuntimeException(
                 "Room ID {}: Cannot import room without short name.".format(
                     room.room_id
                 )
             )
-            continue
 
         # Build values
         short_name = room.name[:10]
@@ -288,12 +289,11 @@ def import_supervision_areas(
 
     for area in tqdm(areas, desc="Import supervision areas", **TQDM_DEFAULTS):
         if not area.name:
-            logger.error(
+            raise RuntimeException(
                 "Supervision area ID {}: Cannot import supervision area without short name.".format(
                     area.corridor_id
                 )
             )
-            continue
 
         short_name = area.name[:10]
         name = area.longname[:50] if area.longname else short_name
@@ -417,7 +417,7 @@ def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
 
     periods = (
         run_default_filter(mysql_models.Commondata.objects, filter_term=False)
-        .filter(id=40)  # Fixed UNTIS constant
+        .filter(id=CommonDataId.PERIOD)
         .order_by("number", "number1")
     )
 
@@ -510,12 +510,11 @@ def import_absence_reasons() -> Dict[int, chronos_models.AbsenceReason]:
 
     for reason in tqdm(reasons, desc="Import absence reasons", **TQDM_DEFAULTS):
         if not reason.name:
-            logger.error(
+            raise RuntimeException(
                 "Absence reason ID {}: Cannot import absence reason without short name.".format(
                     reason.absence_reason_id
                 )
             )
-            continue
 
         # Build values
         short_name = reason.name

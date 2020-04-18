@@ -1,3 +1,4 @@
+from enum import Enum
 import logging
 
 from tqdm import tqdm
@@ -14,6 +15,10 @@ from ..util import (
 logger = logging.getLogger(__name__)
 unknown_reason, _ = chronos_models.AbsenceReason.objects.get_or_create(short_name="?")
 
+class AbsenceType(Enum):
+    GROUP = 100
+    TEACHER = 101
+    ROOM = 102
 
 def import_absences(
     absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref
@@ -73,12 +78,11 @@ def import_absences(
         teacher = None
         room = None
 
-        # 100, 101 and 102 are UNTIS constants
-        if type_ == 100:
+        if type_ == AbsenceType.GROUP:
             group = classes_ref[absence.ida]
-        elif type_ == 101:
+        elif type_ == AbsenceType.TEACHER:
             teacher = teachers_ref[absence.ida]
-        elif type == 102:
+        elif type == AbsenceType.ROOM:
             room = rooms_ref[absence.ida]
 
         new_absence, created = chronos_models.Absence.objects.get_or_create(

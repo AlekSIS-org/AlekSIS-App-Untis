@@ -1,3 +1,5 @@
+from django.db import transaction
+
 from .importers.absences import import_absences
 from .importers.common_data import (
     import_subjects,
@@ -15,6 +17,7 @@ from .importers.lessons import import_lessons
 from .importers.substitutions import import_substitutions
 
 
+@transaction.atomic
 def untis_import_mysql():
     # Coomon data for Chronos
     subjects_ref = import_subjects()

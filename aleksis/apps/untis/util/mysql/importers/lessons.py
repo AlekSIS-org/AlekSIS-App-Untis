@@ -116,6 +116,7 @@ def import_lessons(
                 course_classes.append(c)
 
             if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
+                # Negative import_ref denotes a course group
                 group_import_ref = -int("{}{}".format(lesson_id, i))
                 subject_ref = subject.abbrev
 
@@ -223,7 +224,7 @@ def import_lessons(
                 logger.info("    New lesson created")
 
             # Sync groups
-            lesson.groupsset(groups)
+            lesson.groups.set(groups)
 
             # Sync teachers
             lesson.teachers.set(teachers)
