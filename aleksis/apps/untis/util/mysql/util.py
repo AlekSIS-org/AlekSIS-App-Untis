@@ -1,5 +1,5 @@
 import logging
-from datetime import date
+from datetime import date, datetime
 from typing import Any, Callable, Optional, Sequence, Union
 
 from django.db.models import Model, QuerySet
@@ -78,7 +78,7 @@ def clean_array(seq: Sequence, conv: Callable[[Any], Any] = lambda el: el) -> Se
     """
 
     filtered = filter(lambda el: bool(el), map(lambda el: conv(el) if el else None, seq))
-    return type(a)(filtered)
+    return type(seq)(filtered)
 
 
 def untis_split_first(s: str, conv: Callable[[Any], Any] = lambda el: el) -> Sequence:

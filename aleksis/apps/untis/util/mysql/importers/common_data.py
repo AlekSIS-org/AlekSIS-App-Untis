@@ -416,7 +416,7 @@ def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
 
     periods = (
         run_default_filter(mysql_models.Commondata.objects, filter_term=False)
-        .filter(id=CommonDataId.PERIOD)
+        .filter(id=CommonDataId.PERIOD.value)
         .order_by("number", "number1")
     )
 

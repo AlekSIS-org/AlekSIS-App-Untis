@@ -65,9 +65,9 @@ def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref, sup
 
         # Cancellation?
         cancelled, cancelled_for_teachers = False, False
-        if SubstitutionFlag.CANCELLED in sub.flags:
+        if SubstitutionFlag.CANCELLED.value in sub.flags:
             cancelled = True
-        elif SubstitutionFlag.CANCELLED_FOR_TEACHERS in sub.flags:
+        elif SubstitutionFlag.CANCELLED_FOR_TEACHERS.value in sub.flags:
             cancelled_for_teachers = True
 
         # Comment
