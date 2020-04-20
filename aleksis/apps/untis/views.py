@@ -5,12 +5,12 @@ from django.shortcuts import render
 from aleksis.core.decorators import admin_required
 
 from .forms import UntisUploadForm
-from .util import untis_import_xml
+from .util.xml.xml import untis_import_xml
 
 
 @login_required
 @admin_required
-def untis_import(request: HttpRequest) -> HttpResponse:
+def xml_import(request: HttpRequest) -> HttpResponse:
     context = {}
 
     upload_form = UntisUploadForm()
@@ -23,4 +23,4 @@ def untis_import(request: HttpRequest) -> HttpResponse:
 
     context["upload_form"] = upload_form
 
-    return render(request, "untis/untis_import.html", context)
+    return render(request, "untis/xml_import.html", context)

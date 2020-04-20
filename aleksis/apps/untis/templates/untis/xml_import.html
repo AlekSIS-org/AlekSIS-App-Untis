@@ -4,9 +4,8 @@
 
 {% load material_form i18n %}
 
-
-{% block browser_title %}{% blocktrans %}Import Untis data{% endblocktrans %}{% endblock %}
-{% block page_title %}{% blocktrans %}Import Untis data{% endblocktrans %}{% endblock %}
+{% block browser_title %}{% blocktrans %}Import Untis data via XML{% endblocktrans %}{% endblock %}
+{% block page_title %}{% blocktrans %}Import Untis data via XML{% endblocktrans %}{% endblock %}
 
 {% block content %}
 
@@ -15,9 +14,9 @@
       Untis provides a function for exporting all data as an XML file.
     {% endblocktrans %}
   </p>
-  <div class="alert error">
+  <div class="alert warning">
     <p>
-      <i class="material-icons left">error</i>
+      <i class="material-icons left">warning</i>
       {% blocktrans %}
         Newly imported data will be valid as of tomorrow.
       {% endblocktrans %}
@@ -38,7 +37,7 @@
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% form form=upload_form %}{% endform %}
-    {% include "core/save_button.html" %}
+    {% include "core/save_button.html" with icon="import_export" caption=_("Import data") %}
   </form>
 
 {% endblock %}
