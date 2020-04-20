@@ -177,6 +177,8 @@ def import_substitutions(
 
                 room = room_old if not room_new and room_old else room_new
                 subject = subject_old if not subject_new else subject_new
+                teachers = [teacher_old] if not teacher_new else [teacher_new]
+
                 (
                     extra_lesson,
                     created,
