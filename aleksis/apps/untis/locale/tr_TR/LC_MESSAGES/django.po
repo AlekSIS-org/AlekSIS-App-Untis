@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-09-15 14:10+0200\n"
+"POT-Creation-Date: 2020-04-01 13:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Untis XML export"
 msgstr ""
 
-#: management/commands/untis_import.py:10
+#: management/commands/untis_import.py:9
 msgid "Path to Untis XML export file"
 msgstr ""
 
@@ -29,25 +29,25 @@ msgstr ""
 msgid "Units import"
 msgstr ""
 
-#: templates/untis/untis_import.html:6
+#: templates/untis/untis_import.html:8 templates/untis/untis_import.html:9
 msgid "Import Untis data"
 msgstr ""
 
-#: templates/untis/untis_import.html:13
+#: templates/untis/untis_import.html:14
 msgid ""
 "\n"
-"        Untis provides a function for exporting all data as an XML file.\n"
-"      "
+"      Untis provides a function for exporting all data as an XML file.\n"
+"    "
 msgstr ""
 
-#: templates/untis/untis_import.html:19
+#: templates/untis/untis_import.html:21
 msgid ""
 "\n"
 "        Newly imported data will be valid as of tomorrow.\n"
 "      "
 msgstr ""
 
-#: templates/untis/untis_import.html:22
+#: templates/untis/untis_import.html:24
 msgid ""
 "\n"
 "        The effective dates of all existing lessons will be set to end\n"
@@ -55,7 +55,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/untis/untis_import.html:26
+#: templates/untis/untis_import.html:28
 msgid ""
 "\n"
 "        The effective dates of all newly imported lessons will be set to\n"
@@ -63,7 +63,7 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/untis/untis_import.html:30
+#: templates/untis/untis_import.html:32
 msgid ""
 "\n"
 "        Teachers, rooms, subjects and classes and periods will be updated in "
@@ -71,26 +71,22 @@ msgid ""
 "      "
 msgstr ""
 
-#: templates/untis/untis_import.html:41
-msgid "Process"
-msgstr ""
-
-#: util.py:68
+#: util.py:78
 #, python-format
 msgid "Class %s"
 msgstr ""
 
-#: util.py:81
+#: util.py:92
 #, python-format
 msgid "Could not set class teacher of %(class)s to %(teacher)s."
 msgstr ""
 
-#: util.py:130
+#: util.py:153
 #, python-format
 msgid "Invalid list of classes: %s"
 msgstr ""
 
-#: util.py:138
+#: util.py:161
 #, python-format
 msgid "Failed to import lesson: Teacher %s does not exist."
 msgstr ""
