@@ -25,7 +25,14 @@ class SubstitutionFlag(Enum):
     CANCELLED_FOR_TEACHERS = "F"
 
 
-def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref):
+def import_substitutions(
+    teachers_ref,
+    subjects_ref,
+    rooms_ref,
+    classes_ref,
+    supervision_areas_ref,
+    time_periods_ref,
+):
     """ Import substitutions """
 
     term = get_term()
@@ -161,8 +168,34 @@ def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref, sup
                     logger.info("  Substitution updated")
 
             else:
-                pass
-                # TODO: Special assignment, no existing lesson period for that substitution
+                logger.info("  Extra lesson detected")
+                time_period = time_periods_ref[date.weekday()][period]
+
+                groups = [
+                    classes_ref[pk] for pk in untis_split_first(sub.classids, int)
+                ]
+
+                room = room_old if not room_new and room_old else room_new
+                subject = subject_old if not subject_new else subject_new
+                (
+                    extra_lesson,
+                    created,
+                ) = chronos_models.ExtraLesson.objects.update_or_create(
+                    import_ref_untis=sub_id,
+                    defaults={
+                        "week": week.week,
+                        "period": time_period,
+                        "subject": subject,
+                        "room": room,
+                        "comment": comment,
+                    },
+                )
+
+                if created:
+                    logger.info("  Extra lesson created")
+
+                extra_lesson.teachers.set(teachers)
+                extra_lesson.groups.set(groups)
         else:
             if teacher_new:
                 logger.info("  Supervision substitution detected")
@@ -197,10 +230,20 @@ def import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref, sup
                         logger.info("  Supervision substitution updated")
 
     # Delete all no longer existing substitutions
-    chronos_models.LessonSubstitution.objects.within_dates(date_start, date_end).exclude(
-        import_ref_untis__in=existing_subs
-    ).delete()
-    chronos_models.SupervisionSubstitution.objects.filter(
-        date__gte=date_start, date__lte=date_end
-    ).exclude(existing_subs__in=existing_subs).delete()
-    logger.info("Left-over substitutions deleted")
+    for s in chronos_models.LessonSubstitution.objects.within_dates(date_start, date_end):
+        if s.import_ref_untis and s.import_ref_untis not in existing_subs:
+            logger.info("Substitution {} deleted".format(s.id))
+            s.delete()
+
+    # Delete all no longer existing extra lessons
+    for s in chronos_models.ExtraLesson.objects.within_dates(date_start, date_end):
+        if s.import_ref_untis and s.import_ref_untis not in existing_subs:
+            logger.info("Extra lesson {} deleted".format(s.id))
+            s.delete()
+
+    # Delete all no longer existing supervision substitutions
+    for s in chronos_models.SupervisionSubstitution.objects.filter(date__gte=date_start, date__lte=date_end):
+        if s.import_ref_untis and s.import_ref_untis not in existing_subs:
+            logger.info("Supervision substitution {} deleted".format(s.id))
+            s.delete()
+

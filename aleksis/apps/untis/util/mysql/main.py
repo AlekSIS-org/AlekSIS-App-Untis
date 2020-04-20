@@ -43,7 +43,7 @@ def untis_import_mysql():
 
     # Substitutions
     import_absences(absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref)
-    import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref)
+    import_substitutions(teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref, time_periods_ref)
 
     # Events
     import_events(time_periods_ref, teachers_ref, classes_ref, rooms_ref)
