@@ -8,8 +8,7 @@ from django.utils.translation import gettext as _
 from aleksis.core.decorators import admin_required
 from aleksis.core.models import Group
 
-from .filters import GroupFilter
-from .forms import UntisUploadForm, GroupSubjectFormset, ChildGroupsForm
+from .forms import UntisUploadForm, GroupSubjectFormset
 from .util.xml.xml import untis_import_xml
 
 
@@ -63,38 +62,3 @@ def groups_subjects(request: HttpRequest) -> HttpResponse:
     return render(request, "untis/groups_subjects.html", context)
 
 
-@admin_required
-def groups_child_groups(request: HttpRequest) -> HttpResponse:
-    """ Assign child groups to groups (for matching by MySQL importer) """
-    context = {}
-
-    # Apply filter
-    filter = GroupFilter(request.GET, queryset=Group.objects.all())
-    context["filter"] = filter
-
-    # Paginate
-    paginator = Paginator(filter.qs, 1)
-    page_number = request.POST.get("page", request.POST.get("old_page"))
-
-    if page_number:
-        page = paginator.get_page(page_number)
-        group = page[0]
-
-        if "save" in request.POST:
-            # Save
-            form = ChildGroupsForm(request.POST)
-            form.is_valid()
-
-            if "child_groups" in form.cleaned_data:
-                group.child_groups.set(form.cleaned_data["child_groups"])
-                group.save()
-                messages.success(request, _("The child groups were successfully saved."))
-        else:
-            # Init form
-            form = ChildGroupsForm(initial={"child_groups": group.child_groups.all()})
-
-        context["paginator"] = paginator
-        context["page"] = page
-        context["group"] = group
-        context["form"] = form
-    return render(request, "untis/groups_child_groups.html", context)

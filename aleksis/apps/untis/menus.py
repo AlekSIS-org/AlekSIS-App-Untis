@@ -20,14 +20,5 @@ MENUS = {
                 "aleksis.core.util.core_helpers.has_person",
             ],
         },
-        {
-            "name": _("Link child groups to groups (for UNTIS MySQL import)"),
-            "url": "untis_groups_child_groups",
-            "validators": [
-                "menu_generator.validators.is_authenticated",
-                "menu_generator.validators.is_superuser",
-                "aleksis.core.util.core_helpers.has_person",
-            ],
-        },
     ]
 }

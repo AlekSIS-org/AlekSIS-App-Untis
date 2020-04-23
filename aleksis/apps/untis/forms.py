@@ -34,8 +34,6 @@ GroupSubjectFormset = forms.modelformset_factory(
 )
 
 
-class ChildGroupsForm(forms.Form):
-    child_groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all())
 
 
 if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
