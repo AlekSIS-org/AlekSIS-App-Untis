@@ -6,18 +6,14 @@ MENUS = {
             "name": _("Untis XML import"),
             "url": "untis_xml_import",
             "validators": [
-                "menu_generator.validators.is_authenticated",
-                "menu_generator.validators.is_superuser",
-                "aleksis.core.util.core_helpers.has_person",
+                ("aleksis.core.util.predicates.permission_validator", "untis.do_xml_import"),
             ],
         },
         {
             "name": _("Link subjects to groups (for UNTIS MySQL import)"),
             "url": "untis_groups_subjects",
             "validators": [
-                "menu_generator.validators.is_authenticated",
-                "menu_generator.validators.is_superuser",
-                "aleksis.core.util.core_helpers.has_person",
+                ("aleksis.core.util.predicates.permission_validator", "untis.assign_subjects_to_groups"),
             ],
         },
     ]
