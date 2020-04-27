@@ -118,7 +118,7 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
             if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
                 # Negative import_ref denotes a course group
                 group_import_ref = -int("{}{}".format(lesson_id, i))
-                subject_ref = subject.abbrev
+                subject_ref = subject.short_name
 
                 # Search by parent groups and subject
                 qs = core_models.Group.objects.filter(
@@ -142,10 +142,10 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
 
                     # Build names and refs for course groups
                     group_short_name = "{}-{}".format(
-                        "".join([c.short_name for c in course_classes]), subject.abbrev
+                        "".join([c.short_name for c in course_classes]), subject.short_name
                     )
                     group_name = "{}: {}".format(
-                        ", ".join([c.short_name for c in course_classes]), subject.abbrev,
+                        ", ".join([c.short_name for c in course_classes]), subject.short_name
                     )
 
                     # Get or create course group

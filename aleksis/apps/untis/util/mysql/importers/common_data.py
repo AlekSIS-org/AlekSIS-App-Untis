@@ -53,7 +53,7 @@ def import_subjects() -> Dict[int, chronos_models.Subject]:
 
         # Get or create subject object by short name
         new_subject, created = chronos_models.Subject.objects.get_or_create(
-            abbrev=short_name,
+            short_name=short_name,
             defaults={
                 "name": name,
                 "colour_fg": colour_fg,
