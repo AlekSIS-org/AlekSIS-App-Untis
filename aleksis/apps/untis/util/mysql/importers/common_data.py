@@ -3,11 +3,11 @@ from datetime import time
 from enum import Enum
 from typing import Dict, List
 
-from constance import config
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
+from aleksis.core.util.core_helpers import get_site_preferences
 
 from .... import models as mysql_models
 from ..util import (
@@ -67,7 +67,7 @@ def import_subjects() -> Dict[int, chronos_models.Subject]:
 
         # Force sync
         changed = False
-        if config.UNTIS_IMPORT_MYSQL_UPDATE_SUBJECTS and (
+        if get_site_preferences()["untis_mysql__update_subjects"] and (
             new_subject.name != name
             or new_subject.colour_fg != colour_fg
             or new_subject.colour_bg != colour_bg
@@ -131,7 +131,7 @@ def import_teachers() -> Dict[int, core_models.Person]:
             logger.info("  New person created")
 
         changed = False
-        if config.UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_NAME and (
+        if get_site_preferences()["untis_mysql__update_persons_name"] and (
             new_teacher.first_name != first_name or new_teacher.last_name != last_name
         ):
             new_teacher.first_name = first_name
@@ -140,7 +140,7 @@ def import_teachers() -> Dict[int, core_models.Person]:
             logger.info("  First and last name updated")
 
         if (
-            config.UNTIS_IMPORT_MYSQL_UPDATE_PERSONS_SHORT_NAME
+            get_site_preferences()["untis_mysql__update_persons_short_name"]
             and new_teacher.short_name != short_name
         ):
             new_teacher.short_name = short_name
@@ -194,14 +194,14 @@ def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, cor
         changed = False
 
         if (
-            config.UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_SHORT_NAME
+            get_site_preferences()["untis_mysql__update_groups_short_name"]
             and new_group.short_name != short_name
         ):
             new_group.short_name = short_name
             changed = True
             logger.info("  Short name updated")
 
-        if config.UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_NAME and new_group.name != name:
+        if get_site_preferences()["untis_mysql__update_groups_name"] and new_group.name != name:
             new_group.name = name
             changed = True
             logger.info("  Name updated")
@@ -214,7 +214,7 @@ def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, cor
         if changed:
             new_group.save()
 
-        if config.UNTIS_IMPORT_MYSQL_UPDATE_GROUPS_OVERWRITE_OWNERS:
+        if get_site_preferences()["untis_mysql__overwrite_group_owners"]:
             new_group.owners.set(owners)
             logger.info("  Group owners set")
         else:
@@ -256,7 +256,7 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
 
         changed = False
 
-        if config.UNTIS_IMPORT_MYSQL_UPDATE_ROOMS_NAME and new_room.name != name:
+        if get_site_preferences()["untis_mysql__update_rooms_name"] and new_room.name != name:
             new_room.name = name
             changed = True
             logger.info("  Name updated")
@@ -313,7 +313,7 @@ def import_supervision_areas(breaks_ref, teachers_ref) -> Dict[int, chronos_mode
 
         changed = False
 
-        if config.UNTIS_IMPORT_MYSQL_UPDATE_SUPERVISION_AREAS and (
+        if get_site_preferences()["untis_mysql__update_supervision_areas"] and (
             new_area.name != new_area.name
             or new_area.colour_fg != colour_fg
             or new_area.colour_bg != colour_bg

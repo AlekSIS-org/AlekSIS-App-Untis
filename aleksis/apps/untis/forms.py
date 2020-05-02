@@ -1,11 +1,11 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from constance import config
 from material import Fieldset
 
 from aleksis.core.forms import EditGroupForm
 from aleksis.core.models import Group
+from aleksis.core.util.core_helpers import get_site_preferences
 
 
 class UntisUploadForm(forms.Form):
@@ -33,8 +33,5 @@ GroupSubjectFormset = forms.modelformset_factory(
     Group, form=GroupSubjectForm, max_num=0, extra=0
 )
 
-
-
-
-if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
+if get_site_preferences()["untis_mysql__use_course_groups"]:
     EditGroupForm.add_node_to_layout(Fieldset(_("UNTIS import"), "untis_subject"))

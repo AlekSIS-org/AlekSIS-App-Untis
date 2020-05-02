@@ -3,11 +3,11 @@ from datetime import timedelta
 
 from django.utils.translation import gettext as _
 
-from constance import config
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
+from aleksis.core.util.core_helpers import get_site_preferences
 
 from .... import models as mysql_models
 from ..util import (
@@ -115,7 +115,7 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                 c = classes_ref[class_id]
                 course_classes.append(c)
 
-            if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
+            if get_site_preferences()["untis_mysql__use_course_groups"]:
                 # Negative import_ref denotes a course group
                 group_import_ref = -int("{}{}".format(lesson_id, i))
                 subject_ref = subject.short_name
