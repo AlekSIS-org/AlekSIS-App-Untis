@@ -118,16 +118,15 @@ def import_teachers() -> Dict[int, core_models.Person]:
 
         logger.info("Import teacher {} (as person) …".format(short_name))
 
-        new_teacher, created = core_models.Person.objects.get_or_create(
-            short_name__iexact=short_name,
-            defaults={
-                "first_name": first_name,
-                "last_name": last_name,
-                "import_ref_untis": import_ref,
-            },
-        )
-
-        if created:
+        try:
+            new_teacher = core_models.Person.objects.get(short_name__iexact=short_name)
+        except core_models.Person.DoesNotExist:
+            new_teacher = core_models.Person.objects.create(
+                short_name=short_name,
+                first_name=first_name,
+                last_name=last_name,
+                import_ref_untis=import_ref,
+            )
             logger.info("  New person created")
 
         changed = False
@@ -184,11 +183,12 @@ def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, cor
 
         logger.info("Import class {} (as group) …".format(short_name))
 
-        new_group, created = core_models.Group.objects.get_or_create(
-            short_name__iexact=short_name, defaults={"name": name, "import_ref_untis": import_ref},
-        )
-
-        if created:
+        try:
+            new_group = core_models.Group.objects.get(short_name__iexact=short_name)
+        except core_models.Group.DoesNotExist:
+            new_group = core_models.Group.objects.create(
+                short_name=short_name, name=name, import_ref_untis=import_ref,
+            )
             logger.info("  New person created")
 
         changed = False
