@@ -1,19 +1,20 @@
 from django.utils.translation import gettext as _
 
-from constance import config
 from jsonstore import CharField, IntegerField
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
 
 # Core models
+from aleksis.core.util.core_helpers import get_site_preferences
+
 core_models.Person.field(
     import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 core_models.Group.field(
     import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
-if config.UNTIS_IMPORT_MYSQL_USE_COURSE_GROUPS:
+if get_site_preferences()["untis_mysql__use_course_groups"]:
     core_models.Group.field(
         untis_subject=CharField(
             verbose_name=_("UNTIS subject"),
