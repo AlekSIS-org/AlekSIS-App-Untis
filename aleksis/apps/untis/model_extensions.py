@@ -4,7 +4,6 @@ from jsonstore import CharField, IntegerField
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
-
 from aleksis.core.util.core_helpers import get_site_preferences
 
 core_models.Person.field(
