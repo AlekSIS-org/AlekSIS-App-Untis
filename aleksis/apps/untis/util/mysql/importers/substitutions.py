@@ -128,8 +128,8 @@ def import_substitutions(
             classes = []
             class_ids = untis_split_first(sub.classids, conv=int)
 
-            for id in class_ids:
-                classes.append(classes_ref[id])
+            for id_ in class_ids:
+                classes.append(classes_ref[id_])
 
             if lesson_period:
                 (substitution, created,) = chronos_models.LessonSubstitution.objects.get_or_create(

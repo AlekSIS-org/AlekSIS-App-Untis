@@ -1,9 +1,11 @@
 from datetime import date, time, timedelta
 from typing import BinaryIO, Optional, Union
-from xml.dom import Node, minidom
+from xml.dom import Node
 
 from django.http import HttpRequest
 from django.utils.translation import ugettext as _
+
+import defusedxml
 
 from aleksis.apps.chronos.models import Lesson, Room, Subject, TimePeriod
 from aleksis.core.models import Group, Person
@@ -29,7 +31,7 @@ def get_child_node_id(node: Node, tag: str) -> Optional[str]:
 
 
 def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> None:
-    dom = minidom.parse(untis_xml)
+    dom = defusedxml.parse(untis_xml)
 
     subjects = dom.getElementsByTagName("subject")
     for subject_node in subjects:

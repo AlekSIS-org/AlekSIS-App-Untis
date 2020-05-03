@@ -24,6 +24,7 @@ AlekSIS = { path = "../../.." }
 AlekSIS-App-Chronos = { path = "../AlekSIS-App-Chronos" }
 mysqlclient = "^1.4.6"
 tqdm = "^4.44.1"
+defusedxml = "^0.6.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
