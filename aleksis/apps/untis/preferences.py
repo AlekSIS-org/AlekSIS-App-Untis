@@ -1,4 +1,5 @@
 from django.utils.translation import gettext as _
+
 from dynamic_preferences.preferences import Section
 from dynamic_preferences.types import BooleanPreference
 
@@ -78,6 +79,5 @@ class UseCourseGroups(BooleanPreference):
     default = True
     verbose_name = _("Use course groups")
     help_text = _(
-        "Build or search course groups for every course"
-        " instead of setting classes as groups."
+        "Build or search course groups for every course" " instead of setting classes as groups."
     )

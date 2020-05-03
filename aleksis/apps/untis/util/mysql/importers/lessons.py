@@ -261,5 +261,7 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                 else:
                     # Create new lesson period
 
-                    chronos_models.LessonPeriod.objects.create(lesson=lesson, period=time_period, room=room, element_id_untis=j)
+                    chronos_models.LessonPeriod.objects.create(
+                        lesson=lesson, period=time_period, room=room, element_id_untis=j
+                    )
                     logger.info("      New time period added")

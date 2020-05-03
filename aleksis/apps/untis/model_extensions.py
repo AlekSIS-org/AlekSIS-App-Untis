@@ -74,4 +74,3 @@ chronos_models.Holiday.field(
 chronos_models.ExtraLesson.field(
     import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
-

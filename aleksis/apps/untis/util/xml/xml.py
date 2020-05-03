@@ -39,7 +39,8 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         colour_bg = get_child_node_text(subject_node, "backcolor")
 
         Subject.objects.update_or_create(
-            short_name=short_name, defaults={"name": name, "colour_fg": colour_fg, "colour_bg": colour_bg},
+            short_name=short_name,
+            defaults={"name": name, "colour_fg": colour_fg, "colour_bg": colour_bg},
         )
 
     periods = dom.getElementsByTagName("timeperiod")
