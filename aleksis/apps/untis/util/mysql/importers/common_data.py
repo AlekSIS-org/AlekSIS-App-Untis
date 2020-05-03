@@ -159,9 +159,7 @@ def import_teachers() -> Dict[int, core_models.Person]:
     return teachers_ref
 
 
-def import_classes(
-    teachers_ref: Dict[int, core_models.Person]
-) -> Dict[int, core_models.Group]:
+def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, core_models.Group]:
     """Import classes."""
 
     classes_ref = {}
@@ -173,9 +171,7 @@ def import_classes(
         # Check if needed data are provided
         if not class_.name:
             raise RuntimeException(
-                "Class ID {}: Cannot import class without short name.".format(
-                    class_.teacher_id
-                )
+                "Class ID {}: Cannot import class without short name.".format(class_.teacher_id)
             )
 
         # Build values
@@ -205,10 +201,7 @@ def import_classes(
             changed = True
             logger.info("  Short name updated")
 
-        if (
-            get_site_preferences()["untis_mysql__update_groups_name"]
-            and new_group.name != name
-        ):
+        if get_site_preferences()["untis_mysql__update_groups_name"] and new_group.name != name:
             new_group.name = name
             changed = True
             logger.info("  Name updated")
@@ -244,9 +237,7 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
     for room in tqdm(rooms, desc="Import rooms", **TQDM_DEFAULTS):
         if not room.name:
             raise RuntimeException(
-                "Room ID {}: Cannot import room without short name.".format(
-                    room.room_id
-                )
+                "Room ID {}: Cannot import room without short name.".format(room.room_id)
             )
 
         # Build values
@@ -257,8 +248,7 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
         logger.info("Import room {} …".format(short_name))
 
         new_room, created = chronos_models.Room.objects.get_or_create(
-            short_name=short_name,
-            defaults={"name": name, "import_ref_untis": import_ref},
+            short_name=short_name, defaults={"name": name, "import_ref_untis": import_ref},
         )
 
         if created:
@@ -266,10 +256,7 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
 
         changed = False
 
-        if (
-            get_site_preferences()["untis_mysql__update_rooms_name"]
-            and new_room.name != name
-        ):
+        if get_site_preferences()["untis_mysql__update_rooms_name"] and new_room.name != name:
             new_room.name = name
             changed = True
             logger.info("  Name updated")
@@ -287,9 +274,7 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
     return ref
 
 
-def import_supervision_areas(
-    breaks_ref, teachers_ref
-) -> Dict[int, chronos_models.SupervisionArea]:
+def import_supervision_areas(breaks_ref, teachers_ref) -> Dict[int, chronos_models.SupervisionArea]:
     """Import supervision areas."""
 
     ref = {}
@@ -442,9 +427,7 @@ def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
         start_time = times_ref[period][0]
         end_time = times_ref[period][1]
 
-        logger.info(
-            "Import time period on weekday {} in the {}. period".format(weekday, period)
-        )
+        logger.info("Import time period on weekday {} in the {}. period".format(weekday, period))
 
         new_time_period, created = chronos_models.TimePeriod.objects.get_or_create(
             weekday=weekday,
@@ -455,10 +438,7 @@ def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
         if created:
             logger.info("  New time period created")
 
-        if (
-            new_time_period.time_start != start_time
-            or new_time_period.time_end != end_time
-        ):
+        if new_time_period.time_start != start_time or new_time_period.time_end != end_time:
             new_time_period.time_start = start_time
             new_time_period.time_end = end_time
             new_time_period.save()
@@ -485,9 +465,7 @@ def import_breaks(
         # Add None two times in order to create breaks before first lesson and after last lesson
         time_periods_for_breaks = [None] + list(time_periods.values()) + [None]
         for i, time_period in tqdm(
-            enumerate(time_periods_for_breaks),
-            desc="Import breaks (period)",
-            **TQDM_DEFAULTS
+            enumerate(time_periods_for_breaks), desc="Import breaks (period)", **TQDM_DEFAULTS
         ):
             # If last item (None) is reached, no further break must be created
             if i + 1 == len(time_periods_for_breaks):
@@ -544,8 +522,7 @@ def import_absence_reasons() -> Dict[int, chronos_models.AbsenceReason]:
         logger.info("Import absence reason {} …".format(short_name))
 
         new_reason, created = chronos_models.AbsenceReason.objects.get_or_create(
-            import_ref_untis=import_ref,
-            defaults={"short_name": short_name, "name": name},
+            import_ref_untis=import_ref, defaults={"short_name": short_name, "name": name},
         )
 
         if created:

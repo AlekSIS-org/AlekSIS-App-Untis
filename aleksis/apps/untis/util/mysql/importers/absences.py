@@ -26,9 +26,7 @@ class AbsenceType(Enum):
     ROOM = 102
 
 
-def import_absences(
-    absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref
-):
+def import_absences(absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref):
     ref = {}
 
     # Get term

@@ -43,9 +43,7 @@ def groups_subjects(request: HttpRequest) -> HttpResponse:
     groups_paged = groups_qs.filter(id__in=[g.id for g in page])
 
     # Create filtered queryset
-    group_subject_formset = GroupSubjectFormset(
-        request.POST or None, queryset=groups_paged
-    )
+    group_subject_formset = GroupSubjectFormset(request.POST or None, queryset=groups_paged)
 
     # Check if form is submitted and valid, then save
     if request.method == "POST":

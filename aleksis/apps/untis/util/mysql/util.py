@@ -31,8 +31,7 @@ def get_term(for_date: Optional[date] = None) -> mysql_models.Terms:
         for_date = timezone.now().date()
 
     term = run_using(mysql_models.Terms.objects).get(
-        datefrom__lte=date_to_untis_date(for_date),
-        dateto__gte=date_to_untis_date(for_date),
+        datefrom__lte=date_to_untis_date(for_date), dateto__gte=date_to_untis_date(for_date),
     )
 
     return term
@@ -79,9 +78,7 @@ def clean_array(seq: Sequence, conv: Callable[[Any], Any] = lambda el: el) -> Se
     [8, 12]
     """
 
-    filtered = filter(
-        lambda el: bool(el), map(lambda el: conv(el) if el else None, seq)
-    )
+    filtered = filter(lambda el: bool(el), map(lambda el: conv(el) if el else None, seq))
     return type(seq)(filtered)
 
 
@@ -120,9 +117,7 @@ def untis_colour_to_hex(colour: int) -> str:
     return "#" + hex_rgb
 
 
-def compare_m2m(
-    a: Union[Sequence[Model], QuerySet], b: Union[Sequence[Model], QuerySet]
-) -> bool:
+def compare_m2m(a: Union[Sequence[Model], QuerySet], b: Union[Sequence[Model], QuerySet]) -> bool:
     """Compare if content of two m2m fields is equal."""
 
     return set(a) == set(b)
