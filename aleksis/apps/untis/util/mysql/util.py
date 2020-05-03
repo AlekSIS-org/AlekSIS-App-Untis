@@ -26,7 +26,6 @@ def run_using(obj: QuerySet) -> QuerySet:
 
 def get_term(for_date: Optional[date] = None) -> mysql_models.Terms:
     """Get term valid for the provided date."""
-
     if not for_date:
         for_date = timezone.now().date()
 
@@ -44,7 +43,6 @@ def run_default_filter(
     filter_deleted: bool = True,
 ) -> QuerySet:
     """Add a default filter in order to select the correct term."""
-
     term = get_term(for_date)
     term_id, schoolyear_id, school_id, version_id = (
         term.term_id,
@@ -67,7 +65,8 @@ def run_default_filter(
 
 
 def clean_array(seq: Sequence, conv: Callable[[Any], Any] = lambda el: el) -> Sequence:
-    """
+    """Clean array.
+
     Convert a sequence using a converter function, stripping all
     elements that are boolean False after conversion.
 
@@ -77,7 +76,6 @@ def clean_array(seq: Sequence, conv: Callable[[Any], Any] = lambda el: el) -> Se
     >>> clean_array(["8", "", "12", "0"], int)
     [8, 12]
     """
-
     filtered = filter(lambda el: bool(el), map(lambda el: conv(el) if el else None, seq))
     return type(seq)(filtered)
 
@@ -95,18 +93,17 @@ def untis_split_third(s: str, conv: Callable[[Any], Any] = lambda el: el) -> Seq
 
 
 def untis_date_to_date(untis: int) -> date:
-    """Converts a UNTIS date to a python date."""
+    """Convert a UNTIS date to a python date."""
     return datetime.strptime(str(untis), UNTIS_DATE_FORMAT).date()
 
 
 def date_to_untis_date(from_date: date) -> int:
-    """Converts a python date to a UNTIS date."""
+    """Convert a python date to a UNTIS date."""
     return int(from_date.strftime(UNTIS_DATE_FORMAT))
 
 
 def untis_colour_to_hex(colour: int) -> str:
     """Convert a numerical colour in BGR order to a standard hex RGB string."""
-
     # Convert UNTIS number to HEX
     hex_bgr = str(hex(colour))[2:].zfill(6)
 
@@ -119,12 +116,11 @@ def untis_colour_to_hex(colour: int) -> str:
 
 def compare_m2m(a: Union[Sequence[Model], QuerySet], b: Union[Sequence[Model], QuerySet]) -> bool:
     """Compare if content of two m2m fields is equal."""
-
     return set(a) == set(b)
 
 
 def connect_untis_fields(obj: Model, attr: str, limit: int) -> Sequence[str]:
-    """Connects data from multiple DB fields.
+    """Connect data from multiple DB fields.
 
     Untis splits structured data, like lists, as comma-separated string into
     multiple, numbered database fields, like:
@@ -134,7 +130,6 @@ def connect_untis_fields(obj: Model, attr: str, limit: int) -> Sequence[str]:
 
     This function joins these fields, then splits them into the original list.
     """
-
     all_data = []
 
     for i in range(1, limit + 1):

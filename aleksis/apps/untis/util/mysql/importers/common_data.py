@@ -27,7 +27,6 @@ class CommonDataId(Enum):
 
 def import_subjects() -> Dict[int, chronos_models.Subject]:
     """Import subjects."""
-
     subjects_ref = {}
 
     # Get subjects
@@ -36,7 +35,7 @@ def import_subjects() -> Dict[int, chronos_models.Subject]:
     for subject in tqdm(subjects, desc="Import subjects", **TQDM_DEFAULTS):
         # Check if needed data are provided
         if not subject.name:
-            raise RuntimeException(
+            raise RuntimeError(
                 "Subject ID {}: Cannot import subject without short name.".format(
                     subject.subject_id
                 )
@@ -95,7 +94,6 @@ def import_subjects() -> Dict[int, chronos_models.Subject]:
 
 def import_teachers() -> Dict[int, core_models.Person]:
     """Import teachers."""
-
     teachers_ref = {}
 
     # Get teachers
@@ -104,7 +102,7 @@ def import_teachers() -> Dict[int, core_models.Person]:
     for teacher in tqdm(teachers, desc="Import teachers", **TQDM_DEFAULTS):
         # Check if needed data are provided
         if not teacher.name:
-            raise RuntimeException(
+            raise RuntimeError(
                 "Teacher ID {}: Cannot import teacher without short name.".format(
                     teacher.teacher_id
                 )
@@ -161,7 +159,6 @@ def import_teachers() -> Dict[int, core_models.Person]:
 
 def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, core_models.Group]:
     """Import classes."""
-
     classes_ref = {}
 
     # Get classes
@@ -170,7 +167,7 @@ def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, cor
     for class_ in tqdm(course_classes, desc="Import classes", **TQDM_DEFAULTS):
         # Check if needed data are provided
         if not class_.name:
-            raise RuntimeException(
+            raise RuntimeError(
                 "Class ID {}: Cannot import class without short name.".format(class_.teacher_id)
             )
 
@@ -228,7 +225,6 @@ def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, cor
 
 def import_rooms() -> Dict[int, chronos_models.Room]:
     """Import rooms."""
-
     ref = {}
 
     # Get rooms
@@ -236,7 +232,7 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
 
     for room in tqdm(rooms, desc="Import rooms", **TQDM_DEFAULTS):
         if not room.name:
-            raise RuntimeException(
+            raise RuntimeError(
                 "Room ID {}: Cannot import room without short name.".format(room.room_id)
             )
 
@@ -276,7 +272,6 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
 
 def import_supervision_areas(breaks_ref, teachers_ref) -> Dict[int, chronos_models.SupervisionArea]:
     """Import supervision areas."""
-
     ref = {}
 
     # Get supervision areas
@@ -284,7 +279,7 @@ def import_supervision_areas(breaks_ref, teachers_ref) -> Dict[int, chronos_mode
 
     for area in tqdm(areas, desc="Import supervision areas", **TQDM_DEFAULTS):
         if not area.name:
-            raise RuntimeException(
+            raise RuntimeError(
                 "Supervision area ID {}: Cannot import supervision area without short name.".format(
                     area.corridor_id
                 )
@@ -397,7 +392,6 @@ def import_supervision_areas(breaks_ref, teachers_ref) -> Dict[int, chronos_mode
 
 def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
     """Import time periods an breaks."""
-
     times = (
         run_default_filter(mysql_models.Commondata.objects, filter_term=False)
         .filter(id=30)
@@ -500,7 +494,6 @@ def import_breaks(
 
 def import_absence_reasons() -> Dict[int, chronos_models.AbsenceReason]:
     """Import absence reasons."""
-
     ref = {}
 
     # Get reasons
@@ -508,7 +501,7 @@ def import_absence_reasons() -> Dict[int, chronos_models.AbsenceReason]:
 
     for reason in tqdm(reasons, desc="Import absence reasons", **TQDM_DEFAULTS):
         if not reason.name:
-            raise RuntimeException(
+            raise RuntimeError(
                 "Absence reason ID {}: Cannot import absence reason without short name.".format(
                     reason.absence_reason_id
                 )

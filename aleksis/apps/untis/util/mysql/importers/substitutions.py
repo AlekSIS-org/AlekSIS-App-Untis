@@ -29,7 +29,6 @@ def import_substitutions(
     teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref, time_periods_ref,
 ):
     """Import substitutions."""
-
     term = get_term()
     date_start = untis_date_to_date(term.datefrom)
     date_end = untis_date_to_date(term.dateto)

@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 
 def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref):
     """Import lessons."""
-
     # Get current term
     term = get_term()
     date_start = untis_date_to_date(term.datefrom)
