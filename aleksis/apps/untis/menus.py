@@ -6,7 +6,10 @@ MENUS = {
             "name": _("Untis XML import"),
             "url": "untis_xml_import",
             "validators": [
-                ("aleksis.core.util.predicates.permission_validator", "untis.do_xml_import"),
+                (
+                    "aleksis.core.util.predicates.permission_validator",
+                    "untis.do_xml_import",
+                ),
             ],
         },
         {

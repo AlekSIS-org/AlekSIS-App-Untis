@@ -31,7 +31,7 @@ def xml_import(request: HttpRequest) -> HttpResponse:
 
 @permission_required("untis.assign_subjects_to_groups")
 def groups_subjects(request: HttpRequest) -> HttpResponse:
-    """ Assign subjects to groups (for matching by MySQL importer) """
+    """Assign subjects to groups (for matching by MySQL importer)."""
     context = {}
 
     groups_qs = Group.objects.all()
@@ -43,7 +43,9 @@ def groups_subjects(request: HttpRequest) -> HttpResponse:
     groups_paged = groups_qs.filter(id__in=[g.id for g in page])
 
     # Create filtered queryset
-    group_subject_formset = GroupSubjectFormset(request.POST or None, queryset=groups_paged)
+    group_subject_formset = GroupSubjectFormset(
+        request.POST or None, queryset=groups_paged
+    )
 
     # Check if form is submitted and valid, then save
     if request.method == "POST":

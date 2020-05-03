@@ -23,8 +23,10 @@ from ..util import (
 logger = logging.getLogger(__name__)
 
 
-def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref):
-    """ Import lessons """
+def import_lessons(
+    time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref
+):
+    """Import lessons."""
 
     # Get current term
     term = get_term()
@@ -32,11 +34,11 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
     date_end = untis_date_to_date(term.dateto)
 
     # Get all existing lessons for this term
-    lessons_in_term = chronos_models.Lesson.objects.filter(term_untis=term.term_id).values_list(
-        "id", flat=True
-    )
+    lessons_in_term = chronos_models.Lesson.objects.filter(
+        term_untis=term.term_id
+    ).values_list("id", flat=True)
 
-    # Set the end date of all lessons from other terms ending in this term to the day before this term starts
+    # Set end date of lessons from other terms ending in this term to the day before term starts
     chronos_models.Lesson.objects.filter(date_end__gte=date_start).exclude(
         id__in=lessons_in_term
     ).update(date_end=date_start - timedelta(days=1))
@@ -142,10 +144,12 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
 
                     # Build names and refs for course groups
                     group_short_name = "{}-{}".format(
-                        "".join([c.short_name for c in course_classes]), subject.short_name
+                        "".join([c.short_name for c in course_classes]),
+                        subject.short_name,
                     )
                     group_name = "{}: {}".format(
-                        ", ".join([c.short_name for c in course_classes]), subject.short_name
+                        ", ".join([c.short_name for c in course_classes]),
+                        subject.short_name,
                     )
 
                     # Get or create course group
@@ -229,7 +233,9 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
             lesson.teachers.set(teachers)
 
             # All times for this course
-            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(lesson=lesson)
+            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(
+                lesson=lesson
+            )
 
             # If length has changed, delete all lesson periods
             if old_lesson_periods_qs.count() != len(time_periods):
@@ -253,7 +259,10 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                     # Update old lesson period
 
                     old_lesson_period = old_lesson_period_qs[0]
-                    if old_lesson_period.period != time_period or old_lesson_period.room != room:
+                    if (
+                        old_lesson_period.period != time_period
+                        or old_lesson_period.room != room
+                    ):
                         old_lesson_period.period = time_period
                         old_lesson_period.room = room
                         old_lesson_period.save()

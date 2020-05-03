@@ -29,7 +29,9 @@ class GroupSubjectForm(forms.ModelForm):
         self.fields["short_name"].widget = forms.HiddenInput()
 
 
-GroupSubjectFormset = forms.modelformset_factory(Group, form=GroupSubjectForm, max_num=0, extra=0)
+GroupSubjectFormset = forms.modelformset_factory(
+    Group, form=GroupSubjectForm, max_num=0, extra=0
+)
 
 if get_site_preferences()["untis_mysql__use_course_groups"]:
     EditGroupForm.add_node_to_layout(Fieldset(_("UNTIS import"), "untis_subject"))

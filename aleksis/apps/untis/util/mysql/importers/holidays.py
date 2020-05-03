@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def import_holidays() -> Dict[int, chronos_models.Holiday]:
-    """ Import holidays """
+    """Import holidays."""
     ref = {}
 
     # Get holidays
@@ -24,7 +24,9 @@ def import_holidays() -> Dict[int, chronos_models.Holiday]:
         # Check if needed data are provided
         if not holiday.name:
             raise RuntimeException(
-                "Holiday ID {}: Cannot import holiday without short name.".format(import_ref)
+                "Holiday ID {}: Cannot import holiday without short name.".format(
+                    import_ref
+                )
             )
 
         title = holiday.name[:50]

@@ -5,5 +5,5 @@ from .util.mysql.main import untis_import_mysql as _untis_import_mysql
 
 @celery_optional
 def untis_import_mysql():
-    """ Celery task for import of UNTIS data from MySQL """
+    """Celery task for import of UNTIS data from MySQL."""
     _untis_import_mysql()
