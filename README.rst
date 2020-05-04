@@ -9,8 +9,21 @@ This is an application for use with the `AlekSIS`_ platform.
 Features
 --------
 
-This app provides import and export functions to interact with Untis,
-a timetable software.
+* Import absence reasons
+* Import absences
+* Import breaks
+* Import classes
+* Import events
+* Import exported Untis database via MySQL import
+* Import exported Untis XML files
+* Import holidays
+* Import lessons
+* Import rooms
+* Import subjects
+* Import substitutions
+* Import supervision areas
+* Import teachers
+* Import time periods
 
 Licence
 -------
