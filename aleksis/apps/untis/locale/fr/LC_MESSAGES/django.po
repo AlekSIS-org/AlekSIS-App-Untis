@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-28 13:31+0000\n"
+"POT-Creation-Date: 2020-05-04 15:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: forms.py:12
+#: forms.py:11
 msgid "Untis XML export"
 msgstr ""
 
-#: forms.py:40
+#: forms.py:33
 msgid "UNTIS import"
 msgstr ""
 
@@ -38,75 +38,87 @@ msgstr ""
 msgid "Link subjects to groups (for UNTIS MySQL import)"
 msgstr ""
 
-#: model_extensions.py:11 model_extensions.py:14 model_extensions.py:31
-#: model_extensions.py:34 model_extensions.py:37 model_extensions.py:56
-#: model_extensions.py:59 model_extensions.py:62 model_extensions.py:65
-#: model_extensions.py:68 model_extensions.py:71 model_extensions.py:74
+#: model_extensions.py:9 model_extensions.py:12 model_extensions.py:29
+#: model_extensions.py:32 model_extensions.py:35 model_extensions.py:54
+#: model_extensions.py:57 model_extensions.py:60 model_extensions.py:63
+#: model_extensions.py:66 model_extensions.py:69 model_extensions.py:72
 msgid "UNTIS import reference"
 msgstr ""
 
-#: model_extensions.py:19
+#: model_extensions.py:17
 msgid "UNTIS subject"
 msgstr ""
 
-#: model_extensions.py:21
-msgid "The UNTIS import will use this for matching course groups (along with parent groups)."
+#: model_extensions.py:19
+msgid ""
+"The UNTIS import will use this for matching course groups(along with parent "
+"groups)."
 msgstr ""
 
-#: model_extensions.py:40
+#: model_extensions.py:38
 msgid "Lesson id in UNTIS"
 msgstr ""
 
-#: model_extensions.py:44 model_extensions.py:52
+#: model_extensions.py:42 model_extensions.py:50
 msgid "Number of lesson element in UNTIS"
 msgstr ""
 
-#: model_extensions.py:48
+#: model_extensions.py:46
 msgid "Term id in UNTIS"
 msgstr ""
 
-#: models.py:4205
+#: models.py:4222
 msgid "Can do XML import"
 msgstr ""
 
-#: models.py:4206
+#: models.py:4223
 msgid "Can assign subjects to groups"
 msgstr ""
 
-#: settings.py:17
-msgid "Update values of existing subjects?"
+#: preferences.py:8
+msgid "UNTIS: MySQL"
 msgstr ""
 
-#: settings.py:20
-msgid "Update short name of existing persons?"
+#: preferences.py:16
+msgid "Update values of existing subjects"
 msgstr ""
 
-#: settings.py:25
-msgid "Update first and last name of existing persons?"
+#: preferences.py:24
+msgid "Update short name of existing persons"
 msgstr ""
 
-#: settings.py:30
-msgid "Update short name of existing groups?"
+#: preferences.py:32
+msgid "Update name of existing persons"
 msgstr ""
 
-#: settings.py:33
-msgid "Update name of existing groups?"
+#: preferences.py:40
+msgid "Update short name of existing groups"
 msgstr ""
 
-#: settings.py:36
-msgid "Overwrite existing owners?"
+#: preferences.py:48
+msgid "Update name of existing groups"
 msgstr ""
 
-#: settings.py:39
-msgid "Update name of existing rooms?"
+#: preferences.py:55
+msgid "Overwrite group owners"
 msgstr ""
 
-#: settings.py:42
-msgid "Update values of existing supervision areas?"
+#: preferences.py:64
+msgid "Update name of existing rooms"
 msgstr ""
 
-#: settings.py:46
-msgid "Build or search course groups for every course instead of setting classes as groups."
+#: preferences.py:72
+msgid "Update existing supervision areas"
+msgstr ""
+
+#: preferences.py:80
+msgid "Use course groups"
+msgstr ""
+
+#: preferences.py:82
+msgid ""
+"Build or search course groups for every course instead of setting classes as "
+"groups."
 msgstr ""
 
 #: templates/untis/groups_subjects.html:7
@@ -117,16 +129,20 @@ msgstr ""
 #: templates/untis/groups_subjects.html:17
 msgid ""
 "\n"
-"        You can use this form to assign subjects to groups. Please enter the exact names of the subjects as they are\n"
-"        saved in UNTIS (case-insensitive). These values are only used to match course groups while importing from MySQL.\n"
+"        You can use this form to assign subjects to groups. Please enter the "
+"exact names of the subjects as they are\n"
+"        saved in UNTIS (case-insensitive). These values are only used to "
+"match course groups while importing from MySQL.\n"
 "      "
 msgstr ""
 
 #: templates/untis/groups_subjects.html:27
 msgid ""
 "\n"
-"        If there are more than 100 groups, this table will have multiple pages. That means that you must save your\n"
-"        changes on every page. <strong>Please don't change the page before you saved your changes!</strong>\n"
+"        If there are more than 100 groups, this table will have multiple "
+"pages. That means that you must save your\n"
+"        changes on every page. <strong>Please don't change the page before "
+"you saved your changes!</strong>\n"
 "      "
 msgstr ""
 
@@ -175,7 +191,8 @@ msgstr ""
 #: templates/untis/xml_import.html:31
 msgid ""
 "\n"
-"        Teachers, rooms, subjects and classes and periods will be updated in place.\n"
+"        Teachers, rooms, subjects and classes and periods will be updated in "
+"place.\n"
 "      "
 msgstr ""
 
@@ -183,38 +200,38 @@ msgstr ""
 msgid "Import data"
 msgstr ""
 
-#: util/mysql/importers/lessons.py:49
+#: util/mysql/importers/lessons.py:48
 msgid "Import lesson {}"
 msgstr ""
 
-#: util/mysql/importers/lessons.py:52
+#: util/mysql/importers/lessons.py:51
 msgid "  Skip because missing times"
 msgstr ""
 
-#: util/mysql/importers/lessons.py:109
+#: util/mysql/importers/lessons.py:108
 msgid "    Skip because missing subject"
 msgstr ""
 
-#: util/xml/xml.py:71
+#: util/xml/xml.py:74
 #, python-format
 msgid "Class %s"
 msgstr ""
 
-#: util/xml/xml.py:85
+#: util/xml/xml.py:88
 #, python-format
 msgid "Could not set class teacher of %(class)s to %(teacher)s."
 msgstr ""
 
-#: util/xml/xml.py:146
+#: util/xml/xml.py:149
 #, python-format
 msgid "Invalid list of classes: %s"
 msgstr ""
 
-#: util/xml/xml.py:154
+#: util/xml/xml.py:157
 #, python-format
 msgid "Failed to import lesson: Teacher %s does not exist."
 msgstr ""
 
-#: views.py:54
+#: views.py:52
 msgid "Your changes were successfully saved."
 msgstr ""
