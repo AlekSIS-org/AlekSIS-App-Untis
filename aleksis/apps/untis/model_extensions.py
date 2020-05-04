@@ -18,7 +18,7 @@ core_models.Group.field(
         help_text=_(
             "The UNTIS import will use this for matching course groups"
             "(along with parent groups)."
-            ),
+        ),
         blank=True,
         max_length=255,
     )
