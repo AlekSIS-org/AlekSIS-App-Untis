@@ -4,7 +4,6 @@ from jsonstore import CharField, IntegerField
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
-from aleksis.core.util.core_helpers import get_site_preferences
 
 core_models.Person.field(
     import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
@@ -12,18 +11,18 @@ core_models.Person.field(
 core_models.Group.field(
     import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
-if get_site_preferences()["untis_mysql__use_course_groups"]:
-    core_models.Group.field(
-        untis_subject=CharField(
-            verbose_name=_("UNTIS subject"),
-            help_text=_(
-                "The UNTIS import will use this for matching course groups"
-                "(along with parent groups)."
+
+core_models.Group.field(
+    untis_subject=CharField(
+        verbose_name=_("UNTIS subject"),
+        help_text=_(
+            "The UNTIS import will use this for matching course groups"
+            "(along with parent groups)."
             ),
-            blank=True,
-            max_length=255,
-        )
+        blank=True,
+        max_length=255,
     )
+)
 
 # Chronos models
 chronos_models.Subject.field(

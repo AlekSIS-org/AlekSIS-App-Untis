@@ -5,7 +5,6 @@ from material import Fieldset
 
 from aleksis.core.forms import EditGroupForm
 from aleksis.core.models import Group
-from aleksis.core.util.core_helpers import get_site_preferences
 
 
 class UntisUploadForm(forms.Form):
@@ -31,5 +30,4 @@ class GroupSubjectForm(forms.ModelForm):
 
 GroupSubjectFormset = forms.modelformset_factory(Group, form=GroupSubjectForm, max_num=0, extra=0)
 
-if get_site_preferences()["untis_mysql__use_course_groups"]:
-    EditGroupForm.add_node_to_layout(Fieldset(_("UNTIS import"), "untis_subject"))
+EditGroupForm.add_node_to_layout(Fieldset(_("UNTIS import"), "untis_subject"))
