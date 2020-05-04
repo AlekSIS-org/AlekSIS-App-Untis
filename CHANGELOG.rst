@@ -7,20 +7,20 @@ Changelog
 New features
 ~~~~~~~~~~~~
 
-* Import absence reasons
-* Import absences
-* Import breaks
-* Import classes
-* Import events
 * Import exported Untis database via MySQL import
-* Import holidays
-* Import lessons
-* Import rooms
-* Import subjects
-* Import substitutions
-* Import supervision areas
-* Import teachers
-* Import time periods
+ * Import absence reasons
+ * Import absences
+ * Import breaks
+ * Import classes
+ * Import events
+ * Import holidays
+ * Import lessons
+ * Import rooms
+ * Import subjects
+ * Import substitutions
+ * Import supervision areas
+ * Import teachers
+ * Import time periods
 
 Bugfixes
 ~~~~~~~~
