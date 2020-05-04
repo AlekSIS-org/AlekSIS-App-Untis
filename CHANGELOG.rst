@@ -7,7 +7,7 @@ Changelog
 New features
 ~~~~~~~~~~~~
 
-* Import exported Untis database via MySQL import
+* Import Untis data from MySQL
  * Import absence reasons
  * Import absences
  * Import breaks
