@@ -25,8 +25,8 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-AlekSIS = "^2.0a3.dev0"
-AlekSIS-App-Chronos = "^2.0a3.dev0"
+AlekSIS = "^2.0a2"
+AlekSIS-App-Chronos = "^2.0a2"
 mysqlclient = "^1.4.6"
 tqdm = "^4.44.1"
 defusedxml = "^0.6.0"
