@@ -42,8 +42,12 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
 
     # Lessons
     lessons = run_default_filter(mysql_models.Lesson.objects)
+
+    existing_lessons = []
     for lesson in tqdm(lessons, desc="Import lessons", **TQDM_DEFAULTS):
         lesson_id = lesson.lesson_id
+
+        existing_lessons.append(lesson_id)
 
         logger.info(_("Import lesson {}").format(lesson_id))
 
@@ -264,3 +268,8 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                         lesson=lesson, period=time_period, room=room, element_id_untis=j
                     )
                     logger.info("      New time period added")
+
+    for l in chronos_models.Lesson.objects.filter(term_untis=term.term_id):
+        if l.lesson_id_untis and l.lesson_id_untis not in existing_lessons:
+            logger.info("Lesson {} deleted".format(l.id))
+            l.delete()
