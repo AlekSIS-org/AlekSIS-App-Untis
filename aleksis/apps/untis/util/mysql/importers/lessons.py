@@ -121,7 +121,7 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                 # Search by parent groups and subject
                 qs = core_models.Group.objects.filter(
                     parent_groups__in=[c.id for c in course_classes],
-                    subject__subject=subject,
+                    subject_id=subject.id,
                 )
 
                 # Check if found groups match
