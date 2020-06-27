@@ -1,6 +1,7 @@
 import logging
 from datetime import timedelta
 
+import reversion
 from django.utils.translation import gettext as _
 
 from tqdm import tqdm
@@ -269,7 +270,9 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                     )
                     logger.info("      New time period added")
 
-    for l in chronos_models.Lesson.objects.filter(term_untis=term.term_id):
-        if l.lesson_id_untis and l.lesson_id_untis not in existing_lessons:
-            logger.info("Lesson {} deleted".format(l.id))
-            l.delete()
+    for lesson in chronos_models.Lesson.objects.filter(term_untis=term.term_id):
+        if lesson.lesson_id_untis and lesson.lesson_id_untis not in existing_lessons:
+            logger.info("Lesson {} deleted".format(lesson.id))
+            with reversion.create_revision():
+                lesson.save()
+            lesson.delete()
