@@ -35,7 +35,7 @@
     {% csrf_token %}
     {{ formset.management_form }}
 
-    {% include "core/save_button.html" %}
+    {% include "core/partials/save_button.html" %}
 
     {% include "components/pagination.html" %}
 
@@ -58,7 +58,7 @@
 
     {% include "components/pagination.html" %}
 
-    {% include "core/save_button.html" %}
+    {% include "core/partials/save_button.html" %}
 
     <div class="fixed-action-btn">
       <button class="btn-floating btn-large green" type="submit">
