@@ -117,20 +117,19 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
             if get_site_preferences()["untis_mysql__use_course_groups"]:
                 # Negative import_ref denotes a course group
                 group_import_ref = -int("{}{}".format(lesson_id, i))
-                subject_ref = subject.short_name
 
                 # Search by parent groups and subject
                 qs = core_models.Group.objects.filter(
                     parent_groups__in=[c.id for c in course_classes],
-                    untis_subject__iexact=subject_ref,
+                    subject_id=subject.id,
                 )
 
                 # Check if found groups match
                 match = False
-                if qs.exists():
-                    if compare_m2m(course_classes, qs[0].parent_groups.all()):
+                for found_group in qs:
+                    if compare_m2m(course_classes, found_group.parent_groups.all()):
                         match = True
-                        course_group = qs[0]
+                        course_group = found_group
                         logger.info(
                             "    Course group found by searching by parent groups and subject"
                         )

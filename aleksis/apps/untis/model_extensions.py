@@ -12,18 +12,6 @@ core_models.Group.field(
     import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
 
-core_models.Group.field(
-    untis_subject=CharField(
-        verbose_name=_("UNTIS subject"),
-        help_text=_(
-            "The UNTIS import will use this for matching course groups"
-            "(along with parent groups)."
-        ),
-        blank=True,
-        max_length=255,
-    )
-)
-
 # Chronos models
 chronos_models.Subject.field(
     import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
