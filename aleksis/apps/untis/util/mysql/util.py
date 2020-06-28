@@ -3,9 +3,6 @@ from datetime import date, datetime
 from typing import Any, Callable, Optional, Sequence, Union
 
 from django.db.models import Model, QuerySet
-from django.utils import timezone
-
-from ... import models as mysql_models
 
 DB_NAME = "untis"
 UNTIS_DATE_FORMAT = "%Y%m%d"
@@ -22,18 +19,6 @@ logger = logging.getLogger(__name__)
 def run_using(obj: QuerySet) -> QuerySet:
     """Seed QuerySet with using() database from global DB_NAME."""
     return obj.using(DB_NAME)
-
-
-def get_term(for_date: Optional[date] = None) -> mysql_models.Terms:
-    """Get term valid for the provided date."""
-    if not for_date:
-        for_date = timezone.now().date()
-
-    term = run_using(mysql_models.Terms.objects).get(
-        datefrom__lte=date_to_untis_date(for_date), dateto__gte=date_to_untis_date(for_date),
-    )
-
-    return term
 
 
 def run_default_filter(

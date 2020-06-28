@@ -1,3 +1,4 @@
+from aleksis.apps.untis.util.mysql.importers.terms import import_terms, get_terms_for_date
 from django.db import transaction
 
 from .importers.absences import import_absences
@@ -19,6 +20,10 @@ from .importers.substitutions import import_substitutions
 
 @transaction.atomic
 def untis_import_mysql():
+    # School terms and validity ranges
+    terms = get_terms_for_date()
+    validity_ref = import_terms(terms)
+
     # Coomon data for Chronos
     subjects_ref = import_subjects()
     rooms_ref = import_rooms()
