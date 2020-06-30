@@ -5,6 +5,10 @@ from jsonstore import CharField, IntegerField
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models
 
+
+core_models.SchoolTerm.field(
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
+)
 core_models.Person.field(
     import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
@@ -13,6 +17,15 @@ core_models.Group.field(
 )
 
 # Chronos models
+chronos_models.ValidityRange.field(
+    import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
+)
+chronos_models.ValidityRange.field(
+    school_id_untis=IntegerField(verbose_name=_("UNTIS school id"), null=True, blank=True)
+)
+chronos_models.ValidityRange.field(
+    version_id_untis=IntegerField(verbose_name=_("UNTIS version id"), null=True, blank=True)
+)
 chronos_models.Subject.field(
     import_ref_untis=IntegerField(verbose_name=_("UNTIS import reference"), null=True, blank=True)
 )
