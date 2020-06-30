@@ -1,5 +1,7 @@
 from aleksis.apps.untis.util.mysql.importers.terms import import_terms, get_terms_for_date
+from aleksis.apps.untis.util.mysql.util import TQDM_DEFAULTS
 from django.db import transaction
+from tqdm import tqdm
 
 from .importers.absences import import_absences
 from .importers.common_data import (
@@ -24,18 +26,19 @@ def untis_import_mysql():
     terms = get_terms_for_date()
     validity_ref = import_terms(terms)
 
-    # Coomon data for Chronos
-    subjects_ref = import_subjects()
-    rooms_ref = import_rooms()
-    absence_reasons_ref = import_absence_reasons()
+    for validity_range in tqdm(validity_ref.values(), desc="Import data for terms ...", **TQDM_DEFAULTS):
+        # Common data for Chronos
+        subjects_ref = import_subjects(validity_range)
+        rooms_ref = import_rooms(validity_range)
+        absence_reasons_ref = import_absence_reasons(validity_range)
 
-    # Common data for core
-    teachers_ref = import_teachers()
-    classes_ref = import_classes(teachers_ref)
+        # Common data for core
+        teachers_ref = import_teachers(validity_range)
+        classes_ref = import_classes(validity_range, teachers_ref)
 
-    # Time periods
-    time_periods_ref = import_time_periods()
-    breaks_ref = import_breaks(time_periods_ref)
+        # Time periods
+        time_periods_ref = import_time_periods(validity_range)
+        breaks_ref = import_breaks(validity_range, time_periods_ref)
 
     # Holidays
     holidays_ref = import_holidays()

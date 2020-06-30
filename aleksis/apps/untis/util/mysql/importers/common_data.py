@@ -3,6 +3,7 @@ from datetime import time
 from enum import Enum
 from typing import Dict
 
+from aleksis.apps.chronos.models import ValidityRange
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
@@ -25,12 +26,12 @@ class CommonDataId(Enum):
     PERIOD = 40
 
 
-def import_subjects() -> Dict[int, chronos_models.Subject]:
+def import_subjects(validity_range: ValidityRange) -> Dict[int, chronos_models.Subject]:
     """Import subjects."""
     subjects_ref = {}
 
     # Get subjects
-    subjects = run_default_filter(mysql_models.Subjects.objects, filter_term=False)
+    subjects = run_default_filter(validity_range, mysql_models.Subjects.objects, filter_term=False)
 
     for subject in tqdm(subjects, desc="Import subjects", **TQDM_DEFAULTS):
         # Check if needed data are provided
@@ -92,12 +93,12 @@ def import_subjects() -> Dict[int, chronos_models.Subject]:
     return subjects_ref
 
 
-def import_teachers() -> Dict[int, core_models.Person]:
+def import_teachers(validity_range: ValidityRange) -> Dict[int, core_models.Person]:
     """Import teachers."""
     teachers_ref = {}
 
     # Get teachers
-    teachers = run_default_filter(mysql_models.Teacher.objects)
+    teachers = run_default_filter(validity_range, mysql_models.Teacher.objects)
 
     for teacher in tqdm(teachers, desc="Import teachers", **TQDM_DEFAULTS):
         # Check if needed data are provided
@@ -157,12 +158,12 @@ def import_teachers() -> Dict[int, core_models.Person]:
     return teachers_ref
 
 
-def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, core_models.Group]:
+def import_classes(validity_range: ValidityRange, teachers_ref: Dict[int, core_models.Person]) -> Dict[int, core_models.Group]:
     """Import classes."""
     classes_ref = {}
 
     # Get classes
-    course_classes = run_default_filter(mysql_models.Class.objects, filter_term=True)
+    course_classes = run_default_filter(validity_range, mysql_models.Class.objects, filter_term=True)
 
     for class_ in tqdm(course_classes, desc="Import classes", **TQDM_DEFAULTS):
         # Check if needed data are provided
@@ -181,12 +182,12 @@ def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, cor
         logger.info("Import class {} (as group) …".format(short_name))
 
         try:
-            new_group = core_models.Group.objects.get(short_name__iexact=short_name)
+            new_group = core_models.Group.objects.get(short_name__iexact=short_name, school_term__in=[None, validity_range.school_term])
         except core_models.Group.DoesNotExist:
             new_group = core_models.Group.objects.create(
-                short_name=short_name, name=name, import_ref_untis=import_ref,
+                short_name=short_name, name=name, import_ref_untis=import_ref, school_term=validity_range.school_term
             )
-            logger.info("  New person created")
+            logger.info("  New group created")
 
         changed = False
 
@@ -208,6 +209,11 @@ def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, cor
             changed = True
             logger.info("  Import reference updated")
 
+        if new_group.school_term != validity_range.school_term:
+            new_group.school_term = validity_range.school_term
+            changed = True
+            logger.info("  School term updated")
+
         if changed:
             new_group.save()
 
@@ -223,12 +229,12 @@ def import_classes(teachers_ref: Dict[int, core_models.Person]) -> Dict[int, cor
     return classes_ref
 
 
-def import_rooms() -> Dict[int, chronos_models.Room]:
+def import_rooms(validity_range: ValidityRange) -> Dict[int, chronos_models.Room]:
     """Import rooms."""
     ref = {}
 
     # Get rooms
-    rooms = run_default_filter(mysql_models.Room.objects)
+    rooms = run_default_filter(validity_range, mysql_models.Room.objects)
 
     for room in tqdm(rooms, desc="Import rooms", **TQDM_DEFAULTS):
         if not room.name:
@@ -270,12 +276,12 @@ def import_rooms() -> Dict[int, chronos_models.Room]:
     return ref
 
 
-def import_supervision_areas(breaks_ref, teachers_ref) -> Dict[int, chronos_models.SupervisionArea]:
+def import_supervision_areas(validity_range: ValidityRange, breaks_ref, teachers_ref) -> Dict[int, chronos_models.SupervisionArea]:
     """Import supervision areas."""
     ref = {}
 
     # Get supervision areas
-    areas = run_default_filter(mysql_models.Corridor.objects, filter_term=False)
+    areas = run_default_filter(validity_range, mysql_models.Corridor.objects, filter_term=False)
 
     for area in tqdm(areas, desc="Import supervision areas", **TQDM_DEFAULTS):
         if not area.name:
@@ -390,10 +396,10 @@ def import_supervision_areas(breaks_ref, teachers_ref) -> Dict[int, chronos_mode
     return ref
 
 
-def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
+def import_time_periods(validity_range: ValidityRange) -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
     """Import time periods an breaks."""
     times = (
-        run_default_filter(mysql_models.Commondata.objects, filter_term=False)
+        run_default_filter(validity_range, mysql_models.Commondata.objects, filter_term=False)
         .filter(id=30)
         .order_by("number")
     )
@@ -409,7 +415,7 @@ def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
         times_ref[period] = (start_time, end_time)
 
     periods = (
-        run_default_filter(mysql_models.Commondata.objects, filter_term=False)
+        run_default_filter(validity_range, mysql_models.Commondata.objects, filter_term=False)
         .filter(id=CommonDataId.PERIOD.value)
         .order_by("number", "number1")
     )
@@ -426,6 +432,7 @@ def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
         new_time_period, created = chronos_models.TimePeriod.objects.get_or_create(
             weekday=weekday,
             period=period,
+            validity=validity_range,
             defaults={"time_start": start_time, "time_end": end_time},
         )
 
@@ -447,7 +454,7 @@ def import_time_periods() -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
 
 
 def import_breaks(
-    time_periods_ref: Dict[int, Dict[int, chronos_models.TimePeriod]],
+    validity_range: ValidityRange, time_periods_ref: Dict[int, Dict[int, chronos_models.TimePeriod]],
 ) -> Dict[int, Dict[int, chronos_models.Break]]:
     # Build breaks for all weekdays
     breaks_ref = {}
@@ -479,6 +486,7 @@ def import_breaks(
             new_break, created = chronos_models.Break.objects.get_or_create(
                 after_period=after_period,
                 before_period=before_period,
+                validity=validity_range,
                 defaults={"short_name": short_name, "name": short_name},
             )
 
@@ -492,12 +500,12 @@ def import_breaks(
     return breaks_ref
 
 
-def import_absence_reasons() -> Dict[int, chronos_models.AbsenceReason]:
+def import_absence_reasons(validity_range: ValidityRange) -> Dict[int, chronos_models.AbsenceReason]:
     """Import absence reasons."""
     ref = {}
 
     # Get reasons
-    reasons = run_default_filter(mysql_models.Absencereason.objects, filter_term=False)
+    reasons = run_default_filter(validity_range, mysql_models.Absencereason.objects, filter_term=False)
 
     for reason in tqdm(reasons, desc="Import absence reasons", **TQDM_DEFAULTS):
         if not reason.name:

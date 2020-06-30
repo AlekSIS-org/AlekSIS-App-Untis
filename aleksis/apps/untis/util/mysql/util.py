@@ -2,6 +2,7 @@ import logging
 from datetime import date, datetime
 from typing import Any, Callable, Optional, Sequence, Union
 
+from aleksis.apps.chronos.models import ValidityRange
 from django.db.models import Model, QuerySet
 
 DB_NAME = "untis"
@@ -22,18 +23,18 @@ def run_using(obj: QuerySet) -> QuerySet:
 
 
 def run_default_filter(
+    validity_range: ValidityRange,
     qs: QuerySet,
     for_date: Optional[date] = None,
     filter_term: bool = True,
     filter_deleted: bool = True,
 ) -> QuerySet:
     """Add a default filter in order to select the correct term."""
-    term = get_term(for_date)
     term_id, schoolyear_id, school_id, version_id = (
-        term.term_id,
-        term.schoolyear_id,
-        term.school_id,
-        term.version_id,
+        validity_range.import_ref_untis,
+        validity_range.school_term.import_ref_untis,
+        validity_range.school_id_untis,
+        validity_range.version_id_untis,
     )
 
     qs = run_using(qs).filter(
