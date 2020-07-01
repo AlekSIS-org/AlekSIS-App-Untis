@@ -49,11 +49,11 @@ def untis_import_mysql():
         # Lessons
         import_lessons(validity_range, time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref)
 
-    # Substitutions
-    import_absences(absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref)
-    import_substitutions(
-        teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref, time_periods_ref,
-    )
+        # Substitutions
+        import_absences(validity_range, absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref)
+        import_substitutions(
+            validity_range, teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref, time_periods_ref,
+        )
 
     # Events
     import_events(time_periods_ref, teachers_ref, classes_ref, rooms_ref)
