@@ -43,9 +43,6 @@ chronos_models.Lesson.field(
         verbose_name=_("Number of lesson element in UNTIS"), null=True, blank=True
     )
 )
-chronos_models.Lesson.field(
-    term_untis=IntegerField(verbose_name=_("Term id in UNTIS"), null=True, blank=True)
-)
 chronos_models.LessonPeriod.field(
     element_id_untis=IntegerField(
         verbose_name=_("Number of lesson element in UNTIS"), null=True, blank=True

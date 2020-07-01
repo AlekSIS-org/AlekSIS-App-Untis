@@ -46,8 +46,8 @@ def untis_import_mysql():
         # Supervisions
         supervision_areas_ref = import_supervision_areas(validity_range, breaks_ref, teachers_ref)
 
-    # Lessons
-    import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref)
+        # Lessons
+        import_lessons(validity_range, time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref)
 
     # Substitutions
     import_absences(absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref)

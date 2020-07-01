@@ -98,6 +98,8 @@ def import_terms(qs: Optional[QuerySet] = None) -> Dict[int, chronos_models.Vali
         validity_range.date_end = date_end
         validity_range.name = name
         validity_range.school_term = school_term
+        validity_range.school_id_untis = term.school_id
+        validity_range.version_id_untis = term.version_id
 
         validity_range.save()
 
