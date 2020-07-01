@@ -10,5 +10,3 @@ from aleksis.core.models import Group
 class UntisUploadForm(forms.Form):
     untis_xml = forms.FileField(label=_("Untis XML export"))
 
-
-EditGroupForm.add_node_to_layout(Fieldset(_("UNTIS import"), "untis_subject"))
