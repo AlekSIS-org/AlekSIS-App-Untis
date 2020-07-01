@@ -55,5 +55,5 @@ def untis_import_mysql():
             validity_range, teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref, time_periods_ref,
         )
 
-    # Events
-    import_events(time_periods_ref, teachers_ref, classes_ref, rooms_ref)
+        # Events
+        import_events(validity_range, time_periods_ref, teachers_ref, classes_ref, rooms_ref)

@@ -1,5 +1,6 @@
 import logging
 
+from aleksis.apps.chronos.models import ValidityRange
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
@@ -10,27 +11,21 @@ from ..util import (
     connect_untis_fields,
     get_first_period,
     get_last_period,
-    get_term,
     move_weekday_to_range,
     run_default_filter,
-    untis_date_to_date,
+    untis_date_to_date, date_to_untis_date,
 )
 
 logger = logging.getLogger(__name__)
 
 
-def import_events(time_periods_ref, teachers_ref, classes_ref, rooms_ref):
+def import_events(validity_range: ValidityRange,time_periods_ref, teachers_ref, classes_ref, rooms_ref):
     ref = {}
-
-    # Get term
-    term = get_term()
-    term_date_start = untis_date_to_date(term.datefrom)
-    term_date_end = untis_date_to_date(term.dateto)
 
     # Get absences
     events = (
-        run_default_filter(mysql_models.Event.objects, filter_term=False)
-        .filter(datefrom__lte=term.dateto, dateto__gte=term.datefrom)
+        run_default_filter(validity_range, mysql_models.Event.objects, filter_term=False)
+        .filter(datefrom__lte=date_to_untis_date(validity_range.date_end), dateto__gte=date_to_untis_date(validity_range.date_start))
         .order_by("event_id")
     )
 
@@ -98,6 +93,7 @@ def import_events(time_periods_ref, teachers_ref, classes_ref, rooms_ref):
                 "period_from": time_period_from,
                 "period_to": time_period_to,
                 "title": comment,
+                "school_term": validity_range.school_term,
             },
         )
 
@@ -111,12 +107,14 @@ def import_events(time_periods_ref, teachers_ref, classes_ref, rooms_ref):
             or new_event.period_from != time_period_from
             or new_event.period_to != time_period_to
             or new_event.title != comment
+            or new_event.school_term != validity_range.school_term
         ):
             new_event.date_start = date_from
             new_event.date_end = date_to
             new_event.period_from = time_period_from
             new_event.period_to = time_period_to
             new_event.title = comment
+            new_event.school_term = validity_range.school_term
             new_event.save()
             logger.info("  Time range and title updated")
 
@@ -130,7 +128,7 @@ def import_events(time_periods_ref, teachers_ref, classes_ref, rooms_ref):
 
         # Delete all no longer existing events
         for e in chronos_models.Event.objects.filter(
-            date_start__lte=term_date_start, date_end__gte=term_date_end
+            date_start__lte=validity_range.date_start, date_end__gte=validity_range.date_end
         ):
             if e.import_ref_untis and e.import_ref_untis not in existing_events:
                 logger.info("Event {} deleted".format(e.id))
