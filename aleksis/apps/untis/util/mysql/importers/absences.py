@@ -1,20 +1,20 @@
 import logging
 from enum import Enum
 
-from aleksis.apps.chronos.models import ValidityRange
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
+from aleksis.apps.chronos.models import ValidityRange
 
 from .... import models as mysql_models
 from ..util import (
     TQDM_DEFAULTS,
+    date_to_untis_date,
     get_first_period,
     get_last_period,
     move_weekday_to_range,
     run_default_filter,
     untis_date_to_date,
-    date_to_untis_date,
 )
 
 logger = logging.getLogger(__name__)
@@ -27,7 +27,14 @@ class AbsenceType(Enum):
     ROOM = 102
 
 
-def import_absences(validity_range: ValidityRange, absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref):
+def import_absences(
+    validity_range: ValidityRange,
+    absence_reasons_ref,
+    time_periods_ref,
+    teachers_ref,
+    classes_ref,
+    rooms_ref,
+):
     ref = {}
 
     untis_term_start = date_to_untis_date(validity_range.date_start)
@@ -35,7 +42,9 @@ def import_absences(validity_range: ValidityRange, absence_reasons_ref, time_per
 
     # Get absences
     absences = (
-        run_default_filter(validity_range, mysql_models.Absence.objects, filter_term=False)
+        run_default_filter(
+            validity_range, mysql_models.Absence.objects, filter_term=False
+        )
         .filter(datefrom__lte=untis_term_end, dateto__gte=untis_term_start)
         .order_by("absence_id")
     )

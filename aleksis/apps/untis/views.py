@@ -3,7 +3,6 @@ from django.shortcuts import render
 
 from rules.contrib.views import permission_required
 
-
 from .forms import UntisUploadForm
 from .util.xml.xml import untis_import_xml
 

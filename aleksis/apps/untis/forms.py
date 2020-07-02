@@ -9,4 +9,3 @@ from aleksis.core.models import Group
 
 class UntisUploadForm(forms.Form):
     untis_xml = forms.FileField(label=_("Untis XML export"))
-

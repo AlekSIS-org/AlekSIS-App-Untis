@@ -1,13 +1,13 @@
 import logging
 
-import reversion
-from aleksis.apps.chronos.models import ValidityRange
 from django.db.models import Q
 from django.utils.translation import gettext as _
 
+import reversion
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
+from aleksis.apps.chronos.models import ValidityRange
 from aleksis.core import models as core_models
 from aleksis.core.util.core_helpers import get_site_preferences
 
@@ -23,7 +23,14 @@ from ..util import (
 logger = logging.getLogger(__name__)
 
 
-def import_lessons(validity_range: ValidityRange, time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref):
+def import_lessons(
+    validity_range: ValidityRange,
+    time_periods_ref,
+    rooms_ref,
+    subjects_ref,
+    teachers_ref,
+    classes_ref,
+):
     """Import lessons."""
 
     # Lessons
@@ -112,7 +119,10 @@ def import_lessons(validity_range: ValidityRange, time_periods_ref, rooms_ref, s
                 qs = core_models.Group.objects.filter(
                     parent_groups__in=[c.id for c in course_classes],
                     subject_id=subject.id,
-                ).filter(Q(school_term__isnull=True) | Q(school_term=validity_range.school_term))
+                ).filter(
+                    Q(school_term__isnull=True)
+                    | Q(school_term=validity_range.school_term)
+                )
 
                 # Check if found groups match
                 match = False
@@ -130,10 +140,12 @@ def import_lessons(validity_range: ValidityRange, time_periods_ref, rooms_ref, s
 
                     # Build names and refs for course groups
                     group_short_name = "{}-{}".format(
-                        "".join([c.short_name for c in course_classes]), subject.short_name,
+                        "".join([c.short_name for c in course_classes]),
+                        subject.short_name,
                     )
                     group_name = "{}: {}".format(
-                        ", ".join([c.short_name for c in course_classes]), subject.short_name,
+                        ", ".join([c.short_name for c in course_classes]),
+                        subject.short_name,
                     )
 
                     # Get or create course group
@@ -160,9 +172,7 @@ def import_lessons(validity_range: ValidityRange, time_periods_ref, rooms_ref, s
                 course_group.owners.set(teachers)
 
                 # Update import ref
-                if (
-                    course_group.import_ref_untis != group_import_ref
-                ):
+                if course_group.import_ref_untis != group_import_ref:
                     course_group.import_ref_untis = group_import_ref
                     logger.info("    Import reference of course group updated")
                     changed = True
@@ -195,9 +205,7 @@ def import_lessons(validity_range: ValidityRange, time_periods_ref, rooms_ref, s
 
                 old_lesson = old_lesson_qs[0]
 
-                if (
-                    old_lesson.subject != subject
-                ):
+                if old_lesson.subject != subject:
                     old_lesson.subject = subject
                     old_lesson.save()
                     logger.info("    Subject updated")
@@ -220,7 +228,9 @@ def import_lessons(validity_range: ValidityRange, time_periods_ref, rooms_ref, s
             lesson.teachers.set(teachers)
 
             # All times for this course
-            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(lesson=lesson)
+            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(
+                lesson=lesson
+            )
 
             # If length has changed, delete all lesson periods
             if old_lesson_periods_qs.count() != len(time_periods):
@@ -244,7 +254,10 @@ def import_lessons(validity_range: ValidityRange, time_periods_ref, rooms_ref, s
                     # Update old lesson period
 
                     old_lesson_period = old_lesson_period_qs[0]
-                    if old_lesson_period.period != time_period or old_lesson_period.room != room:
+                    if (
+                        old_lesson_period.period != time_period
+                        or old_lesson_period.room != room
+                    ):
                         old_lesson_period.period = time_period
                         old_lesson_period.room = room
                         old_lesson_period.save()
