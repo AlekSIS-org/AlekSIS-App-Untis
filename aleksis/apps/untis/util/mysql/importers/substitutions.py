@@ -36,7 +36,6 @@ def import_substitutions(
     time_periods_ref,
 ):
     """Import substitutions."""
-
     subs = (
         run_default_filter(
             validity_range, mysql_models.Substitution.objects, filter_term=False

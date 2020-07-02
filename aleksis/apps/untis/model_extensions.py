@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 
-from jsonstore import CharField, IntegerField
+from jsonstore import IntegerField
 
 from aleksis.apps.chronos import models as chronos_models
 from aleksis.core import models as core_models

@@ -77,18 +77,18 @@ def import_terms(
                 school_term = core_models.SchoolTerm.objects.get(
                     import_ref_untis=school_year_id
                 )
-                logger.info(f"    School year found by import reference.")
+                logger.info("    School year found by import reference.")
             except core_models.SchoolTerm.DoesNotExist:
                 try:
                     school_term = core_models.SchoolTerm.objects.within_dates(
                         date_start, date_end
                     ).get()
-                    logger.info(f"    School year found by time.")
+                    logger.info("    School year found by time.")
                 except core_models.SchoolTerm.DoesNotExist:
                     school_term = core_models.SchoolTerm(
                         date_start=date_start, date_end=date_end, name=school_term_name
                     )
-                    logger.info(f"    School year created newly.")
+                    logger.info("    School year created newly.")
 
             school_term.import_ref_untis = school_year_id
 
@@ -104,16 +104,16 @@ def import_terms(
             validity_range = chronos_models.ValidityRange.objects.get(
                 import_ref_untis=term_id
             )
-            logger.info(f"  Validity range found by import reference.")
+            logger.info("  Validity range found by import reference.")
         except chronos_models.ValidityRange.DoesNotExist:
             try:
                 validity_range = chronos_models.ValidityRange.objects.within_dates(
                     date_start, date_end
                 ).get()
-                logger.info(f"  Validity range found by time.")
+                logger.info("  Validity range found by time.")
             except chronos_models.ValidityRange.DoesNotExist:
                 validity_range = chronos_models.ValidityRange()
-                logger.info(f"  Validity range created newly.")
+                logger.info("  Validity range created newly.")
 
         validity_range.import_ref_untis = term_id
         validity_range.date_start = date_start

@@ -32,7 +32,6 @@ def import_lessons(
     classes_ref,
 ):
     """Import lessons."""
-
     # Lessons
     lessons = run_default_filter(validity_range, mysql_models.Lesson.objects)
 
@@ -102,7 +101,7 @@ def import_lessons(
             if subject_id != 0:
                 subject = subjects_ref[subject_id]
             else:
-                logger.warning(_("    Skip because missing subject".format(i)))
+                logger.warning(_("    Skip because missing subject"))
                 continue
 
             # Get classes
