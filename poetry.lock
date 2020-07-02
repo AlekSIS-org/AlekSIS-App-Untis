@@ -68,11 +68,11 @@ extras = ["phonenumbers"]
 version = ">=3.0,<4.0"
 
 [package.dependencies.django-two-factor-auth]
-extras = ["call", "phonenumbers", "sms", "yubikey"]
+extras = ["yubikey", "sms", "call", "phonenumbers"]
 version = ">=1.11.0,<2.0.0"
 
 [package.dependencies.dynaconf]
-extras = ["ini", "toml", "yaml"]
+extras = ["yaml", "toml", "ini"]
 version = ">=2.0,<3.0"
 
 [package.extras]
@@ -1218,8 +1218,8 @@ category = "main"
 description = "Python interface to MySQL"
 name = "mysqlclient"
 optional = false
-python-versions = "*"
-version = "1.4.6"
+python-versions = ">=3.5"
+version = "2.0.0"
 
 [[package]]
 category = "main"
@@ -1965,7 +1965,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "ac4e0f20ce68ac174d0e64e8ce325519693778878aff1241363982c51147e975"
+content-hash = "8f79006335a0c801acb5bff0dfed63e8c455269e02f05d0cd9530d9e3e45cffd"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -2429,10 +2429,10 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 mysqlclient = [
-    {file = "mysqlclient-1.4.6-cp36-cp36m-win_amd64.whl", hash = "sha256:4c82187dd6ab3607150fbb1fa5ef4643118f3da122b8ba31c3149ddd9cf0cb39"},
-    {file = "mysqlclient-1.4.6-cp37-cp37m-win_amd64.whl", hash = "sha256:9e6080a7aee4cc6a06b58b59239f20f1d259c1d2fddf68ddeed242d2311c7087"},
-    {file = "mysqlclient-1.4.6-cp38-cp38-win_amd64.whl", hash = "sha256:f646f8d17d02be0872291f258cce3813497bc7888cd4712a577fd1e719b2f213"},
-    {file = "mysqlclient-1.4.6.tar.gz", hash = "sha256:f3fdaa9a38752a3b214a6fe79d7cae3653731a53e577821f9187e67cbecb2e16"},
+    {file = "mysqlclient-2.0.0-cp36-cp36m-win_amd64.whl", hash = "sha256:ee6de1a7a1c85b02b297c05e5466eff9be92671eb4f3ae1083cde22a3f5ae8c3"},
+    {file = "mysqlclient-2.0.0-cp37-cp37m-win_amd64.whl", hash = "sha256:083ea81950dcd1051891d9dbeeea946ada92d2c8f61ae5625e36357cc8357530"},
+    {file = "mysqlclient-2.0.0-cp38-cp38-win_amd64.whl", hash = "sha256:136220b87f6e0f1cbb9dcaa83b184715f41fafee899efd67ab60fbc9a8a1dcf7"},
+    {file = "mysqlclient-2.0.0.tar.gz", hash = "sha256:201dfcc2a3c8a0859ea399947f1af8abe74b706beba0ebac149180d9d7b0f6e8"},
 ]
 packaging = [
     {file = "packaging-20.4-py2.py3-none-any.whl", hash = "sha256:998416ba6962ae7fbd6596850b80e17859a5753ba17c32284f67bfff33784181"},
