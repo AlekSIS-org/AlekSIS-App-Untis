@@ -28,6 +28,11 @@ chronos_models.ValidityRange.field(
     )
 )
 chronos_models.ValidityRange.field(
+    school_year_untis=IntegerField(
+        verbose_name=_("UNTIS school year ID"), null=True, blank=True
+    )
+)
+chronos_models.ValidityRange.field(
     school_id_untis=IntegerField(
         verbose_name=_("UNTIS school id"), null=True, blank=True
     )

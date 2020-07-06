@@ -60,30 +60,30 @@ def import_terms(
         logger.info(f"Import term {term_id} ({date_start}–{date_end})")
 
         school_year_id = term.schoolyear_id
-        if school_year_id in school_terms:
-            school_term = school_terms[school_year_id]
-            logger.info(f"  School year {school_year_id} already there.")
-        else:
-            school_year = run_using(mysql_models.Schoolyear.objects).get(
-                schoolyear_id=school_year_id
-            )
-            school_term_name = (
-                school_year.text if school_year.text else school_year.schoolyearzoned
-            )
-
-            logger.info(f"  Import school year {school_year_id} ...")
-
-            try:
-                school_term = core_models.SchoolTerm.objects.get(
-                    import_ref_untis=school_year_id
+        try:
+            school_term = core_models.SchoolTerm.objects.within_dates(
+                date_start, date_end
+            ).get()
+            logger.info("    School term found by time.")
+        except core_models.SchoolTerm.DoesNotExist:
+            if school_year_id in school_terms:
+                school_term = school_terms[school_year_id]
+                logger.info(f"  School year {school_year_id} already there.")
+            else:
+                school_year = run_using(mysql_models.Schoolyear.objects).get(
+                    schoolyear_id=school_year_id
                 )
-                logger.info("    School year found by import reference.")
-            except core_models.SchoolTerm.DoesNotExist:
+                school_term_name = (
+                    school_year.text if school_year.text else school_year.schoolyearzoned
+                )
+
+                logger.info(f"  Import school year {school_year_id} ...")
+
                 try:
-                    school_term = core_models.SchoolTerm.objects.within_dates(
-                        date_start, date_end
-                    ).get()
-                    logger.info("    School year found by time.")
+                    school_term = core_models.SchoolTerm.objects.get(
+                        import_ref_untis=school_year_id
+                    )
+                    logger.info("    School year found by import reference.")
                 except core_models.SchoolTerm.DoesNotExist:
                     school_term = core_models.SchoolTerm(
                         date_start=date_start, date_end=date_end, name=school_term_name
@@ -92,13 +92,13 @@ def import_terms(
 
             school_term.import_ref_untis = school_year_id
 
-            if school_term.date_end < date_end:
-                school_term.date_end = date_end
+        if school_term.date_end < date_end:
+            school_term.date_end = date_end
 
-            if school_term.date_start > date_start:
-                school_term.date_start = date_start
+        if school_term.date_start > date_start:
+            school_term.date_start = date_start
 
-            school_term.save()
+        school_term.save()
 
         try:
             validity_range = chronos_models.ValidityRange.objects.get(
@@ -120,6 +120,7 @@ def import_terms(
         validity_range.date_end = date_end
         validity_range.name = name
         validity_range.school_term = school_term
+        validity_range.school_year_untis = school_year_id
         validity_range.school_id_untis = term.school_id
         validity_range.version_id_untis = term.version_id
 

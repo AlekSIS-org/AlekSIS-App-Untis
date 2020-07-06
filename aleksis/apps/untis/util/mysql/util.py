@@ -33,7 +33,7 @@ def run_default_filter(
     """Add a default filter in order to select the correct term."""
     term_id, schoolyear_id, school_id, version_id = (
         validity_range.import_ref_untis,
-        validity_range.school_term.import_ref_untis,
+        validity_range.school_year_untis,
         validity_range.school_id_untis,
         validity_range.version_id_untis,
     )
