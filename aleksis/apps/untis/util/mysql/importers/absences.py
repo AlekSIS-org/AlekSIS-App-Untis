@@ -4,13 +4,14 @@ from enum import Enum
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
+from aleksis.apps.chronos.models import ValidityRange
 
 from .... import models as mysql_models
 from ..util import (
     TQDM_DEFAULTS,
+    date_to_untis_date,
     get_first_period,
     get_last_period,
-    get_term,
     move_weekday_to_range,
     run_default_filter,
     untis_date_to_date,
@@ -26,18 +27,25 @@ class AbsenceType(Enum):
     ROOM = 102
 
 
-def import_absences(absence_reasons_ref, time_periods_ref, teachers_ref, classes_ref, rooms_ref):
+def import_absences(
+    validity_range: ValidityRange,
+    absence_reasons_ref,
+    time_periods_ref,
+    teachers_ref,
+    classes_ref,
+    rooms_ref,
+):
     ref = {}
 
-    # Get term
-    term = get_term()
-    term_date_start = untis_date_to_date(term.datefrom)
-    term_date_end = untis_date_to_date(term.dateto)
+    untis_term_start = date_to_untis_date(validity_range.date_start)
+    untis_term_end = date_to_untis_date(validity_range.date_end)
 
     # Get absences
     absences = (
-        run_default_filter(mysql_models.Absence.objects, filter_term=False)
-        .filter(datefrom__lte=term.dateto, dateto__gte=term.datefrom)
+        run_default_filter(
+            validity_range, mysql_models.Absence.objects, filter_term=False
+        )
+        .filter(datefrom__lte=untis_term_end, dateto__gte=untis_term_start)
         .order_by("absence_id")
     )
 
@@ -101,6 +109,7 @@ def import_absences(absence_reasons_ref, time_periods_ref, teachers_ref, classes
                 "period_from": time_period_from,
                 "period_to": time_period_to,
                 "comment": absence.text,
+                "school_term": validity_range.school_term,
             },
         )
 
@@ -117,6 +126,7 @@ def import_absences(absence_reasons_ref, time_periods_ref, teachers_ref, classes
             or new_absence.period_from != time_period_from
             or new_absence.period_to != time_period_to
             or new_absence.comment != comment
+            or new_absence.school_term != validity_range.school_term
         ):
             new_absence.reason = reason
             new_absence.group = group
@@ -127,16 +137,19 @@ def import_absences(absence_reasons_ref, time_periods_ref, teachers_ref, classes
             new_absence.period_from = time_period_from
             new_absence.period_to = time_period_to
             new_absence.comment = comment
+            new_absence.school_term = validity_range.school_term
             new_absence.save()
             logger.info("  Absence updated")
 
         existing_absences.append(import_ref)
         ref[import_ref] = new_absence
 
-        # Delete all no longer existing absences
-        for a in chronos_models.Absence.objects.filter(
-            date_start__lte=term_date_start, date_end__gte=term_date_end
-        ):
-            if a.import_ref_untis and a.import_ref_untis not in existing_absences:
-                logger.info("Absence {} deleted".format(a.id))
-                a.delete()
+    # Delete all no longer existing absences
+    for a in chronos_models.Absence.objects.filter(
+        date_start__lte=validity_range.date_end, date_end__gte=validity_range.date_start
+    ):
+        if a.import_ref_untis and a.import_ref_untis not in existing_absences:
+            logger.info("Absence {} deleted".format(a.id))
+            a.delete()
+
+    return ref

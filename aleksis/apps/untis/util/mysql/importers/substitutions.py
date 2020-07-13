@@ -7,11 +7,12 @@ from calendarweek import CalendarWeek
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
+from aleksis.apps.chronos.models import ValidityRange
 
 from .... import models as mysql_models
 from ..util import (
     TQDM_DEFAULTS,
-    get_term,
+    date_to_untis_date,
     run_default_filter,
     untis_date_to_date,
     untis_split_first,
@@ -26,16 +27,23 @@ class SubstitutionFlag(Enum):
 
 
 def import_substitutions(
-    teachers_ref, subjects_ref, rooms_ref, classes_ref, supervision_areas_ref, time_periods_ref,
+    validity_range: ValidityRange,
+    teachers_ref,
+    subjects_ref,
+    rooms_ref,
+    classes_ref,
+    supervision_areas_ref,
+    time_periods_ref,
 ):
     """Import substitutions."""
-    term = get_term()
-    date_start = untis_date_to_date(term.datefrom)
-    date_end = untis_date_to_date(term.dateto)
-
     subs = (
-        run_default_filter(mysql_models.Substitution.objects, filter_term=False)
-        .filter(date__gte=term.datefrom, date__lte=term.dateto)
+        run_default_filter(
+            validity_range, mysql_models.Substitution.objects, filter_term=False
+        )
+        .filter(
+            date__gte=date_to_untis_date(validity_range.date_start),
+            date__lte=date_to_untis_date(validity_range.date_end),
+        )
         .exclude(
             Q(flags__contains="N")
             | Q(flags__contains="b")
@@ -91,6 +99,7 @@ def import_substitutions(
 
         if not is_supervision_substitution:
             lesson_periods = chronos_models.LessonPeriod.objects.filter(
+                lesson__validity=validity_range,
                 lesson__lesson_id_untis=lesson_id,
                 lesson__teachers=teacher_old,
                 period__period=period,
@@ -132,7 +141,10 @@ def import_substitutions(
                 classes.append(classes_ref[id_])
 
             if lesson_period:
-                (substitution, created,) = chronos_models.LessonSubstitution.objects.get_or_create(
+                (
+                    substitution,
+                    created,
+                ) = chronos_models.LessonSubstitution.objects.get_or_create(
                     lesson_period=lesson_period, week=week.week
                 )
 
@@ -165,13 +177,18 @@ def import_substitutions(
                 logger.info("  Extra lesson detected")
                 time_period = time_periods_ref[date.weekday()][period]
 
-                groups = [classes_ref[pk] for pk in untis_split_first(sub.classids, int)]
+                groups = [
+                    classes_ref[pk] for pk in untis_split_first(sub.classids, int)
+                ]
 
                 room = room_old if not room_new and room_old else room_new
                 subject = subject_old if not subject_new else subject_new
                 teachers = [teacher_old] if not teacher_new else [teacher_new]
 
-                (extra_lesson, created,) = chronos_models.ExtraLesson.objects.update_or_create(
+                (
+                    extra_lesson,
+                    created,
+                ) = chronos_models.ExtraLesson.objects.update_or_create(
                     import_ref_untis=sub_id,
                     defaults={
                         "week": week.week,
@@ -205,7 +222,9 @@ def import_substitutions(
                         substitution,
                         created,
                     ) = chronos_models.SupervisionSubstitution.objects.get_or_create(
-                        supervision=supervision, date=date, defaults={"teacher": teacher_new},
+                        supervision=supervision,
+                        date=date,
+                        defaults={"teacher": teacher_new},
                     )
 
                     if created:
@@ -221,20 +240,24 @@ def import_substitutions(
                         logger.info("  Supervision substitution updated")
 
     # Delete all no longer existing substitutions
-    for s in chronos_models.LessonSubstitution.objects.within_dates(date_start, date_end):
+    for s in chronos_models.LessonSubstitution.objects.within_dates(
+        validity_range.date_start, validity_range.date_end
+    ):
         if s.import_ref_untis and s.import_ref_untis not in existing_subs:
             logger.info("Substitution {} deleted".format(s.id))
             s.delete()
 
     # Delete all no longer existing extra lessons
-    for s in chronos_models.ExtraLesson.objects.within_dates(date_start, date_end):
+    for s in chronos_models.ExtraLesson.objects.within_dates(
+        validity_range.date_start, validity_range.date_end
+    ):
         if s.import_ref_untis and s.import_ref_untis not in existing_subs:
             logger.info("Extra lesson {} deleted".format(s.id))
             s.delete()
 
     # Delete all no longer existing supervision substitutions
     for s in chronos_models.SupervisionSubstitution.objects.filter(
-        date__gte=date_start, date__lte=date_end
+        date__gte=validity_range.date_start, date__lte=validity_range.date_end
     ):
         if s.import_ref_untis and s.import_ref_untis not in existing_subs:
             logger.info("Supervision substitution {} deleted".format(s.id))

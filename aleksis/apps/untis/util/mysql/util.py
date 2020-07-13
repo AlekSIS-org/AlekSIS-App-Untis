@@ -3,9 +3,8 @@ from datetime import date, datetime
 from typing import Any, Callable, Optional, Sequence, Union
 
 from django.db.models import Model, QuerySet
-from django.utils import timezone
 
-from ... import models as mysql_models
+from aleksis.apps.chronos.models import ValidityRange
 
 DB_NAME = "untis"
 UNTIS_DATE_FORMAT = "%Y%m%d"
@@ -24,31 +23,19 @@ def run_using(obj: QuerySet) -> QuerySet:
     return obj.using(DB_NAME)
 
 
-def get_term(for_date: Optional[date] = None) -> mysql_models.Terms:
-    """Get term valid for the provided date."""
-    if not for_date:
-        for_date = timezone.now().date()
-
-    term = run_using(mysql_models.Terms.objects).get(
-        datefrom__lte=date_to_untis_date(for_date), dateto__gte=date_to_untis_date(for_date),
-    )
-
-    return term
-
-
 def run_default_filter(
+    validity_range: ValidityRange,
     qs: QuerySet,
     for_date: Optional[date] = None,
     filter_term: bool = True,
     filter_deleted: bool = True,
 ) -> QuerySet:
     """Add a default filter in order to select the correct term."""
-    term = get_term(for_date)
     term_id, schoolyear_id, school_id, version_id = (
-        term.term_id,
-        term.schoolyear_id,
-        term.school_id,
-        term.version_id,
+        validity_range.import_ref_untis,
+        validity_range.school_year_untis,
+        validity_range.school_id_untis,
+        validity_range.version_id_untis,
     )
 
     qs = run_using(qs).filter(
@@ -76,7 +63,9 @@ def clean_array(seq: Sequence, conv: Callable[[Any], Any] = lambda el: el) -> Se
     >>> clean_array(["8", "", "12", "0"], int)
     [8, 12]
     """
-    filtered = filter(lambda el: bool(el), map(lambda el: conv(el) if el else None, seq))
+    filtered = filter(
+        lambda el: bool(el), map(lambda el: conv(el) if el else None, seq)
+    )
     return type(seq)(filtered)
 
 
@@ -114,7 +103,9 @@ def untis_colour_to_hex(colour: int) -> str:
     return "#" + hex_rgb
 
 
-def compare_m2m(a: Union[Sequence[Model], QuerySet], b: Union[Sequence[Model], QuerySet]) -> bool:
+def compare_m2m(
+    a: Union[Sequence[Model], QuerySet], b: Union[Sequence[Model], QuerySet]
+) -> bool:
     """Compare if content of two m2m fields is equal."""
     return set(a) == set(b)
 

@@ -1,12 +1,13 @@
 import logging
-from datetime import timedelta
 
-import reversion
+from django.db.models import Q
 from django.utils.translation import gettext as _
 
+import reversion
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
+from aleksis.apps.chronos.models import ValidityRange
 from aleksis.core import models as core_models
 from aleksis.core.util.core_helpers import get_site_preferences
 
@@ -15,34 +16,24 @@ from ..util import (
     TQDM_DEFAULTS,
     compare_m2m,
     connect_untis_fields,
-    get_term,
     run_default_filter,
-    untis_date_to_date,
     untis_split_third,
 )
 
 logger = logging.getLogger(__name__)
 
 
-def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref):
+def import_lessons(
+    validity_range: ValidityRange,
+    time_periods_ref,
+    rooms_ref,
+    subjects_ref,
+    teachers_ref,
+    classes_ref,
+):
     """Import lessons."""
-    # Get current term
-    term = get_term()
-    date_start = untis_date_to_date(term.datefrom)
-    date_end = untis_date_to_date(term.dateto)
-
-    # Get all existing lessons for this term
-    lessons_in_term = chronos_models.Lesson.objects.filter(term_untis=term.term_id).values_list(
-        "id", flat=True
-    )
-
-    # Set end date of lessons from other terms ending in this term to the day before term starts
-    chronos_models.Lesson.objects.filter(date_end__gte=date_start).exclude(
-        id__in=lessons_in_term
-    ).update(date_end=date_start - timedelta(days=1))
-
     # Lessons
-    lessons = run_default_filter(mysql_models.Lesson.objects)
+    lessons = run_default_filter(validity_range, mysql_models.Lesson.objects)
 
     existing_lessons = []
     for lesson in tqdm(lessons, desc="Import lessons", **TQDM_DEFAULTS):
@@ -110,7 +101,7 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
             if subject_id != 0:
                 subject = subjects_ref[subject_id]
             else:
-                logger.warning(_("    Skip because missing subject".format(i)))
+                logger.warning(_("    Skip because missing subject"))
                 continue
 
             # Get classes
@@ -127,6 +118,9 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                 qs = core_models.Group.objects.filter(
                     parent_groups__in=[c.id for c in course_classes],
                     subject_id=subject.id,
+                ).filter(
+                    Q(school_term__isnull=True)
+                    | Q(school_term=validity_range.school_term)
                 )
 
                 # Check if found groups match
@@ -145,10 +139,12 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
 
                     # Build names and refs for course groups
                     group_short_name = "{}-{}".format(
-                        "".join([c.short_name for c in course_classes]), subject.short_name,
+                        "".join([c.short_name for c in course_classes]),
+                        subject.short_name,
                     )
                     group_name = "{}: {}".format(
-                        ", ".join([c.short_name for c in course_classes]), subject.short_name,
+                        ", ".join([c.short_name for c in course_classes]),
+                        subject.short_name,
                     )
 
                     # Get or create course group
@@ -162,7 +158,7 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
 
                     # Update parent groups
                     course_group.parent_groups.set(course_classes)
-                    logger.info("    Course groups set")
+                    logger.info("    Parent groups set")
 
                     # Update name
                     if course_group.name != group_name:
@@ -175,12 +171,19 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                 course_group.owners.set(teachers)
 
                 # Update import ref
-                if (
-                    course_group.import_ref_untis != group_import_ref
-                ):  # or course_group.untis_subject != subject_ref:
+                if course_group.import_ref_untis != group_import_ref:
                     course_group.import_ref_untis = group_import_ref
-                    # course_group.subject_ref = subject_ref
                     logger.info("    Import reference of course group updated")
+                    changed = True
+
+                if course_group.subject != subject:
+                    course_group.subject = subject
+                    logger.info("    Subject reference of course group updated")
+                    changed = True
+
+                if course_group.school_term != validity_range.school_term:
+                    course_group.school_term = validity_range.school_term
+                    logger.info("    School term reference of course group updated")
                     changed = True
 
                 if changed:
@@ -192,7 +195,7 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
 
             # Get old lesson
             old_lesson_qs = chronos_models.Lesson.objects.filter(
-                lesson_id_untis=lesson_id, element_id_untis=i, term_untis=term.term_id
+                lesson_id_untis=lesson_id, element_id_untis=i, validity=validity_range
             )
 
             if old_lesson_qs.exists():
@@ -201,27 +204,19 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
 
                 old_lesson = old_lesson_qs[0]
 
-                if (
-                    old_lesson.subject != subject
-                    or old_lesson.date_start != date_start
-                    or old_lesson.date_end != date_end
-                ):
+                if old_lesson.subject != subject:
                     old_lesson.subject = subject
-                    old_lesson.date_start = date_start
-                    old_lesson.date_end = date_end
                     old_lesson.save()
-                    logger.info("    Subject, start date and end date updated")
+                    logger.info("    Subject updated")
                 lesson = old_lesson
             else:
                 # Create new lesson
 
                 lesson = chronos_models.Lesson.objects.create(
                     subject=subject,
-                    date_start=date_start,
-                    date_end=date_end,
                     lesson_id_untis=lesson_id,
                     element_id_untis=i,
-                    term_untis=term.term_id,
+                    validity=validity_range,
                 )
                 logger.info("    New lesson created")
 
@@ -232,7 +227,9 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
             lesson.teachers.set(teachers)
 
             # All times for this course
-            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(lesson=lesson)
+            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(
+                lesson=lesson
+            )
 
             # If length has changed, delete all lesson periods
             if old_lesson_periods_qs.count() != len(time_periods):
@@ -256,7 +253,10 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                     # Update old lesson period
 
                     old_lesson_period = old_lesson_period_qs[0]
-                    if old_lesson_period.period != time_period or old_lesson_period.room != room:
+                    if (
+                        old_lesson_period.period != time_period
+                        or old_lesson_period.room != room
+                    ):
                         old_lesson_period.period = time_period
                         old_lesson_period.room = room
                         old_lesson_period.save()
@@ -269,7 +269,7 @@ def import_lessons(time_periods_ref, rooms_ref, subjects_ref, teachers_ref, clas
                     )
                     logger.info("      New time period added")
 
-    for lesson in chronos_models.Lesson.objects.filter(term_untis=term.term_id):
+    for lesson in chronos_models.Lesson.objects.filter(validity=validity_range):
         if lesson.lesson_id_untis and lesson.lesson_id_untis not in existing_lessons:
             logger.info("Lesson {} deleted".format(lesson.id))
             with reversion.create_revision():
