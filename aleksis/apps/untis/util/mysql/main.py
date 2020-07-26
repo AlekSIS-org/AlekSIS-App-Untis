@@ -1,6 +1,7 @@
-from aleksis.apps.untis.util.mysql.importers.terms import import_terms, get_terms_for_date
-from aleksis.apps.untis.util.mysql.util import TQDM_DEFAULTS
+from typing import Optional
+
 from django.db import transaction
+from django.db.models import QuerySet
 
 from tqdm import tqdm
 
@@ -28,9 +29,8 @@ from .importers.substitutions import import_substitutions
 
 
 @transaction.atomic
-def untis_import_mysql():
+def untis_import_mysql(terms: Optional[QuerySet] = None):
     # School terms and validity ranges
-    terms = get_terms_for_date()
     validity_ref = import_terms(terms)
 
     for validity_range in tqdm(
