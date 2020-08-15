@@ -145,7 +145,7 @@ def import_substitutions(
                     substitution,
                     created,
                 ) = chronos_models.LessonSubstitution.objects.get_or_create(
-                    lesson_period=lesson_period, week=week.week
+                    lesson_period=lesson_period, week=week.week, year=week.year
                 )
 
                 if created:
@@ -192,6 +192,7 @@ def import_substitutions(
                     import_ref_untis=sub_id,
                     defaults={
                         "week": week.week,
+                        "year": week.year,
                         "period": time_period,
                         "subject": subject,
                         "room": room,
