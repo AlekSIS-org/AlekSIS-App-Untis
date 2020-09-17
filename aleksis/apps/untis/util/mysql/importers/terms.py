@@ -31,6 +31,7 @@ def get_terms_for_date(for_date: Optional[date] = None) -> QuerySet:
 
     return qs
 
+
 def get_future_terms_for_date(for_date: Optional[date] = None) -> QuerySet:
     """Get all furture terms (after the current term)."""
 
@@ -42,8 +43,6 @@ def get_future_terms_for_date(for_date: Optional[date] = None) -> QuerySet:
     )
 
     return qs
-
-
 
 
 logger = logging.getLogger(__name__)
@@ -88,7 +87,9 @@ def import_terms(
                     schoolyear_id=school_year_id
                 )
                 school_term_name = (
-                    school_year.text if school_year.text else school_year.schoolyearzoned
+                    school_year.text
+                    if school_year.text
+                    else school_year.schoolyearzoned
                 )
 
                 logger.info(f"  Import school year {school_year_id} ...")

@@ -5,10 +5,7 @@ from django.db.models import QuerySet
 
 from tqdm import tqdm
 
-from aleksis.apps.untis.util.mysql.importers.terms import (
-    get_terms_for_date,
-    import_terms,
-)
+from aleksis.apps.untis.util.mysql.importers.terms import import_terms
 from aleksis.apps.untis.util.mysql.util import TQDM_DEFAULTS
 
 from .importers.absences import import_absences

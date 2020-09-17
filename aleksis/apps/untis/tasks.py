@@ -1,8 +1,7 @@
 from aleksis.apps.untis.util.mysql.importers.terms import (
-    get_terms_for_date,
     get_future_terms_for_date,
+    get_terms_for_date,
 )
-
 from aleksis.core.util.core_helpers import celery_optional
 
 from .util.mysql.main import untis_import_mysql as _untis_import_mysql
@@ -36,6 +35,7 @@ def untis_import_mysql_current_next_term():
     if future_terms.exists():
         terms = terms.union(future_terms[0:1])
     _untis_import_mysql(terms)
+
 
 @celery_optional
 def untis_import_mysql_current_future_terms():
