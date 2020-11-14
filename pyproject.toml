@@ -33,8 +33,8 @@ python = "^3.7"
 mysqlclient = "^2.0.0"
 tqdm = "^4.44.1"
 defusedxml = "^0.6.0"
-aleksis-core = {version = "^2.0a3.dev0+20201114132749.88d92354", allow-prereleases = true}
-aleksis-app-chronos = "^2.0a3.dev0+20201114181205.58815f85"
+aleksis-core = {version = "^2.0a3", allow-prereleases = true}
+aleksis-app-chronos = "^2.0a3"
 
 [tool.poetry.dev-dependencies]
 sphinx = "^3.0"
