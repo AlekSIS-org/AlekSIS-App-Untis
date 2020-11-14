@@ -34,7 +34,6 @@ def get_terms_for_date(for_date: Optional[date] = None) -> QuerySet:
 
 def get_future_terms_for_date(for_date: Optional[date] = None) -> QuerySet:
     """Get all furture terms (after the current term)."""
-
     if not for_date:
         for_date = timezone.now().date()
 
