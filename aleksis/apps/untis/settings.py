@@ -3,7 +3,7 @@ from aleksis.core.settings import _settings
 if _settings.get("untis.database.enabled"):
     DATABASES = {
         "untis": {
-            "ENGINE": "django.db.backends.mysql",
+            "ENGINE": "django_prometheus.db.backends.mysql",
             "NAME": _settings.get("untis.database.name", "untis"),
             "USER": _settings.get("untis.database.user", "untis"),
             "PASSWORD": _settings.get("untis.database.password", None),
