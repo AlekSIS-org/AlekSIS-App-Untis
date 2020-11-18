@@ -31,9 +31,7 @@ def import_subjects(validity_range: ValidityRange) -> Dict[int, chronos_models.S
     subjects_ref = {}
 
     # Get subjects
-    subjects = run_default_filter(
-        validity_range, mysql_models.Subjects.objects, filter_term=False
-    )
+    subjects = run_default_filter(validity_range, mysql_models.Subjects.objects, filter_term=False)
 
     for subject in tqdm(subjects, desc="Import subjects", **TQDM_DEFAULTS):
         # Check if needed data are provided
@@ -175,9 +173,7 @@ def import_classes(
         # Check if needed data are provided
         if not class_.name:
             raise RuntimeError(
-                "Class ID {}: Cannot import class without short name.".format(
-                    class_.teacher_id
-                )
+                "Class ID {}: Cannot import class without short name.".format(class_.teacher_id)
             )
 
         # Build values
@@ -191,8 +187,7 @@ def import_classes(
 
         try:
             new_group = core_models.Group.objects.get(
-                short_name__iexact=short_name,
-                school_term__in=[None, validity_range.school_term],
+                short_name__iexact=short_name, school_term__in=[None, validity_range.school_term],
             )
         except core_models.Group.DoesNotExist:
             new_group = core_models.Group.objects.create(
@@ -213,10 +208,7 @@ def import_classes(
             changed = True
             logger.info("  Short name updated")
 
-        if (
-            get_site_preferences()["untis_mysql__update_groups_name"]
-            and new_group.name != name
-        ):
+        if get_site_preferences()["untis_mysql__update_groups_name"] and new_group.name != name:
             new_group.name = name
             changed = True
             logger.info("  Name updated")
@@ -256,9 +248,7 @@ def import_rooms(validity_range: ValidityRange) -> Dict[int, chronos_models.Room
     for room in tqdm(rooms, desc="Import rooms", **TQDM_DEFAULTS):
         if not room.name:
             raise RuntimeError(
-                "Room ID {}: Cannot import room without short name.".format(
-                    room.room_id
-                )
+                "Room ID {}: Cannot import room without short name.".format(room.room_id)
             )
 
         # Build values
@@ -269,8 +259,7 @@ def import_rooms(validity_range: ValidityRange) -> Dict[int, chronos_models.Room
         logger.info("Import room {} …".format(short_name))
 
         new_room, created = chronos_models.Room.objects.get_or_create(
-            short_name=short_name,
-            defaults={"name": name, "import_ref_untis": import_ref},
+            short_name=short_name, defaults={"name": name, "import_ref_untis": import_ref},
         )
 
         if created:
@@ -278,10 +267,7 @@ def import_rooms(validity_range: ValidityRange) -> Dict[int, chronos_models.Room
 
         changed = False
 
-        if (
-            get_site_preferences()["untis_mysql__update_rooms_name"]
-            and new_room.name != name
-        ):
+        if get_site_preferences()["untis_mysql__update_rooms_name"] and new_room.name != name:
             new_room.name = name
             changed = True
             logger.info("  Name updated")
@@ -306,9 +292,7 @@ def import_supervision_areas(
     ref = {}
 
     # Get supervision areas
-    areas = run_default_filter(
-        validity_range, mysql_models.Corridor.objects, filter_term=False
-    )
+    areas = run_default_filter(validity_range, mysql_models.Corridor.objects, filter_term=False)
 
     for area in tqdm(areas, desc="Import supervision areas", **TQDM_DEFAULTS):
         if not area.name:
@@ -428,9 +412,7 @@ def import_time_periods(
 ) -> Dict[int, Dict[int, chronos_models.TimePeriod]]:
     """Import time periods an breaks."""
     times = (
-        run_default_filter(
-            validity_range, mysql_models.Commondata.objects, filter_term=False
-        )
+        run_default_filter(validity_range, mysql_models.Commondata.objects, filter_term=False)
         .filter(id=30)
         .order_by("number")
     )
@@ -446,9 +428,7 @@ def import_time_periods(
         times_ref[period] = (start_time, end_time)
 
     periods = (
-        run_default_filter(
-            validity_range, mysql_models.Commondata.objects, filter_term=False
-        )
+        run_default_filter(validity_range, mysql_models.Commondata.objects, filter_term=False)
         .filter(id=CommonDataId.PERIOD.value)
         .order_by("number", "number1")
     )
@@ -460,9 +440,7 @@ def import_time_periods(
         start_time = times_ref[period][0]
         end_time = times_ref[period][1]
 
-        logger.info(
-            "Import time period on weekday {} in the {}. period".format(weekday, period)
-        )
+        logger.info("Import time period on weekday {} in the {}. period".format(weekday, period))
 
         new_time_period, created = chronos_models.TimePeriod.objects.get_or_create(
             weekday=weekday,
@@ -474,10 +452,7 @@ def import_time_periods(
         if created:
             logger.info("  New time period created")
 
-        if (
-            new_time_period.time_start != start_time
-            or new_time_period.time_end != end_time
-        ):
+        if new_time_period.time_start != start_time or new_time_period.time_end != end_time:
             new_time_period.time_start = start_time
             new_time_period.time_end = end_time
             new_time_period.save()
@@ -505,9 +480,7 @@ def import_breaks(
         # Add None two times in order to create breaks before first lesson and after last lesson
         time_periods_for_breaks = [None] + list(time_periods.values()) + [None]
         for i, time_period in tqdm(
-            enumerate(time_periods_for_breaks),
-            desc="Import breaks (period)",
-            **TQDM_DEFAULTS
+            enumerate(time_periods_for_breaks), desc="Import breaks (period)", **TQDM_DEFAULTS
         ):
             # If last item (None) is reached, no further break must be created
             if i + 1 == len(time_periods_for_breaks):
@@ -568,8 +541,7 @@ def import_absence_reasons(
         logger.info("Import absence reason {} …".format(short_name))
 
         new_reason, created = chronos_models.AbsenceReason.objects.get_or_create(
-            import_ref_untis=import_ref,
-            defaults={"short_name": short_name, "name": name},
+            import_ref_untis=import_ref, defaults={"short_name": short_name, "name": name},
         )
 
         if created:

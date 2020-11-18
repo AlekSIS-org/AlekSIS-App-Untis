@@ -21,19 +21,13 @@ logger = logging.getLogger(__name__)
 
 
 def import_events(
-    validity_range: ValidityRange,
-    time_periods_ref,
-    teachers_ref,
-    classes_ref,
-    rooms_ref,
+    validity_range: ValidityRange, time_periods_ref, teachers_ref, classes_ref, rooms_ref,
 ):
     ref = {}
 
     # Get absences
     events = (
-        run_default_filter(
-            validity_range, mysql_models.Event.objects, filter_term=False
-        )
+        run_default_filter(validity_range, mysql_models.Event.objects, filter_term=False)
         .filter(
             datefrom__lte=date_to_untis_date(validity_range.date_end),
             dateto__gte=date_to_untis_date(validity_range.date_start),
@@ -140,8 +134,7 @@ def import_events(
 
         # Delete all no longer existing events
         for e in chronos_models.Event.objects.filter(
-            date_start__lte=validity_range.date_start,
-            date_end__gte=validity_range.date_end,
+            date_start__lte=validity_range.date_start, date_end__gte=validity_range.date_end,
         ):
             if e.import_ref_untis and e.import_ref_untis not in existing_events:
                 logger.info("Event {} deleted".format(e.id))

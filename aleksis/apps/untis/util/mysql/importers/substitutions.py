@@ -37,9 +37,7 @@ def import_substitutions(
 ):
     """Import substitutions."""
     subs = (
-        run_default_filter(
-            validity_range, mysql_models.Substitution.objects, filter_term=False
-        )
+        run_default_filter(validity_range, mysql_models.Substitution.objects, filter_term=False)
         .filter(
             date__gte=date_to_untis_date(validity_range.date_start),
             date__lte=date_to_untis_date(validity_range.date_end),
@@ -141,10 +139,7 @@ def import_substitutions(
                 classes.append(classes_ref[id_])
 
             if lesson_period:
-                (
-                    substitution,
-                    created,
-                ) = chronos_models.LessonSubstitution.objects.get_or_create(
+                (substitution, created,) = chronos_models.LessonSubstitution.objects.get_or_create(
                     lesson_period=lesson_period, week=week.week, year=week.year
                 )
 
@@ -177,18 +172,13 @@ def import_substitutions(
                 logger.info("  Extra lesson detected")
                 time_period = time_periods_ref[date.weekday()][period]
 
-                groups = [
-                    classes_ref[pk] for pk in untis_split_first(sub.classids, int)
-                ]
+                groups = [classes_ref[pk] for pk in untis_split_first(sub.classids, int)]
 
                 room = room_old if not room_new and room_old else room_new
                 subject = subject_old if not subject_new else subject_new
                 teachers = [teacher_old] if not teacher_new else [teacher_new]
 
-                (
-                    extra_lesson,
-                    created,
-                ) = chronos_models.ExtraLesson.objects.update_or_create(
+                (extra_lesson, created,) = chronos_models.ExtraLesson.objects.update_or_create(
                     import_ref_untis=sub_id,
                     defaults={
                         "week": week.week,
@@ -223,9 +213,7 @@ def import_substitutions(
                         substitution,
                         created,
                     ) = chronos_models.SupervisionSubstitution.objects.get_or_create(
-                        supervision=supervision,
-                        date=date,
-                        defaults={"teacher": teacher_new},
+                        supervision=supervision, date=date, defaults={"teacher": teacher_new},
                     )
 
                     if created:

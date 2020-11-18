@@ -116,12 +116,8 @@ def import_lessons(
 
                 # Search by parent groups and subject
                 qs = core_models.Group.objects.filter(
-                    parent_groups__in=[c.id for c in course_classes],
-                    subject_id=subject.id,
-                ).filter(
-                    Q(school_term__isnull=True)
-                    | Q(school_term=validity_range.school_term)
-                )
+                    parent_groups__in=[c.id for c in course_classes], subject_id=subject.id,
+                ).filter(Q(school_term__isnull=True) | Q(school_term=validity_range.school_term))
 
                 # Check if found groups match
                 match = False
@@ -139,12 +135,10 @@ def import_lessons(
 
                     # Build names and refs for course groups
                     group_short_name = "{}-{}".format(
-                        "".join([c.short_name for c in course_classes]),
-                        subject.short_name,
+                        "".join([c.short_name for c in course_classes]), subject.short_name,
                     )
                     group_name = "{}: {}".format(
-                        ", ".join([c.short_name for c in course_classes]),
-                        subject.short_name,
+                        ", ".join([c.short_name for c in course_classes]), subject.short_name,
                     )
 
                     # Get or create course group
@@ -227,9 +221,7 @@ def import_lessons(
             lesson.teachers.set(teachers)
 
             # All times for this course
-            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(
-                lesson=lesson
-            )
+            old_lesson_periods_qs = chronos_models.LessonPeriod.objects.filter(lesson=lesson)
 
             # If length has changed, delete all lesson periods
             if old_lesson_periods_qs.count() != len(time_periods):
@@ -253,10 +245,7 @@ def import_lessons(
                     # Update old lesson period
 
                     old_lesson_period = old_lesson_period_qs[0]
-                    if (
-                        old_lesson_period.period != time_period
-                        or old_lesson_period.room != room
-                    ):
+                    if old_lesson_period.period != time_period or old_lesson_period.room != room:
                         old_lesson_period.period = time_period
                         old_lesson_period.room = room
                         old_lesson_period.save()
