@@ -63,9 +63,7 @@ def clean_array(seq: Sequence, conv: Callable[[Any], Any] = lambda el: el) -> Se
     >>> clean_array(["8", "", "12", "0"], int)
     [8, 12]
     """
-    filtered = filter(
-        lambda el: bool(el), map(lambda el: conv(el) if el else None, seq)
-    )
+    filtered = filter(lambda el: bool(el), map(lambda el: conv(el) if el else None, seq))
     return type(seq)(filtered)
 
 
@@ -103,9 +101,7 @@ def untis_colour_to_hex(colour: int) -> str:
     return "#" + hex_rgb
 
 
-def compare_m2m(
-    a: Union[Sequence[Model], QuerySet], b: Union[Sequence[Model], QuerySet]
-) -> bool:
+def compare_m2m(a: Union[Sequence[Model], QuerySet], b: Union[Sequence[Model], QuerySet]) -> bool:
     """Compare if content of two m2m fields is equal."""
     return set(a) == set(b)
 

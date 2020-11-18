@@ -42,9 +42,7 @@ def import_absences(
 
     # Get absences
     absences = (
-        run_default_filter(
-            validity_range, mysql_models.Absence.objects, filter_term=False
-        )
+        run_default_filter(validity_range, mysql_models.Absence.objects, filter_term=False)
         .filter(datefrom__lte=untis_term_end, dateto__gte=untis_term_start)
         .order_by("absence_id")
     )

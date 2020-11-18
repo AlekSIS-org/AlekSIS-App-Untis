@@ -50,18 +50,11 @@ def untis_import_mysql(terms: Optional[QuerySet] = None):
         holidays_ref = import_holidays(validity_range)
 
         # Supervisions
-        supervision_areas_ref = import_supervision_areas(
-            validity_range, breaks_ref, teachers_ref
-        )
+        supervision_areas_ref = import_supervision_areas(validity_range, breaks_ref, teachers_ref)
 
         # Lessons
         import_lessons(
-            validity_range,
-            time_periods_ref,
-            rooms_ref,
-            subjects_ref,
-            teachers_ref,
-            classes_ref,
+            validity_range, time_periods_ref, rooms_ref, subjects_ref, teachers_ref, classes_ref,
         )
 
         # Substitutions
@@ -84,6 +77,4 @@ def untis_import_mysql(terms: Optional[QuerySet] = None):
         )
 
         # Events
-        import_events(
-            validity_range, time_periods_ref, teachers_ref, classes_ref, rooms_ref
-        )
+        import_events(validity_range, time_periods_ref, teachers_ref, classes_ref, rooms_ref)
