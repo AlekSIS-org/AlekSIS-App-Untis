@@ -177,6 +177,8 @@ def import_substitutions(
                 room = room_old if not room_new and room_old else room_new
                 subject = subject_old if not subject_new else subject_new
                 teachers = [teacher_old] if not teacher_new else [teacher_new]
+                if not teacher_new and not teacher_old:
+                    teachers = []
 
                 (extra_lesson, created,) = chronos_models.ExtraLesson.objects.update_or_create(
                     import_ref_untis=sub_id,
