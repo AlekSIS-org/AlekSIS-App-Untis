@@ -40,7 +40,7 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         colour_fg = get_child_node_text(subject_node, "forecolor")
         colour_bg = get_child_node_text(subject_node, "backcolor")
 
-        Subject.objects.update_or_create(
+        Subject.objects.select_related(None).prefetch_related(None).update_or_create(
             short_name=short_name,
             defaults={"name": name, "colour_fg": colour_fg, "colour_bg": colour_bg},
         )
@@ -55,7 +55,7 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         time_start = time(int(starttime[:2]), int(starttime[2:]))
         time_end = time(int(endtime[:2]), int(endtime[2:]))
 
-        TimePeriod.objects.update_or_create(
+        TimePeriod.objects.select_related(None).prefetch_related(None).update_or_create(
             weekday=weekday,
             period=period,
             defaults={"time_start": time_start, "time_end": time_end},
@@ -66,7 +66,9 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         short_name = room_node.attributes["id"].value[3:]
         name = get_child_node_text(room_node, "longname")
 
-        Room.objects.update_or_create(short_name=short_name, defaults={"name": name})
+        Room.objects.select_related(None).prefetch_related(None).update_or_create(
+            short_name=short_name, defaults={"name": name}
+        )
 
     classes = dom.getElementsByTagName("class")
     for class_node in classes:
@@ -74,8 +76,10 @@ def untis_import_xml(request: HttpRequest, untis_xml: Union[BinaryIO, str]) -> N
         name = _("Class %s") % short_name
         class_teacher_short_name = get_child_node_id(class_node, "class_teacher")[3:]
 
-        class_, created = Group.objects.update_or_create(
-            short_name=short_name, defaults={"name": name}
+        class_, created = (
+            Group.objects.select_related(None)
+            .prefetch_related(None)
+            .update_or_create(short_name=short_name, defaults={"name": name})
         )
 
         try:

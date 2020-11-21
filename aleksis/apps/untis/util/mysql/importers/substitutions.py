@@ -178,16 +178,20 @@ def import_substitutions(
                 subject = subject_old if not subject_new else subject_new
                 teachers = [teacher_old] if not teacher_new else [teacher_new]
 
-                (extra_lesson, created,) = chronos_models.ExtraLesson.objects.update_or_create(
-                    import_ref_untis=sub_id,
-                    defaults={
-                        "week": week.week,
-                        "year": week.year,
-                        "period": time_period,
-                        "subject": subject,
-                        "room": room,
-                        "comment": comment,
-                    },
+                (extra_lesson, created,) = (
+                    chronos_models.ExtraLesson.objects.select_related(None)
+                    .prefetch_related(None)
+                    .update_or_create(
+                        import_ref_untis=sub_id,
+                        defaults={
+                            "week": week.week,
+                            "year": week.year,
+                            "period": time_period,
+                            "subject": subject,
+                            "room": room,
+                            "comment": comment,
+                        },
+                    )
                 )
 
                 if created:
