@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.utils.translation import gettext as _
 
 import reversion
+from reversion import set_comment
 from tqdm import tqdm
 
 from aleksis.apps.chronos import models as chronos_models
@@ -262,5 +263,6 @@ def import_lessons(
         if lesson.lesson_id_untis and lesson.lesson_id_untis not in existing_lessons:
             logger.info("Lesson {} deleted".format(lesson.id))
             with reversion.create_revision():
+                set_comment(_("Deleted by UNTIS import"))
                 lesson.save()
             lesson.delete()
