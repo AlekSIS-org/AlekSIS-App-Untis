@@ -92,7 +92,7 @@ def import_absences(
             group = classes_ref[absence.ida]
         elif type_ == AbsenceType.TEACHER.value:
             teacher = teachers_ref[absence.ida]
-        elif type == AbsenceType.ROOM.value:
+        elif type_ == AbsenceType.ROOM.value:
             room = rooms_ref[absence.ida]
 
         new_absence, created = chronos_models.Absence.objects.get_or_create(
