@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-12-05 21:26+0100\n"
-"PO-Revision-Date: 2020-05-04 14:38+0000\n"
+"PO-Revision-Date: 2020-12-05 20:52+0000\n"
 "Last-Translator: Jonathan Weth <teckids@jonathanweth.de>\n"
-"Language-Team: German <https://translate.edugit.org/projects/aleksis/aleksis-app-untis/de/>\n"
+"Language-Team: German <https://translate.edugit.org/projects/aleksis/"
+"aleksis-app-untis/de/>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.0.1\n"
+"X-Generator: Weblate 4.3.2\n"
 
 #: forms.py:6
 msgid "Untis XML export"
@@ -44,15 +45,15 @@ msgstr "UNTIS-Importreferenz"
 
 #: model_extensions.py:23
 msgid "UNTIS school year ID"
-msgstr ""
+msgstr "UNTIS-Schuljahr-ID"
 
 #: model_extensions.py:26
 msgid "UNTIS school id"
-msgstr ""
+msgstr "UNTIS-Schul-ID"
 
 #: model_extensions.py:29
 msgid "UNTIS version id"
-msgstr ""
+msgstr "UNTIS-Versions-ID"
 
 #: model_extensions.py:41
 msgid "Lesson id in UNTIS"
@@ -189,10 +190,8 @@ msgid "    Skip because missing subject"
 msgstr "    Wird wegen fehlendem Fach übersprungen"
 
 #: util/mysql/importers/lessons.py:266
-#, fuzzy
-#| msgid "UNTIS import"
 msgid "Deleted by UNTIS import"
-msgstr "UNTIS-Import"
+msgstr "Gelöscht durch UNTIS-Import"
 
 #: util/xml/xml.py:76
 #, python-format
