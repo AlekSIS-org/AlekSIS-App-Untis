@@ -235,12 +235,15 @@ def import_substitutions(
                         logger.info("  Supervision substitution updated")
 
     # Delete all no longer existing substitutions
-    for s in chronos_models.LessonSubstitution.objects.within_dates(
+    lesson_substitutions_in_range = chronos_models.LessonSubstitution.objects.within_dates(
         validity_range.date_start, validity_range.date_end
-    ):
+    )
+    for s in lesson_substitutions_in_range:
         if s.import_ref_untis and s.import_ref_untis not in existing_subs:
             logger.info("Substitution {} deleted".format(s.id))
             s.delete()
+
+    lesson_substitutions_in_range.exclude(lesson_period__lesson__validity=validity_range).delete()
 
     # Delete all no longer existing extra lessons
     for s in chronos_models.ExtraLesson.objects.within_dates(
@@ -251,9 +254,12 @@ def import_substitutions(
             s.delete()
 
     # Delete all no longer existing supervision substitutions
-    for s in chronos_models.SupervisionSubstitution.objects.filter(
+    supervision_substitutions_in_range = chronos_models.SupervisionSubstitution.objects.filter(
         date__gte=validity_range.date_start, date__lte=validity_range.date_end
-    ):
+    )
+    for s in supervision_substitutions_in_range:
         if s.import_ref_untis and s.import_ref_untis not in existing_subs:
             logger.info("Supervision substitution {} deleted".format(s.id))
             s.delete()
+
+    supervision_substitutions_in_range.exclude(supervision__validity=validity_range).delete()
