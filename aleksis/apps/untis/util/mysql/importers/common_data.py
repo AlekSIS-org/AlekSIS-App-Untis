@@ -355,6 +355,10 @@ def import_supervision_areas(
             # Split more and get teacher id
             raw_supervision_2 = raw_supervision.split("~")
             teacher_id = int(raw_supervision_2[1])
+            term_id = int(raw_supervision_2[0])
+
+            if term_id != validity_range.import_ref_untis:
+                continue
 
             if teacher_id in teachers_ref:
                 # Get weekday, period after break and teacher
