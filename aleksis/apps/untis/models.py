@@ -4215,7 +4215,7 @@ class Views(models.Model, PureDjangoModel):
         )
 
 
-class GlobalPermissions(models.Model):
+class GlobalPermissions(models.Model, PureDjangoModel):
     class Meta:
         managed = False
         permissions = (
