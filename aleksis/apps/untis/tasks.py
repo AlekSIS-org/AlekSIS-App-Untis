@@ -2,32 +2,32 @@ from aleksis.apps.untis.util.mysql.importers.terms import (
     get_future_terms_for_date,
     get_terms_for_date,
 )
-from aleksis.core.util.core_helpers import celery_optional
+from aleksis.core.celery import app
 
 from .util.mysql.main import untis_import_mysql as _untis_import_mysql
 
 
-@celery_optional
+@app.task
 def untis_import_mysql_current_term():
     """Celery task for import of UNTIS data from MySQL (current term)."""
     terms = get_terms_for_date()
     _untis_import_mysql(terms)
 
 
-@celery_optional
+@app.task
 def untis_import_mysql_future_terms():
     """Celery task for import of UNTIS data from MySQL (all future terms)."""
     terms = get_future_terms_for_date()
     _untis_import_mysql(terms)
 
 
-@celery_optional
+@app.task
 def untis_import_mysql_all_terms():
     """Celery task for import of UNTIS data from MySQL (all terms in DB)."""
     _untis_import_mysql()
 
 
-@celery_optional
+@app.task
 def untis_import_mysql_current_next_term():
     """Celery task for import of UNTIS data from MySQL (current and next term)."""
     terms = get_terms_for_date()
@@ -37,7 +37,7 @@ def untis_import_mysql_current_next_term():
     _untis_import_mysql(terms)
 
 
-@celery_optional
+@app.task
 def untis_import_mysql_current_future_terms():
     """Celery task for import of UNTIS data from MySQL (current and future terms)."""
     terms = get_terms_for_date()
