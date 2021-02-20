@@ -40,13 +40,13 @@ def import_lessons(
     for lesson in tqdm(lessons, desc="Import lessons", **TQDM_DEFAULTS):
         lesson_id = lesson.lesson_id
 
-        existing_lessons.append(lesson_id)
-
         logger.info(_("Import lesson {}").format(lesson_id))
 
         if not lesson.lesson_tt:
             logger.warning(_("  Skip because missing times").format(lesson_id))
             continue
+
+        existing_lessons.append(lesson_id)
 
         # Split data (,)
         raw_lesson_data = connect_untis_fields(lesson, "lessonelement", 10)
