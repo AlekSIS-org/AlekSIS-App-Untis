@@ -376,7 +376,7 @@ def import_supervision_areas(
                 new_supervision, created = new_area.supervisions.get_or_create(
                     validity=validity_range,
                     break_item=breaks_ref[weekday][period_after_break],
-                    defaults={"teacher": teacher},
+                    teacher=teacher,
                 )
 
                 # Log
