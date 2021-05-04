@@ -192,6 +192,7 @@ def import_substitutions(
                             "subject": subject,
                             "room": room,
                             "comment": comment,
+                            "school_term": validity_range.school_term,
                         },
                     )
                 )
