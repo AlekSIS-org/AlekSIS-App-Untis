@@ -6,7 +6,7 @@ MENUS = {
             "name": _("Untis XML import"),
             "url": "untis_xml_import",
             "validators": [
-                ("aleksis.core.util.predicates.permission_validator", "untis.do_xml_import",),
+                ("aleksis.core.util.predicates.permission_validator", "untis.do_xml_import_rule",),
             ],
         },
         {
@@ -15,7 +15,7 @@ MENUS = {
             "validators": [
                 (
                     "aleksis.core.util.predicates.permission_validator",
-                    "untis.assign_subjects_to_groups",
+                    "untis.assign_subjects_to_groups_rule",
                 ),
             ],
         },

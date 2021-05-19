@@ -7,7 +7,7 @@ from .forms import UntisUploadForm
 from .util.xml.xml import untis_import_xml
 
 
-@permission_required("untis.do_xml_import")
+@permission_required("untis.do_xml_import_rule")
 def xml_import(request: HttpRequest) -> HttpResponse:
     context = {}
 
