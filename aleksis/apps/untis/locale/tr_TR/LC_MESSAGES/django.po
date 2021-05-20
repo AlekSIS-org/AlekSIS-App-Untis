@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-05 21:26+0100\n"
+"POT-Creation-Date: 2021-05-20 21:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,179 +17,108 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: forms.py:6
-msgid "Untis XML export"
-msgstr ""
-
-#: management/commands/untis_import_xml.py:9
-msgid "Path to Untis XML export file"
-msgstr ""
-
-#: menus.py:6
-msgid "Untis XML import"
-msgstr ""
-
-#: menus.py:13
+#: aleksis/apps/untis/menus.py:6
 msgid "Link subjects to groups (for UNTIS MySQL import)"
 msgstr ""
 
-#: model_extensions.py:9 model_extensions.py:12 model_extensions.py:15
-#: model_extensions.py:20 model_extensions.py:32 model_extensions.py:35
-#: model_extensions.py:38 model_extensions.py:54 model_extensions.py:57
-#: model_extensions.py:60 model_extensions.py:63 model_extensions.py:66
-#: model_extensions.py:69 model_extensions.py:72
+#: aleksis/apps/untis/model_extensions.py:9
+#: aleksis/apps/untis/model_extensions.py:12
+#: aleksis/apps/untis/model_extensions.py:15
+#: aleksis/apps/untis/model_extensions.py:20
+#: aleksis/apps/untis/model_extensions.py:32
+#: aleksis/apps/untis/model_extensions.py:35
+#: aleksis/apps/untis/model_extensions.py:38
+#: aleksis/apps/untis/model_extensions.py:54
+#: aleksis/apps/untis/model_extensions.py:57
+#: aleksis/apps/untis/model_extensions.py:60
+#: aleksis/apps/untis/model_extensions.py:63
+#: aleksis/apps/untis/model_extensions.py:66
+#: aleksis/apps/untis/model_extensions.py:69
+#: aleksis/apps/untis/model_extensions.py:72
 msgid "UNTIS import reference"
 msgstr ""
 
-#: model_extensions.py:23
+#: aleksis/apps/untis/model_extensions.py:23
 msgid "UNTIS school year ID"
 msgstr ""
 
-#: model_extensions.py:26
+#: aleksis/apps/untis/model_extensions.py:26
 msgid "UNTIS school id"
 msgstr ""
 
-#: model_extensions.py:29
+#: aleksis/apps/untis/model_extensions.py:29
 msgid "UNTIS version id"
 msgstr ""
 
-#: model_extensions.py:41
+#: aleksis/apps/untis/model_extensions.py:41
 msgid "Lesson id in UNTIS"
 msgstr ""
 
-#: model_extensions.py:45 model_extensions.py:50
+#: aleksis/apps/untis/model_extensions.py:45
+#: aleksis/apps/untis/model_extensions.py:50
 msgid "Number of lesson element in UNTIS"
 msgstr ""
 
-#: models.py:4222
-msgid "Can do XML import"
-msgstr ""
-
-#: models.py:4223
+#: aleksis/apps/untis/models.py:4221
 msgid "Can assign subjects to groups"
 msgstr ""
 
-#: preferences.py:8
+#: aleksis/apps/untis/preferences.py:8
 msgid "UNTIS: MySQL"
 msgstr ""
 
-#: preferences.py:16
+#: aleksis/apps/untis/preferences.py:16
 msgid "Update values of existing subjects"
 msgstr ""
 
-#: preferences.py:24
+#: aleksis/apps/untis/preferences.py:24
 msgid "Update short name of existing persons"
 msgstr ""
 
-#: preferences.py:32
+#: aleksis/apps/untis/preferences.py:32
 msgid "Update name of existing persons"
 msgstr ""
 
-#: preferences.py:40
+#: aleksis/apps/untis/preferences.py:40
 msgid "Update short name of existing groups"
 msgstr ""
 
-#: preferences.py:48
+#: aleksis/apps/untis/preferences.py:48
 msgid "Update name of existing groups"
 msgstr ""
 
-#: preferences.py:55
+#: aleksis/apps/untis/preferences.py:55
 msgid "Overwrite group owners"
 msgstr ""
 
-#: preferences.py:64
+#: aleksis/apps/untis/preferences.py:64
 msgid "Update name of existing rooms"
 msgstr ""
 
-#: preferences.py:72
+#: aleksis/apps/untis/preferences.py:72
 msgid "Update existing supervision areas"
 msgstr ""
 
-#: preferences.py:80
+#: aleksis/apps/untis/preferences.py:80
 msgid "Use course groups"
 msgstr ""
 
-#: preferences.py:82
+#: aleksis/apps/untis/preferences.py:82
 msgid "Build or search course groups for every course instead of setting classes as groups."
 msgstr ""
 
-#: templates/untis/xml_import.html:7 templates/untis/xml_import.html:8
-msgid "Import Untis data via XML"
-msgstr ""
-
-#: templates/untis/xml_import.html:13
-msgid ""
-"\n"
-"      Untis provides a function for exporting all data as an XML file.\n"
-"    "
-msgstr ""
-
-#: templates/untis/xml_import.html:20
-msgid ""
-"\n"
-"        Newly imported data will be valid as of tomorrow.\n"
-"      "
-msgstr ""
-
-#: templates/untis/xml_import.html:23
-msgid ""
-"\n"
-"        The effective dates of all existing lessons will be set to end\n"
-"        today.\n"
-"      "
-msgstr ""
-
-#: templates/untis/xml_import.html:27
-msgid ""
-"\n"
-"        The effective dates of all newly imported lessons will be set to\n"
-"        start tomorrow.\n"
-"      "
-msgstr ""
-
-#: templates/untis/xml_import.html:31
-msgid ""
-"\n"
-"        Teachers, rooms, subjects and classes and periods will be updated in place.\n"
-"      "
-msgstr ""
-
-#: templates/untis/xml_import.html:40
-msgid "Import data"
-msgstr ""
-
-#: util/mysql/importers/lessons.py:45
+#: aleksis/apps/untis/util/mysql/importers/lessons.py:43
 msgid "Import lesson {}"
 msgstr ""
 
-#: util/mysql/importers/lessons.py:48
+#: aleksis/apps/untis/util/mysql/importers/lessons.py:46
 msgid "  Skip because missing times"
 msgstr ""
 
-#: util/mysql/importers/lessons.py:105
+#: aleksis/apps/untis/util/mysql/importers/lessons.py:105
 msgid "    Skip because missing subject"
 msgstr ""
 
-#: util/mysql/importers/lessons.py:266
+#: aleksis/apps/untis/util/mysql/importers/lessons.py:266
 msgid "Deleted by UNTIS import"
-msgstr ""
-
-#: util/xml/xml.py:76
-#, python-format
-msgid "Class %s"
-msgstr ""
-
-#: util/xml/xml.py:92
-#, python-format
-msgid "Could not set class teacher of %(class)s to %(teacher)s."
-msgstr ""
-
-#: util/xml/xml.py:153
-#, python-format
-msgid "Invalid list of classes: %s"
-msgstr ""
-
-#: util/xml/xml.py:161
-#, python-format
-msgid "Failed to import lesson: Teacher %s does not exist."
 msgstr ""
