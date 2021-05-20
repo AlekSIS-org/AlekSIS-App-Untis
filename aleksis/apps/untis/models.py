@@ -4218,7 +4218,4 @@ class Views(models.Model, PureDjangoModel):
 class GlobalPermissions(models.Model, PureDjangoModel):
     class Meta:
         managed = False
-        permissions = (
-            ("do_xml_import", _("Can do XML import")),
-            ("assign_subjects_to_groups", _("Can assign subjects to groups")),
-        )
+        permissions = (("assign_subjects_to_groups", _("Can assign subjects to groups")),)

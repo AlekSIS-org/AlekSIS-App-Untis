@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='globalpermissions',
-            options={'managed': False, 'permissions': (('do_xml_import', 'Kann XML-Import durchführen'), ('assign_subjects_to_groups', 'Kann Fächer zu Gruppen zuzuordnen'))},
+            options={'managed': False, 'permissions': (('assign_subjects_to_groups', 'Kann Fächer zu Gruppen zuzuordnen'),)},
         ),
     ]

@@ -2272,7 +2272,6 @@ class Migration(migrations.Migration):
             ],
             options={
                 "permissions": (
-                    ("do_xml_import", "Can do XML import"),
                     ("assign_subjects_to_groups", "Can assign subjects to groups"),
                 ),
                 "managed": False,
