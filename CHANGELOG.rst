@@ -6,6 +6,15 @@ All notable changes to this project will be documented in this file.
 The format is based on `Keep a Changelog`_,
 and this project adheres to `Semantic Versioning`_.
 
+`2.0rc1`_ - 2021-06-23
+----------------------
+
+Fixed
+~~~~~
+
+* Preference section verbose names were displayed in server language and not
+  user language (fixed by using gettext_lazy).
+
 `2.0b0`_ - 2021-05-21
 ---------------------
 
@@ -81,3 +90,4 @@ Fixed
 .. _1.0a1: https://edugit.org/Teckids/AlekSIS/AlekSIS-App-Untis/-/tags/1.0a1
 .. _2.0a2: https://edugit.org/Teckids/AlekSIS/AlekSIS-App-Untis/-/tags/2.0a2
 .. _2.0b0: https://edugit.org/Teckids/AlekSIS/AlekSIS-App-Untis/-/tags/2.0b0
+.. _2.0rc1: https://edugit.org/Teckids/AlekSIS/AlekSIS-App-Untis/-/tags/2.0rc1
