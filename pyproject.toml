@@ -34,8 +34,8 @@ python = "^3.9"
 mysqlclient = "^2.0.0"
 tqdm = "^4.44.1"
 defusedxml = "^0.7.0"
-aleksis-core = "^2.0b0"
-aleksis-app-chronos = "^2.0b0"
+aleksis-core = "^2.0rc"
+aleksis-app-chronos = "^2.0rc"
 
 [tool.poetry.dev-dependencies]
 aleksis-builddeps = "*"
